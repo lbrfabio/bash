@@ -1,0 +1,42 @@
+#!/bin/bash
+# find, recursively, files with a specified text in the name and rename the file without the text
+
+opt1="DDLValley.net_"
+opt2="ReleaseThread_"
+optn="Custom String"
+
+op=`zenity --hide-header --height=150 --list --radiolist --title="Clean Filenames" --text 'Select text to replace:' --column '' --column 'Text' TRUE "$opt1" FALSE "$opt2" FALSE "$optn"`
+echo "Chosen option: "$op
+
+case "$op" in
+    $opt1)
+    TEXT=$opt1
+    ;;
+    $opt2)
+    TEXT=$opt2
+    ;;
+    $optn)
+    TEXT=`zenity --entry --title="Custom Text to Replace" --text="Enter the text" --entry-text=XXXXXX`
+    ;;
+    *)
+    # no selection
+    exit
+esac
+
+
+DIR=`zenity --file-selection --directory`
+cd "$DIR"
+
+find . -name "$TEXT"* > lista.txt
+
+while read FILE  ; do
+        NEWFILE=`echo "$FILE" | sed s/$TEXT//g `
+        #TODO: insert a confirm before mv a file
+        echo "Renaming  "$FILE"    TO     "$NEWFILE""
+        mv "$FILE" "$NEWFILE"
+done < lista.txt
+
+rm lista.txt
+
+
+notify-send -i "bleachbit" "CLEANED: $DIR"

@@ -1,0 +1,39 @@
+#!/bin/bash
+# NAME: random_slideshow
+# DESCRIPTION: randomly take some pictures from a folder and then start a slideshow with eog
+# NEED: feh
+# EXAMPLE:   ./slideshow ~/pictures 4
+
+if [ -e feh ]; then 
+    # feh not installed
+    if [ ! -e apt-get ]; then
+        # probably using ubuntu\debian\mint
+        sudo apt-get install feh
+    elif [ ! -e yum ]; then
+        # probably using fedora\redhat
+        sudo yum install feh
+    fi
+fi
+
+DIR=$1  #source folder
+TIMER=$2 #seconds
+
+if [ -z "$1" ]; then
+    echo -e "\nUsage:
+    $0 folder seconds
+    $0 --gui"
+    exit
+fi
+
+if [ "$1" == "--gui" ]; then
+    DIR=`zenity --title="Slideshow" --file-selection --directory`
+    TIMER=`zenity --entry --title="Slideshow" --text="Timer(in seconds)" --entry-text=4`
+elif [ -d "$1" ]; then # directory exist
+    if [ -z "$2" ]; then
+        TIMER=4 # default 4 seconds
+    fi
+fi
+
+feh -zsrqYZFD  $TIMER $DIR
+
+exit 0

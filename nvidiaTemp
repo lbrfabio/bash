@@ -1,0 +1,41 @@
+#!/bin/bash
+# NAME:
+# DESCRIPTION:
+# NEED:
+# USAGE:
+
+# fix problem with gnome 3.8\3.10 that not send libnotify notifications is script used with cron
+export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
+
+
+#alternative command where c39-40 stand for "from col 39 to 40"
+#nvidia-smi -q -d TEMPERATURE | grep Gpu | cut -c39-40
+
+temp=`nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader`
+fanspeed=`nvidia-smi | grep % | cut -c2-5`
+
+icon="nvidia-settings"
+#da invalid number of options if I use $text because of spaces...why?
+#text="GPU             Temperature: $temp °C              Fan Speed:  $fanspeed"
+
+if [ "$1" == -'f' ]
+then
+    notify-send -i $icon "GPU             Temperature: $temp °C              Fan Speed:  $fanspeed"
+    exit
+fi
+
+
+if (( temp > 55 ))  #warning
+then
+    icon="dialog-warning"
+    notify-send -i $icon "GPU             Temperature: $temp °C              Fan Speed:  $fanspeed"
+    exit
+fi
+
+if (( temp > 45))  #normal
+then
+    notify-send -i $icon "GPU             Temperature: $temp °C              Fan Speed:  $fanspeed"
+    exit
+fi
+
+

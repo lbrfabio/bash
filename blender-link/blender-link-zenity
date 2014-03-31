@@ -1,0 +1,59 @@
+#!/bin/bash
+# This script take a blender new release folder, cleanup link files\folder and then recreate them
+# To be sure it checks if blender and blenderplayer are present in this folder
+#
+# requirements: zenity
+# more info on zenity: http://help.gnome.org/users/zenity/3.6/
+#select blender folder
+
+folder=`zenity --file-selection --directory --title="Select blender folder" --filename="~/"`
+echo "Folder="$folder
+
+blender="$folder/blender"
+blenderplayer="$folder/blenderplayer"
+
+#check if blender and blenderplayer are present in $folder
+if  [[ -e "$blender"  && -e "$blenderplayer" ]]; then
+     echo -e "\nFOUND: blender & blenderplayer \n"
+else 
+     #TODO undestand how to solve not to enter here when parentesi or space in folder
+     #echo -e "\nERROR: blender & blenderplayer not found. Make sure you have the correct folder"
+     #zenity --notification --window-icon="error"  --text="ERROR: blender & blenderplayer not found. Make sure you have the correct folder"
+     notify-send -i "error" "ERROR: blender & blenderplayer not found. Make sure you have the correct folder"
+     exit
+fi
+
+#cleanup symbolic links
+sudo rm /usr/bin/blender
+sudo rm /usr/bin/blenderplayer
+
+#create symbolic links
+sudo ln -s $blender /usr/bin/blender
+sudo ln -s $blenderplayer /usr/bin/blenderplayer
+
+#check if blender.desktop exist
+if [[ ! -e "/usr/share/applications/blender.desktop" ]]; then
+     sudo echo "[Desktop Entry]
+     Name=Blender
+     GenericName=3D modeller
+     Comment=3D modeling, animation, rendering and post-production
+     Exec=blender
+     Icon=blender
+     Terminal=false
+     Type=Application
+     Categories=Graphics;3DGraphics;
+     MimeType=application/x-blender;
+     " > /usr/share/applications/blender.desktop
+     sudo chmod +x /usr/share/applications/blender.desktop
+fi
+
+#zenity --notification --window-icon="info"  --text="Aggiornati link blender"
+notify-send -i blender "Aggiornati link blender"
+
+zenity --question --text="Do you want to open blender?"
+answer=$?
+if [ "$answer" -eq "0" ]; then
+     #TODO: how to close the terminal but still open blender? 
+     blender
+fi
+exit

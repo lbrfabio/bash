@@ -1,0 +1,90 @@
+#!/bin/bash
+# NAME: hungryProcess
+# DESCRIPTION: send a gnome-shell notification if a process is using too much memory
+# NEED: zenity
+#
+# USAGE: set it with a keyboard shortcut or with cron. 
+# Pass two parameters:  process's name and for how much Mb you want a notification
+# $HOME/YOURPATH/hungryProcess PROCESSNAME MB
+
+# fix problem with gnome 3.8\3.10 that not send libnotify notifications is script used with cron
+export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
+
+#SLEEP_START=1
+#SLEEP_STOP=9
+
+#hour=`date | cut -d ' ' -f 6 | cut -d '.' -f 1`
+hour=`date +%H`
+
+if (( $hour >= SLEEP_START && $hour <= SLEEP_STOP ))
+then
+   exit 0
+fi
+
+process=$1
+maxMem=$2
+
+# check if parameter number is ok
+if (($# < 2))
+then
+    echo "Usage $0 processName maxMem "
+    exit 1
+fi
+
+# check if $process is running
+#pid=`ps -A | grep $process`
+#pid=`pidof $process   #variant withuot cut. with multiple process it's not ok
+pid=`pidof $process | cut -d ' ' -f 1`
+if [ -z "$pid" ]
+then 
+    echo $process is not running
+    exit 2
+fi
+
+# check if $maxMem is a number
+if ! [[ "$maxMem" =~ ^[0-9]+$ ]] ; then
+   exec >&2; echo "error: maxMem Not a number"; exit 1
+fi
+
+# a litte hack to be sure zenity processes are not running (sometimes they get stuck)   // NOT NECESSARY IF I USE notify-send!!!!
+#if ! [ -z "zenity" ]; then
+#   killall zenity
+#fi
+
+# get info about $process
+
+#TODO: remove this. it's not necessary anymore. pidof and top -p$pid solve it.
+# using while because sometimes top doesn't return nothing
+#while [ -z "$line" ]
+#do
+#    line=`top -n 1 | grep $process`
+#done
+
+#get line of top. -bn is the only parameter to make it work on cron!
+line=`top -bn 1 -p$pid | grep $process`
+
+#get memory used by $process
+cut=`echo $line | cut -d ' ' -f 6`
+#cut the 'm' from $mem
+mem=`echo $cut | cut -d 'm' -f 1` 
+
+#check if didn't change anything
+if [ $cut == $mem ] 
+then 
+    #it was giga(g). not mega(m)
+    mem=`echo $mem | cut -d 'g' -f 1`
+    #remove "," and multiply x100(compatibility next if)
+    let mem=${mem/,}*100
+fi
+
+#if memory more than what I want then send a gnome shell notification
+if (( $mem > $maxMem ))
+then
+    #zenity --notification --window-icon="info"  --text="$process is using $mem Mb"
+    notify-send "$process is using $mem Mb"
+    #TODO: add or not a dialog with a restart of the process?
+    #pid=pidof $process
+    #kill -9 $pid
+fi
+
+exit 0

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Link Zenity
+Exec=/home/fabiolbr/coding/bash/blender-link/blender-link-zenity
+Icon=blender
+Terminal=true
+Type=Application
+Name[en]=Blender Link Zenity

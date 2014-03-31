@@ -1,0 +1,55 @@
+#!/bin/bash
+# This script take a blender new release folder, cleanup link files\folder and then recreate them
+# To be sure it checks if blender and blenderplayer are present in this folder
+
+echo -e "\n#####BLENDER LINKING SCRIPT######"
+
+if [[ ! $# -eq 1 ]]; then
+     echo -e "\nUsage: $0 blenderFolderName"
+     exit
+fi
+
+folder="`pwd`/$1"
+
+if [ -d $folder ]; then
+     echo "FOUND: parameter is a folder"
+else
+     echo  "ERROR: paramater isn't a folder"
+     exit
+fi
+
+blender="`pwd`/$1/blender"
+blenderplayer="`pwd`/$1/blenderplayer"
+
+if  [[ -e $blender  &&  -e $blenderplayer ]]; then
+     echo -e "\nFOUND: blender & blenderplayer \n"
+else 
+     echo -e "\nERROR: blender & blenderplayer not found. Make sure you have the correct folder"
+     exit
+fi
+
+#cleanup symbolic links
+sudo rm /usr/bin/blender
+sudo rm /usr/bin/blenderplayer
+
+#create symbolic links
+sudo ln -s "$folder/blender" /usr/bin/blender
+sudo ln -s "$folder/blender" /usr/bin/blenderplayer
+
+#check if blender.desktop exist
+if [[ ! -e "/usr/share/applications/blender.desktop" ]]; then
+     sudo echo "[Desktop Entry]
+     Name=Blender
+     GenericName=3D modeller
+     Comment=3D modeling, animation, rendering and post-production
+     Exec=blender
+     Icon=blender
+     Terminal=false
+     Type=Application
+     Categories=Graphics;3DGraphics;
+     MimeType=application/x-blender;
+     " > /usr/share/applications/blender.desktop
+     sudo chmod +x /usr/share/applications/blender.desktop
+fi
+
+exit

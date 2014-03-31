@@ -1,0 +1,75 @@
+#!/bin/bash
+#requirements: zenity, apktool, aapt
+
+# more info on zenity http://help.gnome.org/users/zenity/
+
+output_fld=/home/fabiolbr/android/apktool
+source_fld=~/coding/bash/apktool-zenity
+icon=$source_fld/apktool-zenity.svg
+apktool=$source_fld/apktool.jar
+signapk=$source_fld/signapk.jar
+pub_key=$source_fld/testkey.x509.pem
+priv_key=$source_fld/testkey.pk8
+
+build_tools=~/coding/android/android-sdk-linux/build-tools
+aapt=$build_tools/`cd $build_tools && ls -1 | tail -1`
+export PATH=${PATH}:$aapt
+
+#TODO: add a loop to build\decode the same\other apps
+#while true; do
+
+opt1="Build"
+opt2="Decode"
+op=`zenity --height=150 --list --radiolist --title="apktool 1.52" --text 'Select operation:' --column '' --column 'Operation' TRUE "$opt1" FALSE "$opt2"`
+echo "Chosen option: "$op
+
+case "$op" in
+    $opt1) 
+          apkfolder=`zenity --file-selection --directory --title="Select decompiled apk folder"`
+          cd $apkfolder && cd ..
+
+          yml="$apkfolder/apktool.yml"
+          echo $yml
+          #check if apktool.yml is present(a little help to identify decoded folder)
+          if  [ -e "$yml" ]
+               then
+                    java -jar $apktool b "$apkfolder"
+                    #TODO: check if building apk failed or not maybe checking if $apkname exisist? 
+                    echo $apkfolder
+                    apkname=`cat "$apkfolder"/apktool.yml | grep apk | cut -d ":" -f 2| cut -d "." -f 1 | xargs` #xargs fà il trim
+
+                    java -jar $signapk $pub_key $priv_key "$apkfolder/dist/$apkname.apk" "$apkfolder/dist/$apkname-signed.apk"
+
+                    #zenity --info --title="APK BUILT" --text="`cat $apkfolder/apktool.yml | grep apk`"%
+                    #zenity --notification --window-icon="info"  --text="APK BUILT `cat $apkfolder/apktool.yml | grep apk`"
+                    #notify-send "APK BUILT `cat $apkfolder/apktool.yml | grep apk`"
+                    notify-send --icon="$icon" "APK BUILT: $apkname"
+          else 
+                    #zenity --error --title="NOT A DECODED APP" --text="$apkfolder"
+                   zenity --notification --window-icon="error"  --text="NOT A DECODED APP $apkfolder"
+                   #notify-send -i "error" "NOT A DECODED APP $apkfolder" 
+          fi
+          ;;
+    $opt2) 
+          app=`zenity --file-selection --title="Select file .apk" | grep ".apk" `
+
+          if [ -z "$app" ]
+          then
+            notify-send --icon="error"  "NOT APK"
+          else
+            echo "APK:$app"
+            cd "$output_fld"
+            java -jar $apktool d -s "$app"
+            #java -jar $apktool d $app
+            #TODO: check if decoding apk failed or not with the appropiate notification e icona $icon in caso positivo oppure qualcosa stock tipo OK (la V)
+          fi
+          ;;
+      *) 
+      exit;
+esac
+
+rm -rf ~/apktool
+
+#done
+
+exit

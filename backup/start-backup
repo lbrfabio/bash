@@ -1,0 +1,60 @@
+#!/bin/bash
+#requirements:  rsync 
+
+if [ -e rsync ]; then 
+    # rsync not installed
+    if [ ! -e apt-get ]; then
+        # probably using ubuntu\debian\mint
+        sudo apt-get install rsync
+    elif [ ! -e yum ]; then
+        # probably using fedora\redhat
+        sudo yum install rsync
+    fi
+fi
+
+#MEDIA
+echo ""
+echo "##### MEDIA  ##### "
+echo ""
+echo -n "Start backing up media? (y/n)"
+echo ""
+read answer
+if [[ $answer == "y" ]]; then
+    ./000-media/000-media-start
+fi
+
+
+#HOME
+echo ""
+echo "##### HOME  ##### "
+echo ""
+echo -n "Start backing up home? (y/n)"
+echo ""
+read answer
+if [[ $answer == "y" ]]; then
+    ./100-home/100-home-start
+fi
+
+
+#SYSTEM
+echo ""
+echo "##### SYSTEM  ##### "
+echo ""
+echo -n "Start backing up system? (y/n)"
+echo ""
+read answer
+if [[ $answer == "y" ]]; then
+    ./200-system/200-system-start
+fi
+
+
+#WIN
+echo ""
+echo "##### WINDOWS  ##### "
+echo ""
+echo -n "Start backing up win? (y/n)"
+echo ""
+read answer
+if [[ $answer == "y" ]]; then
+    ./300-win/300-win-start
+fi

@@ -1,0 +1,357 @@
+## Attivo la barra di stato
+set const
+
+
+## Abilita il check ortografico
+set speller "aspell check"
+
+## Nanorc
+include "/usr/share/nano/nanorc.nanorc"
+
+## C/C++
+include "/usr/share/nano/c.nanorc"
+
+## HTML
+include "/usr/share/nano/html.nanorc"
+
+## Java
+include "/usr/share/nano/java.nanorc"
+
+## Sh
+include "/usr/share/nano/sh.nanorc"
+
+## Python
+include "/usr/share/nano/python.nanorc"
+
+## Patch
+include "/usr/share/nano/patch.nanorc"
+
+##  Ruby
+include "/usr/share/nano/ruby.nanorc"
+
+##  Man
+include "/usr/share/nano/man.nanorc"
+
+## Makefile
+include "/usr/share/nano/makefile.nanorc"
+
+## Php
+include "/usr/share/nano/php.nanorc"
+
+## Perl
+include "/usr/share/nano/perl.nanorc"
+
+## XML
+include "/usr/share/nano/xml.nanorc"
+
+
+syntax "wikipedia" "\.wiki$"
+color cyan start="\[" end="\]"
+color blue start="\[\[" end="\]\]"
+color magenta "<[^>]*>"
+color white "([^']+'?)*"
+color red "[^']*"
+color green "==([^=]+=?)*=="
+color green "===[^=]*===""
+
+syntax "markdown" "\.(md|mdt|mdwn)$"
+
+## comments
+color brightblue start="<!--" end="-->"
+## header
+color red "^#+[ \t]+.*"
+color red "^.+\n([=-]{4,})"
+## blockquotes
+color green "^>[ \t]+.*"
+## lists
+color cyan "^([0-9]+\.|[\*+-])[ \t]"
+## code block
+color green "\n\n(([ \t]{4,}|\t).*\n?)+"
+## links and images
+color magenta "\[[^]]*\][ \t]?(\([^)]*\)|\[[^]]*\])"
+## references
+color brightblue "^[ \t]{0,3}\[.*\]:[ \t]+.*"
+## emphasis
+color yellow "\*([^*[ \t]]([^*]|\\\*)*[^*[ \t]]|[^*[ \t]])\*"
+color yellow "_([^_[ \t]]([^_]|\\_)*[^_[ \t]]|[^_[ \t]])_"
+color brightyellow "\*{2}([^ \t]([^*]|\\\*\*|[^*]\*[^*])*[^ \t]|[^*[ \t]])\*{2}"
+color brightyellow "__([^ \t]([^_]|\\__|[^_]_[^_])*[^ \t]|[^_ \t])__"
+## code
+color green "`+([^`]|\\`)+`+"
+## automatic links
+color cyan "<.+[:@].+>"
+
+
+syntax "css" "\.css$"
+color brightred "."
+color brightyellow start="\{" end="\}"
+color brightwhite start=":" end="[;^\{]"
+color brightblue ":active|:focus|:hover|:link|:visited|:link|:after|:before|$"
+color brightblue start="\/\*" end="\\*/"
+color green ";|:|\{|\}"
+
+
+syntax "mimetype" "mime.types"
+icolor cyan "[.A-Z_]*/"
+color brightwhite "/"
+color green "[[:space:]].*$"
+## comments
+color green "#.*$"
+
+
+## *.po file syntax
+##
+syntax "po" "\.po$" "\.pot$"
+color brightblue "\<(msgid|msgstr)\>"
+color brightred "\/"
+color green "#.*$"
+color red "\<fuzzy\>"
+color yellow "\<c-format\>"
+color yellow "\""
+color red "\"\""
+color brightyellow "\"\\n\""
+color brightmagenta "\<(Project\-Id\-Version|Report\-Msgid\-Bugs\-To|Last\-Translator|Language\-Team|charset)\>"
+color cyan "\<(POT\-Creation\-Date|PO\-Revision\-Date|MIME\-Version|Content\-Type|Content\-Transfer\-Encoding)\>"
+color yellow "\<(Copyright|(C))\>"
+color yellow "[0-9]"
+color brightyellow "\<(UTF|ISO|Windows|Mac|IBM)\>\-[0-9]"
+color red "#~.*$"
+
+
+
+syntax "urls"
+color brightmagenta "^.*$"
+color cyan "^(1[0-9][0-9]|20[256]|30[45]).*$"
+color green "^20[03].*$"
+color brightyellow "^(201|30[0-37]).*$"
+color brightred "^(204|[45][0-9][0-9]|666).*$"
+
+
+## syntax highlighting in xorg.conf
+##
+syntax "xorg" "xorg\.conf$"
+color brightwhite "[^A-Za-z0-9](End)?Sub[sS]ection([^A-Za-z0-9]|[[:space:]]*)"
+color brightwhite "^[[:space:]]*(End)?Section([^A-Za-z0-9]|[[:space:]]*)"
+color yellow "[^A-Za-z0-9](Monitor|View[pP]ort|Virtual)[^A-Za-z0-9]"
+color yellow "[^A-Za-z0-9]Mod(e|es|eline|ulePath|elName)[^A-Za-z0-9]"
+color yellow "[^A-Za-z0-9](\+vsync|\+hsync|HorizSync|VertRefresh)[^A-Za-z0-9]"
+color yellow "[^A-Za-z0-9](Rgb|Font)Path[^A-Za-z0-9]"
+color yellow "[^A-Za-z0-9](Default(Color)?)?Depth[^A-Za-z0-9]"
+color yellow "[^A-Za-z0-9](Input)?Device[^A-Za-z0-9]"
+color yellow "[^A-Za-z0-9](Identifier|Screen|Option)[^A-Za-z0-9]"
+color yellow "[^A-Za-z0-9]((Left|Right)Of|Driver|Load)[^A-Za-z0-9]"
+color yellow "[^A-Za-z0-9](VendorName|BoardName|BusID)[^A-Za-z0-9]"
+color magenta "[0-9]"
+color white ""(\\.|[^\"])*""
+color green "#.*"
+
+
+syntax "bash" "\.sh$"
+header "^#!.*/(ba|k|pdk)?sh[-0-9_]*"
+# Some Bash syntax first
+# Control
+color magenta "\<(if|else|for|function|case|esac|in|select|until|while|do|elif|then|set|\.|done|fi)\>"
+# Brackets and redirects
+color yellow "[(){}[;|<>]"
+color yellow "\]"
+# Builtins
+color red "\<(source|alias|bg|bind|break|builtin|cd|command|compgen|complete|continue|dirs|disown|echo|enable|eval|exec|exit|fc|fg|getopts|hash|help|history|jobs|kill|let|logout|popd|printf|pushd|pwd|return|set|shift|shopt|suspend|test|times|trap|type|ulimit|umask|unalias|wait)\>"
+# Unix Commands
+color red "\<(arch|awk|bash|bunzip2|bzcat|bzcmp|bzdiff|bzegrep|bzfgrep|bzgrep|bzip2|bzip2recover|bzless|bzmore|cat|chattr|chgrp|chmod|chown|chvt|cp|date|dd|deallocvt|df|dir|dircolors|dmesg|dnsdomainname|domainname|du|dumpkeys|echo|ed|egrep|false|fgconsole|fgrep|fuser|gawk|getkeycodes|gocr|grep|groups|gunzip|gzexe|gzip|hostname|igawk|install|kbd_mode|kbdrate|killall|last|lastb|link|ln|loadkeys|loadunimap|login|ls|lsattr|lsmod|lsmod.old|mapscrn|mesg|mkdir|mkfifo|mknod|mktemp|more|mount|mv|nano|netstat|nisdomainname|openvt|pgawk|pidof|ping|ps|pstree|pwd|rbash|readlink|red|resizecons|rm|rmdir|run-parts|sash|sed|setfont|setkeycodes|setleds|setmetamode|setserial|sh|showkey|shred|sleep|ssed|stat|stty|su|sync|tar|tempfile|touch|true|umount|uname|unicode_start|unicode_stop|unlink|utmpdump|uuidgen|vdir|wall|wc|ypdomainname|zcat|zcmp|zdiff|zegrep|zfgrep|zforce|zgrep|zless|zmore|znew|zsh)\>"
+# More Unix Commands
+color red "\<(aclocal|aconnect|aplay|apm|apmsleep|apropos|ar|arecord|as|as86|autoconf|autoheader|automake|awk|basename|bc|bison|c\+\+|cal|cat|cc|cdda2wav|cdparanoia|cdrdao|cd-read|cdrecord|chfn|chgrp|chmod|chown|chroot|chsh|clear|cmp|co|col|comm|cp|cpio|cpp|cut|dc|dd|df|diff|diff3|dir|dircolors|directomatic|dirname|du|env|expr|fbset|file|find|flex|flex\+\+|fmt|free|ftp|funzip|fuser|g\+\+|gawk|gc|gcc|gdb|getent|getopt|gettext|gettextize|gimp|gimp-remote|gimptool|gmake|gs|head|hexdump|id|install|join|kill|killall|ld|ld86|ldd|less|lex|ln|locate|lockfile|logname|lp|lpr|ls|lynx|m4|make|man|mkdir|mknod|msgfmt|mv|namei|nasm|nawk|nice|nl|nm|nm86|nmap|nohup|nop|od|passwd|patch|pcregrep|pcretest|perl|perror|pidof|pr|printf|procmail|prune|ps2ascii|ps2epsi|ps2frag|ps2pdf|ps2ps|psbook|psmerge|psnup|psresize|psselect|pstops|rcs|rev|rm|scp|sed|seq|setterm|shred|size|size86|skill|slogin|snice|sort|sox|split|ssh|ssh-add|ssh-agent|ssh-keygen|ssh-keyscan|stat|strings|strip|sudo|suidperl|sum|tac|tail|tee|test|tr|uniq|unlink|unzip|updatedb|updmap|uptime|users|vmstat|w|wc|wget|whatis|whereis|which|who|whoami|write|xargs|yacc|yes|zip|zsoelim)\>"
+# Strings
+color blue "\"(\\.|[^\"])*\""
+color blue "'(\\.|[^\'])*'"
+# Variables, keep it below the strings, such that vars are highlighted inside strings.
+color cyan start="[$@%]" end="([[:alnum:]]|_)*"
+# Comments
+color green "#.*$"
+
+
+## syntax highlighting for /etc/apt/sources.list
+syntax "apt/sources.list" "sources\.list(\.old|~)?$"
+# component
+color brightmagenta "^deb(-src)? ((http|file|ftp):/[^ ]+|cdrom:\[[^\]]+\]/|cdrom:\[[a-zA-Z0-9\._-\(\) ]+\]/) [^ ]+ .+$"
+# distribution
+color brightred "^deb(-src)? ((http|file|ftp):/[^ ]+|cdrom:\[[^\]]+\]/|cdrom:\[[a-zA-Z0-9\._-\(\) ]+\]/) [^ ]+"
+# URI
+color brightgreen "(http|file|ftp):/[^ ]+"
+# cdroms
+# [^\]] does not work…
+color brightgreen "cdrom:\[[a-zA-Z0-9\._-\(\) ]+\]/"
+# deb / deb-src
+color cyan "^deb"
+color brightblue "^deb-src"
+# comments
+color brightyellow "#.*"
+
+
+### all *tab files ( e.g. fstab, crontab, inittab )
+syntax "fstab" "(\.|/|)tab$"
+color magenta "\<(none)\>.*$" "\<(wait)\>" "\<(respawn)\>"
+color red "/dev/hd.*$" "\<(ctrlaltdel)\>" "\<(initdefault)\>"
+color blue "/dev/sr.*$" "/dev/cd.*$" "\/sbin.*$"
+color cyan "/dev/sd.*$"
+color brightcyan "^.*(nfs|smbfs).*$"
+color yellow "/dev/fd.*$"
+color red "root"
+color brightwhite "[0-9]"
+color green "#.*$"
+
+
+syntax "desktop" "\.desktop$"
+color brightblue "\[(\\.|[^\"])*\]"
+color yellow "=.*$"
+color brightgreen "\="
+
+
+syntax "bat" "\.bat$"
+color yellow "%(\\.|[^\"])*%"
+color brightyellow "set[[:space:]]"
+color brightgreen "\="
+color green "REM.*$"
+
+
+### etc/passwd
+syntax "passwd" "(\.|/|)passwd$" "(\.|/|)shadow$"
+color white ".*$"
+color blue "\:.*$"
+color yellow "\:*\:"
+color cyan "/.*$"
+color red "/bin/false"
+color brightred "root"
+color brightgreen "/bin/.*sh"
+color white "[0-9]"
+color magenta "\:\/.*\:"
+
+
+
+syntax "group" "group$"
+color green "[0-9]\:.*$"
+color brightwhite "[0-9]"
+icolor brightred "^[[:space:]]*[.0-9A-Z_]*:"
+
+
+syntax "modules" "modules.conf$" "modules.d/(\.|/|)"
+color brightwhite "[0-9]"
+color red "alias"
+color brightred "(probeall|options)"
+color green "#.*$"
+
+syntax "modprobe" "modprobe.conf$"
+color brightwhite "[0-9]"
+color red "alias"
+color brightred "options"
+color magenta "[a-zA-Z0-9\_]+="
+color green "#.*$"
+
+syntax "hosts" "hosts$"
+#color brightwhite "[0-9]"
+color yellow "^[[:space:]]*[.0-9A-Z_]*.*$"
+color brightblue "^[[:space:]]*[.0-9A-Z_]*"
+color red "127.0.0.1"
+color cyan "\:\:"
+color green "#.*$"
+
+
+syntax "sysctl" "sysctl.conf$"
+color brightwhite "[0-9]"
+color cyan "\="
+color green "#.*$"
+
+
+syntax "ini" "\.ini$"
+color yellow "\[.*]"
+color green "\;.*$"
+
+
+syntax "smbconf" "smb.conf$"
+color brightcyan "\=.*$"
+color cyan "\/.*$"
+color brightred "(no|No)"
+color brightgreen "(yes|Yes)"
+color brightyellow "(workgroup.*$|hosts\ allow.*$|interfaces.*$|netbios\ name.*$)"
+color yellow "\[.*]|\="
+icolor magenta "^[[:space:]]*[.A-Z]*"
+icolor magenta "^[[:space:]]*[.A-Z]*[[:space:]]*[.A-Z]*"
+icolor magenta "^[[:space:]]*[.A-Z]*[[:space:]]*[.A-Z]*[[:space:]]*[.A-Z]*"
+color green "\;.*$"
+color green "#.*$"
+
+
+
+syntax "dhcpconf" "dhcpd.conf$"
+icolor brightgreen "^[[:space:]]*[.A-Z]*[[:space:]]*[.A-Z]*|ad\-hoc|interim"
+color cyan "(authoritative|ddns\-update\-style|subnet|host|log\-facility)"
+color brightblue "(netmask|routers|option|(netbios|domain)-nam(e|e-servers)|(default|max)-lease-time)|range|broadcast\-address|subnet-mask"
+color brightyellow start="\"" end="\""
+color yellow "(hardware|ethernet|fixed\-address)"
+color brightblack "\:|\;|\{|\})""
+color green "#.*$"
+
+
+syntax "syslogconf" "syslog.conf$"
+icolor cyan "(\*|\;|\.|\,|\\)"
+color magenta "/.*$"
+color brightblue "-.*$"
+color brightwhite "\="
+color green "#.*$"
+
+
+## these colors need to change...
+syntax "udevrules" "\.rules$"
+color brightwhite "[0-9]"
+color brightblack "(ACTION|SUBSYSTEM|DEVPATH|OPTIONS|WAIT_FOR_SYSFS|ENV|KERNEL|NAME|MODE|GROUP|SYMLINK|DRIVERS|PROGRAM|RUN)"
+color brightblack "(GOTO|IMPORT|ATTRS|SUBSYSTEMS|DVB|IR|BUS|SYSFS|ATTR|LABEL)"
+color yellow "(add|net|scsi|drivers|module|address|bus|devices|ioerr_cnt|ignore_device|svga|video|tt(y(S|USB)|y|s)|last_rule)"
+color yellow "(pnp|(au|ra)dio|tape|disk|snd|microcode|f(b|d|loppy|irmware)|usb|lp|kbd|parport|block|ide|misc|netlink|input)"
+color yellow "(mouse|event|joystick|psmouse|atkbd|spkr|pcspkr|ir|dvb|persistent|storage|end|scanner|sound|dialout|console)"
+color yellow "(cdrom|cdrw|dvd|dvdrw|isdn|pty|vcs|vcsa|ippp|dcbri|ircomm|capi|card|nvidia|rtc|agpgart|psaux|ptmx|sd|dasd|)"
+color yellow "(ataraid|cciss|ida|rd|3dfx|control|hw|pcm|midi|timer|seq|cpu|msr|dm|i2c|mice|js|ts|loop|md|uinput|inotify|aoe)"
+color brightyellow "(ID_(SERIAL|PATH|CLASS|EDD|CDROM|CDROM_(DVD|DVD_R|CD_RW))|program|parent|removable|GENERATED|COMMENT)"
+color brightyellow "(id(Vendor|Product)|PHYSDEVBUS|(UDEV|UDEVD)_EVENT|INTERFACE_NEW|MODALIAS|modalias|alias|name)"
+color brightred "(\%(k|r|c|n))"
+color blue "(\;|\.|\"|\,)"
+color brightblue "(\=|\*|\?)"
+color green "#.*$"
+
+
+syntax "localegen" "locale(.gen|s.build)"
+color cyan "ISO.*$"
+color yellow "UTF.*$"
+color green "#.*$"
+
+
+syntax "mysql" "my.cnf"
+icolor yellow "^[[:space:]]*[0-9\/a-z_-]*"
+color cyan start="\[" end="\]"
+color green "#.*$"
+
+syntax "sshdconf" "sshd_config$"
+icolor yellow "^[[:space:]]*[.A-Z_0-9]*"
+color brightwhite "[0-9]"
+color brightblue "/.*$"
+color brightred "no"
+color brightgreen "yes"
+color green "#.*$"
+
+
+syntax "changelogs" "ChangeLog*$" "HISTORY$" "NEWS$"
+color green "\+"
+color red "\-"
+color brightwhite "[0-9]"
+color brightblue "[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]"
+color blue "[0-9][0-9][0-9][0-9]\-[0-9][0-9]\-[0-9][0-9]"
+color blue "[0-9][0-9][0-9][0-9]\/[0-9][0-9]\/[0-9][0-9]"
+color blue "\<(CEST|CET|CST||CDT|EDT)\>"
+color yellow "[0-9]\..*$"
+color cyan "\*.*$"
+color brightblue "\<(pre.*$|beta.*$|rc.*$|release.*$)\>"
+color green "#.*$"
+icolor brightred "^[[:space:]]*[.0-9A-Z_]*:"
+color magenta "[.0-9A-Za-z_]*[[:space:]]*[.0-9A-Za-z_]*[[:space:]]<"
+color brightyellow "<(\\.|[^\"])*>"
+color brightwhite "commit[[:space:]]*[.0-9A-Z_]*$"
+
+

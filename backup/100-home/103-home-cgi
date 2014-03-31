@@ -1,0 +1,13 @@
+#!/bin/bash
+#rsync parameters
+LOG_FILE="$HOME/.cache/rsync/103-home-cgi.log"
+PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
+EXCLUDE=""
+SRC="$HOME/cgi/"
+DST="/media/fabiolbr/External/home/cgi/"
+#NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
+
+#rsynch backup
+rsync $PARAMS $EXCLUDE $SRC $DST
+
+

@@ -1,0 +1,6 @@
+[media]
+is_set=true
+set_session_enabled_001-media-movies=true
+set_session_enabled_002-media-music=true
+set_session_enabled_003-media-pictures=true
+set_session_enabled_004-media-tv-shows=true

@@ -1,0 +1,17 @@
+LINKED FOLDERS IN SSD:
+.AndroidStudioPreview -> ../symlinks/.AndroidStudioPreview/
+.cache/thumbnails --> ../symlinks/.cache/thumbnails     // DO NOT BACKUP...or do it?
+.eclipse -> ../symlinks/.eclipse/
+.fontconfig -> ../symlinks/.fontconfig/
+.fonts -> ../symlinks/.fonts
+.icons -> ../symlinks/.icons/
+.jdownloader -> ../symlinks/.jdownloader/
+.themes -> ../symlinks/.themes/
+
+
+
+LINKED FOLDERS IN HDD 1 TERA(media)
+music -> /mnt/media/music/
+pictures -> /mnt/media/pictures/
+university -> documents/school/university/
+.xbmc -> /mnt/media/.xbmc

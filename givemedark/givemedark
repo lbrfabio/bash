@@ -1,0 +1,29 @@
+#!/bin/sh
+# take a binary app(must be gtk3) as parameter and it set the dark theme
+# $1 is the app  $2 is the ipotetically parameter(just one) like the image for shotwell
+
+src="$HOME/coding/bash/givemedark"
+gtk="$HOME/.config/gtk-3.0"
+
+
+#TODO: insert a more precise command. It has to exist the file of the app too
+if [ -z $1 ]
+then
+    echo "No app choosed"
+    exit
+fi
+
+#backup current settings
+cp $gtk/settings.ini $gtk/settings.bak
+
+#force the dark theme
+cp $src/settings.dark $gtk/settings.ini
+
+#open the app
+$1 "$2" &
+
+#take a knee
+sleep 1
+
+#restore previous settings
+cp $gtk/settings.bak $gtk/settings.ini

@@ -1,0 +1,29 @@
+#!/bin/bash
+pkg=$(adb shell pm path com.koushikdutta.backup 2> /tmp/carbon-backup)
+
+status=`cat /tmp/carbon-backup`
+rm /tmp/carbon-backup
+
+if [  "$status" == "error: device not found" ]
+then
+    notify-send -i "error" "Device not plugged in"
+    exit
+fi
+
+# apparently pm path appends a carriage return which screws
+# up the class name in dalvikvm invocation
+pkg=$(echo $pkg | cut -d : -f 2 | sed s/\\r//g)
+echo $pkg
+
+if [[ "$pkg" != */data/app/com.koushikdutta.* ]]
+then
+    notify-send "Helium not found. Install the app from the Play Store"
+    exit
+fi
+
+adb shell << EOF
+CLASSPATH=$pkg app_process /system/bin com.koushikdutta.shellproxy.ShellRunner2 $@ &
+exit
+EOF
+
+notify-send "Done! Go make a backup :)"

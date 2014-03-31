@@ -1,0 +1,53 @@
+#!/bin/bash
+# NAME: hungryNvidiaRam
+# DESCRIPTION: send a gnome-shell notification if a the used vga ram is 
+# more than 700Mb. If blender is running only when more than 1500Mb
+# NEED: zenity, nvidia-smi (nvidia-settings)
+#
+# USAGE: set it with a keyboard shortcut or with cron. 
+# $HOME/YOURPATH/hungyVGAram
+
+# fix problem with gnome 3.8\3.10 that not send libnotify notifications is script used with cron
+export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
+
+SLEEP_START=1
+SLEEP_STOP=9
+
+hour=`date +%H`
+
+if (( $hour >= SLEEP_START && $hour <= SLEEP_STOP ))
+then
+   exit 0
+fi
+
+
+pidBlender=`pidof blender`
+
+if [ -z "$pidBlender" ]
+then
+    warningMb=750
+else
+    warningMb=1000
+fi
+
+
+# a litte hack to be sure zenity processes are not running (sometimes they get $) // NOT NECESSARY IF I USE notify-send!!!!
+#if ! [ -z "zenity" ]; then
+#   killall zenity
+#fi
+
+#using -d memory is more efficient because the output of nvidia-smi is very small
+#totalRam=`nvidia-smi -q -d memory| grep Total | head -n1 | cut -d ':' -f 2 | cut -d 'M' -f 1`
+#usedRam=`nvidia-smi -q -d memory| grep Used | cut -d ':' -f 2 | cut -d 'M' -f 1`
+
+memory=`nvidia-smi | grep MB`
+usedRam=`echo $memory | cut -d ' ' -f 9 | cut -d 'M' -f 1`
+totalRam=`echo $memory | cut -d ' ' -f 11 | cut -d 'M' -f 1`
+
+if (( usedRam >= warningMb ))
+then
+    #zenity --notification --window-icon="info"  --text="Nvidia ram used is $usedRam Mb of $totalRam Mb"	
+    notify-send "Nvidia ram used is $usedRam Mb of $totalRam Mb"
+fi
+
+exit 0

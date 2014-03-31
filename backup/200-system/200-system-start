@@ -1,0 +1,27 @@
+#!/bin/bash
+FOLDER_DST="/media/fabiolbr/External/system/"
+
+cd $HOME
+
+#MISC
+dpkg --get-selections > $FOLDER_DST/package.list
+
+#BACKUP OTHER FOLDERS
+sudo tar -pcvzf etc.tar.gz /etc
+sudo tar -pcvzf ftp.tar.gz /home/ftp
+
+#MOVE TO EXTERNAL HDD
+mv etc.tar.gz $FOLDER_DST
+sudo mv ftp.tar.gz $FOLDER_DST
+
+#COPY LINKS TO EXTERNAL HDD
+cp -P /usr/local/bin/bk $FOLDER_DST
+cp -P /usr/local/bin/givemedark $FOLDER_DST
+cp -P /usr/local/bin/gtk2-widget-factory $FOLDER_DST
+cp -P /usr/local/bin/jd $FOLDER_DST
+cp -P /usr/local/bin/rs $FOLDER_DST
+cp -P /usr/local/bin/slideshow $FOLDER_DST
+cp -P /usr/local/bin/adb $FOLDER_DST
+cp -p /usr/local/bin/fastboot $FOLDER_DST
+
+
