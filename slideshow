@@ -34,6 +34,6 @@ elif [ -d "$1" ]; then # directory exist
     fi
 fi
 
-feh -zsrqYZFD  $TIMER $DIR
+feh -zsrqYZFD  $TIMER "$DIR"
 
 exit 0
