@@ -27,7 +27,11 @@ esac
 DIR=`zenity --file-selection --directory`
 cd "$DIR"
 
-find . -name "$TEXT"* > lista.txt
+# text in any part of the filename
+find . -name "*$TEXT*" > lista.txt
+
+# text only at the beginning
+#find . -name "$TEXT"* > lista.txt
 
 while read FILE  ; do
         NEWFILE=`echo "$FILE" | sed s/$TEXT//g `
