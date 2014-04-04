@@ -30,14 +30,14 @@ fi
 # default settings
 zenity --question --text="Use default settings? video: mp4|libx264@512kb/s,  audio: copy"
 if [[ $? == 0 ]] ; then
-    EXT_OUT="mp4"
+    FORMAT="mp4"
     CODEC_VID=libx264
     BITRATE_VID=512
     VIDEO="-c:v $CODEC_VID -b:v "$BITRATE_VID"k"
     AUDIO="-c:a copy"
 else
-    # format
-    EXT_OUT=`zenity --entry --title="Format(container\extensions)" --text="Enter the format" --entry-text=mp4`
+    # format & ext_out
+    FORMAT=`zenity --entry --title="Format(container\extensions)" --text="Enter the format" --entry-text=mp4`
 
     # audio
     zenity --question --text="Skip audio transcoding?"
@@ -55,7 +55,12 @@ else
     VIDEO="-c:v $CODEC_VID -b:v "$BITRATE_VID"k"
 fi
 
+EXT_OUT=$FORMAT
+if [[ "$FORMAT" == "matroska" ]]; then
+    EXT_OUT="mkv"
+fi
+
 # output
-avconv -i "$NAME.$EXT" -f $EXT_OUT $VIDEO $AUDIO "$NAME.$EXT_OUT"
+avconv -i "$NAME.$EXT" -f $FORMAT $VIDEO $AUDIO "$NAME.$EXT_OUT"
 # TODO: ask if I want to play the file(to check it) and then ask to remove the old one
 notify-send -i "avidemux" "Converted: $NAME.$EXT_OUT"
