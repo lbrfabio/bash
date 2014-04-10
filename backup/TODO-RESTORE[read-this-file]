@@ -1,7 +1,8 @@
 In theory, switching SRC with DST rsync should restore something. Need more testing.
 
 tar.gz can be extracted correctly probably with:
-sudo tar -xzfvp  nomefile.tar.gz  // sudo let keep the owner and permission with p
+sudo tar -xzfvp  nomefile.tar.gz  // sudo let keep the owner and permission with p. 
+(the p caused some problems the last time I tried...)
 
 To restore installed packages I should execute this commands (maybe try with virtualbox first)
 

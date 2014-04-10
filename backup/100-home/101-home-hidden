@@ -1,36 +1,38 @@
 #!/bin/bash
+
+#extract home dir name. it can be different from the username...
+DIR=`echo $HOME | sed s/'\/home\/'//g `
+
 #rsync parameters
 LOG_FILE="$HOME/.cache/rsync/101-home-hidden.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
-EXCLUDE="--exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/mozilla/firefox-trunk/ --exclude=/.cache/mozilla/firefox --exclude=/.cache/epiphany-browser --exclude=/.cache/google-chrome-unstable --exclude=/.android/ --exclude=/lost+found --exclude=/temp"
+EXCLUDE="--exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/mozilla/firefox-trunk/ --exclude=/.cache/mozilla/firefox --exclude=/.cache/epiphany-browser --exclude=/.cache/google-chrome-unstable --exclude=/.android/ --exclude=/lost+found --exclude=/$DIR/"
 SRC="$HOME/"
-DST="$HOME/temp/"
+DST="$HOME/$DIR/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 #NOTE 2: insert the following line to EXCLUDE the thumbnails folder if it's not a symbolic link to symlinks folder.    --exclude=/.cache/thumbnails
 
 #tar.gz parameters
-BKP_NAME=bkp_home_hidden.tar.gz
-FOLDER_SRC=temp
-FOLDER_DST=/media/fabiolbr/External/home/
+BKP_NAME=hidden_home.tar.gz
+FOLDER_SRC=$DIR
+FOLDER_DST=/media/fabiolbr/External/home
 
 #rsynch backup
 mkdir -p $HOME/.cache/rsync/
 pkexec rsync $PARAMS $EXCLUDE $SRC $DST
 
-
-#move to external hdd
+#create tar.gz and move it to external hdd
 cd $HOME
 if  [[ -e $FOLDER_SRC ]]; then
-     echo -e "\nFound rsync backup"
-     tar -pcvzf $BKP_NAME $FOLDER_SRC
-     echo ""
-     echo "Moving rsync backup..."
-     mv $BKP_NAME $FOLDER_DST
-     echo ""
-     echo "Need root access to remove .rpmdb"
-     sudo rm -rf $FOLDER_SRC  #sudo is for .rpmdb
+    echo -e "\nFound rsync backup"
+    tar -pcvzf $BKP_NAME $FOLDER_SRC
+    echo ""
+    echo "Moving rsync backup..."
+    mv $BKP_NAME $FOLDER_DST
+    echo ""
+    echo "Need root access to remove .rpmdb"
+    sudo rm -rf $FOLDER_SRC  #sudo is for .rpmdb
 else 
-     echo -e "Error: rsync backup not present"
-     exit
+    echo -e "Error: rsync backup not present"
+    exit
 fi
-
