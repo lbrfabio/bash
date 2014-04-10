@@ -4,7 +4,7 @@ LOG_FILE="$HOME/.cache/rsync/102-home-android.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
 SRC="$HOME/android/"
-DST="/media/fabiolbr/External/home/android/"
+DST="/media/fabiolbr/Backup/home/android/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 #rsynch backup

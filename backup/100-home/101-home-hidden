@@ -15,13 +15,13 @@ DST="$HOME/$DIR/"
 #tar.gz parameters
 BKP_NAME=hidden_home.tar.gz
 FOLDER_SRC=$DIR
-FOLDER_DST=/media/fabiolbr/External/home
+FOLDER_DST=/media/fabiolbr/Backup/home
 
 #rsynch backup
 mkdir -p $HOME/.cache/rsync/
 pkexec rsync $PARAMS $EXCLUDE $SRC $DST
 
-#create tar.gz and move it to external hdd
+#create tar.gz and move it to Backup hdd
 cd $HOME
 if  [[ -e $FOLDER_SRC ]]; then
     echo -e "\nFound rsync backup"

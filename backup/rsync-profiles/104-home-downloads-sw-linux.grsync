@@ -1,7 +1,7 @@
 [104-home-downloads-sw-linux]
 is_set=false
 text_source=/home/fabiolbr/downloads/sw-linux/
-text_dest=/media/fabiolbr/External/home/downloads/sw-linux/
+text_dest=/media/fabiolbr/Backup/home/downloads/sw-linux/
 text_notes=
 text_com_before=
 text_com_after=

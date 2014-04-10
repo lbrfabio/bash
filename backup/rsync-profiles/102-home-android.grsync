@@ -1,7 +1,7 @@
 [102-home-android]
 is_set=false
 text_source=/home/fabiolbr/android/
-text_dest=/media/fabiolbr/External/home/android/
+text_dest=/media/fabiolbr/Backup/home/android/
 text_notes=
 text_com_before=
 text_com_after=

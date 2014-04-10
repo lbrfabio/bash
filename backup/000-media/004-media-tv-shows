@@ -4,7 +4,7 @@ LOG_FILE="$HOME/.cache/rsync/003-media-tv-shows.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
 SRC="/mnt/media/tv-shows/"
-DST="/media/fabiolbr/External/media/tv-shows/"
+DST="/media/fabiolbr/Backup/media/tv-shows/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 echo ""

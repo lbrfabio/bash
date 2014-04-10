@@ -1,7 +1,7 @@
 [004-media-tv-shows]
 is_set=false
 text_source=/mnt/media/tv-shows/
-text_dest=/media/fabiolbr/External/media/tv-shows/
+text_dest=/media/fabiolbr/Backup/media/tv-shows/
 text_notes=
 text_com_before=
 text_com_after=

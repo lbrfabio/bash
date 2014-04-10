@@ -1,7 +1,7 @@
 [103-home-cgi]
 is_set=false
 text_source=/home/fabiolbr/cgi/
-text_dest=/media/fabiolbr/External/home/cgi/
+text_dest=/media/fabiolbr/Backup/home/cgi/
 text_notes=
 text_com_before=
 text_com_after=

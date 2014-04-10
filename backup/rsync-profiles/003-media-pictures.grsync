@@ -1,7 +1,7 @@
 [003-media-pictures]
 is_set=false
 text_source=/mnt/media/pictures/
-text_dest=/media/fabiolbr/External/media/pictures/
+text_dest=/media/fabiolbr/Backup/media/pictures/
 text_notes=
 text_com_before=
 text_com_after=

@@ -46,7 +46,7 @@ fi
 #BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
 FOLDER_SRC="/mnt/media/"
-FOLDER_DST="/media/fabiolbr/External/media/"
+FOLDER_DST="/media/fabiolbr/Backup/media/"
 cd $FOLDER_SRC
 
 #XBMC

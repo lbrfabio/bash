@@ -1,7 +1,7 @@
 [303-win-pictures]
 is_set=false
 text_source=/mnt/win8/Users/lbrfa_000/Pictures/
-text_dest=/media/fabiolbr/External/win/Pictures/
+text_dest=/media/fabiolbr/Backup/win/Pictures/
 text_notes=
 text_com_before=
 text_com_after=

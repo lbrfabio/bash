@@ -68,7 +68,7 @@ fi
 #######################################
 #BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
-FOLDER_DST="/media/fabiolbr/External/home/"
+FOLDER_DST="/media/fabiolbr/Backup/home/"
 cd $HOME
 
 #HOME-WORKSPACE

@@ -1,7 +1,7 @@
 [001-media-movies]
 is_set=false
 text_source=/mnt/media/movies/
-text_dest=/media/fabiolbr/External/media/movies/
+text_dest=/media/fabiolbr/Backup/media/movies/
 text_notes=
 text_com_before=
 text_com_after=
