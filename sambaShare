@@ -1,0 +1,62 @@
+#!/bin/bash
+
+do_remove() {
+    # select one or multiple usershare
+    files=`zenity --title="Samba Share" --file-selection --separator=" " --multiple --filename=/var/lib/samba/usershares/`
+    if [ $? == 1 ]; then
+        echo "No files selected"
+        exit 
+    fi
+
+    # iterate through files
+    for i in ${files}; do
+        path=`cat ${i} | grep path`
+        zenity --question --title="Samba Share" --text="Unshare $path?"
+        if [ $? == 0 ]; then
+            rm ${i}
+        fi
+    done
+}
+
+do_add() {
+    # select directory to share
+    DIR=`zenity --title="Samba Share" --file-selection --directory`
+    if [ $? == 1 ]; then
+        echo "Directory not selected"
+        exit
+    fi
+
+    # extract name from directory path
+    num=`echo "$DIR" | grep -o "/" | wc -l`
+    NAME=`echo "$DIR" | cut -d '/' -f $(($num+1))`
+
+    # set share name. Default is directory
+    SHARENAME=`zenity --entry --title="Share name" --text="Enter the name" --entry-text=$NAME`
+    if [ $? == 1 ]; then
+        echo "Share name not selected"
+        exit
+    fi
+
+    # TODO: comment, allow other guest
+
+    echo "#VERSION 2
+    path=$DIR
+    comment=
+    usershare_acl=S-1-1-0:F
+    guest_ok=n
+    sharename=$NAME" > /var/lib/samba/usershares/$NAME
+}
+
+case "$1" in
+	-a | --add)
+        do_add
+	;;
+	-r | --remove)
+		do_remove
+	;;
+	*)
+	echo -e "\nUsage: $0 {-r|-a}
+    \t-a   --add \t\tadd one usershare
+    \t-r   --remove \t\tremove one or multiple usershares"
+    exit
+esac
