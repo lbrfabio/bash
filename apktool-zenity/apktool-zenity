@@ -3,15 +3,15 @@
 
 # more info on zenity http://help.gnome.org/users/zenity/
 
-output_fld=/home/fabiolbr/android/apktool
-source_fld=~/coding/bash/apktool-zenity
+output_fld=$HOME/android/apktool/
+source_fld=$HOME/coding/bash/apktool-zenity
 icon=$source_fld/apktool-zenity.svg
 apktool=$source_fld/apktool.jar
 signapk=$source_fld/signapk.jar
 pub_key=$source_fld/testkey.x509.pem
 priv_key=$source_fld/testkey.pk8
 
-build_tools=~/coding/android/android-sdk-linux/build-tools
+build_tools=$HOME/coding/android/android-sdk-linux/build-tools
 aapt=$build_tools/`cd $build_tools && ls -1 | tail -1`
 export PATH=${PATH}:$aapt
 
@@ -25,7 +25,7 @@ echo "Chosen option: "$op
 
 case "$op" in
     $opt1) 
-          apkfolder=`zenity --file-selection --directory --title="Select decompiled apk folder"`
+          apkfolder=`zenity --file-selection --directory --filename="$output_fld" --title="Select decompiled apk folder"`
           cd $apkfolder && cd ..
 
           yml="$apkfolder/apktool.yml"
