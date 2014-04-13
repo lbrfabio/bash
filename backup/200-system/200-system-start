@@ -21,6 +21,7 @@ cp -P /usr/local/bin/gtk2-widget-factory $FOLDER_DST
 cp -P /usr/local/bin/jd $FOLDER_DST
 cp -P /usr/local/bin/rs $FOLDER_DST
 cp -P /usr/local/bin/slideshow $FOLDER_DST
+cp -P /usr/local/bin/sambaShare $FOLDER_DST
 cp -P /usr/local/bin/adb $FOLDER_DST
 cp -p /usr/local/bin/fastboot $FOLDER_DST
 
