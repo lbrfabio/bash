@@ -7,7 +7,7 @@
 # A few video codecs examples: libx264, libxvid, libtheora, mpeg4, flv, 
 # A few audio codecs examples: libmp3lame, libvorbis, vorbis, aac, ac3, flac,
 #
-# requirements: zenity, yad, avconv
+# requirements: yad, avconv
 ################################################################################
 
 #LEGEND for questions:  $?   OK==0,  CANCEL==1,  ESC\CLOSE=252
@@ -113,5 +113,7 @@ while [ $? == 0 ]; do
     #reset input
     INPUT=""
 
-    yad --form --field="Convert another one?":LBL
+    yad   --image "dialog-question" --title "Alert" --center --on-top --window-icon=$ICON \
+                 --text "Convert another one?" \
+                 --button=yes --button=no 
 done
