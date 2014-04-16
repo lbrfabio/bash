@@ -8,10 +8,22 @@
 
 
 # open file
-INPUT=`zenity --title="Video Converter" --file-selection  --file-filter='*.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mpeg *.matroska'`
+INPUT=`zenity --title="Video Converter" --file-selection  \
+    --file-filter='Videos | *.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mov *.ogg *.mpeg *.matroska' \
+    --file-filter='*.avi | *.avi' \
+    --file-filter='*.flv | *.flv' \
+    --file-filter='*.m4v | *.m4v' \
+    --file-filter='*.matroska | *.matroska' \
+    --file-filter='*.mkv | *.mkv' \
+    --file-filter='*.mov | *.mov' \
+    --file-filter='*.mp4 | *.mp4' \
+    --file-filter='*.mpeg | *.mpeg' \
+    --file-filter='*.ogg | *.ogg' \
+    --file-filter='*.webm | *.webm' `
+    
 
 # array of extensions
-EXT=(mp4 avi mkv flv webm m4v matroska mpeg)
+EXT=(avi flv m4v matroska mkv mov mp4 mpeg ogg web)
 
 # check extension,  split name\extension
 for EXT in "${EXT[@]}"
