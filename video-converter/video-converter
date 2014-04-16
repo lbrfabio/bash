@@ -4,11 +4,11 @@
 
 # A few formats examples: avi, matroska, mp4, ogg, webm
 # A few video codecs examples: libx264, libxvid, libtheora, mpeg4, flv, 
-# A few audio codecs examples: libmp3lame, libvorbis, vorbis, aac, ac3, flac, 
+# A few audio codecs examples: libmp3lame, libvorbis, vorbis, aac, ac3, flac,
 
 
 # open file
-INPUT=`zenity --title="Video Converter" --file-selection`
+INPUT=`zenity --title="Video Converter" --file-selection  --file-filter='*.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mpeg *.matroska'`
 
 # array of extensions
 EXT=(mp4 avi mkv flv webm m4v matroska mpeg)
