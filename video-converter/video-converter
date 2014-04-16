@@ -1,78 +1,117 @@
 #!/bin/bash
+################################################################################
 # for a more complete list of codecs open openshot via bash
 # or see them here http://libav.org/avconv.html  full of options and parameters for avconv
-
+#
 # A few formats examples: avi, matroska, mp4, ogg, webm
 # A few video codecs examples: libx264, libxvid, libtheora, mpeg4, flv, 
 # A few audio codecs examples: libmp3lame, libvorbis, vorbis, aac, ac3, flac,
+#
+# requirements: zenity, yad, avconv
+################################################################################
 
+#LEGEND for questions:  $?   OK==0,  CANCEL==1,  ESC\CLOSE=252
 
-# open file
-INPUT=`zenity --title="Video Converter" --file-selection  \
-    --file-filter='Videos | *.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mov *.ogg *.mpeg *.matroska' \
-    --file-filter='*.avi | *.avi' \
-    --file-filter='*.flv | *.flv' \
-    --file-filter='*.m4v | *.m4v' \
-    --file-filter='*.matroska | *.matroska' \
-    --file-filter='*.mkv | *.mkv' \
-    --file-filter='*.mov | *.mov' \
-    --file-filter='*.mp4 | *.mp4' \
-    --file-filter='*.mpeg | *.mpeg' \
-    --file-filter='*.ogg | *.ogg' \
-    --file-filter='*.webm | *.webm' `
-    
+ICON=avidemux
+INPUT="$1"
 
-# array of extensions
-EXT=(avi flv m4v matroska mkv mov mp4 mpeg ogg web)
-
-# check extension,  split name\extension
-for EXT in "${EXT[@]}"
-do
-    if [[ "$INPUT" =~ .$EXT ]]; then
-        NAME=`echo "$INPUT" | sed s/.$EXT//g `
-        break;
+while [ $? == 0 ]; do
+    # open file
+    if [[ ! -z "$INPUT" ]]; then
+        if [[ ! -f "$INPUT" ]]; then
+            echo "File does not exsist"
+            exit
+        fi
+    else 
+        INPUT=`yad --file --title="Video Converter" --center --on-top \
+            --width=640 --height=480 \
+            --window-icon=$ICON \
+            --file-filter='Videos | *.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mov *.ogg *.mpeg *.matroska' \
+            --file-filter='*.avi | *.avi' \
+            --file-filter='*.flv | *.flv' \
+            --file-filter='*.m4v | *.m4v' \
+            --file-filter='*.matroska | *.matroska' \
+            --file-filter='*.mkv | *.mkv' \
+            --file-filter='*.mov | *.mov' \
+            --file-filter='*.mp4 | *.mp4' \
+            --file-filter='*.mpeg | *.mpeg' \
+            --file-filter='*.ogg | *.ogg' \
+            --file-filter='*.webm | *.webm' `
     fi
+
+    # split input to {path/name,  extension}
+    FORMAT="mp4 mkv avi flv webm m4v mov ogg mpeg matroska"
+    EXT=($FORMAT)
+    for EXT in "${EXT[@]}"
+    do
+        if [[ "$INPUT" =~ .$EXT ]]; then
+            PATHNAME=`echo "$INPUT" | sed s/.$EXT//g `
+            break;
+        fi
+    done
+
+    if [[ -z "$PATHNAME" ]]; then
+        echo "Not a video file"
+        exit
+    fi
+
+    # split path/name to {name, dir}
+    #num=`echo "$INPUT" | grep -o "/" | wc -l`
+    #NAME=`echo "$PATHNAME" | cut -d '/' -f $(($num+1))`
+    #DIR=`echo "$PATHNAME" | sed s/."$NAME"//g`
+
+    # forms parameters
+    CODEC_VID="libx264 libxvid libtheora mpeg4 flv"
+    CODEC_AUD="libmp3lame libvorbis vorbis aac ac3 flac"
+    BIT_VID="512 16..65536 32"
+    BIT_AUD="192 16..1536 32"
+    # TODO: remove this line. I should put a check for same directory\same extension output
+    # I should add a destination folder field in the form or add a question with a combobox
+    FORMAT=`echo "$FORMAT" | sed s/"$EXT"//g `; FORMAT=`echo ${FORMAT}`
+
+    PARAMS=`yad --form --title="Video Converter" --center --on-top --window-icon=$ICON \
+        --field="Codec Video":CBE "$CODEC_VID" \
+        --field="Codec Audio":CBE "$CODEC_AUD" \
+        --field="Skip Audio Transcoding":CHK TRUE \
+        --field="BitRate Video":NUM "$BIT_VID" \
+        --field="BitRate Audio":NUM "$BIT_AUD" \
+        --field="Format":CB "$FORMAT" \
+        --columns=2 \
+        --item-separator=' ' `
+
+    if [ $? != 0 ] ; then
+        break
+    fi
+
+    CODEC_VID=`echo $PARAMS | cut -d '|' -f 1`
+    CODEC_AUD=`echo $PARAMS | cut -d '|' -f 2`
+    SKIP_AUD=`echo $PARAMS | cut -d '|' -f 3`
+    BIT_VID=`echo $PARAMS | cut -d '|' -f 4 | cut -d ',' -f 1`
+    BIT_AUD=`echo $PARAMS | cut -d '|' -f 5 | cut -d ',' -f 1`
+    FORMAT=`echo $PARAMS | cut -d '|' -f 6`
+
+    # fix syntax for avconv
+    VIDEO="-c:v $CODEC_VID -b:v "$BIT_VID"k"
+    if [[ $SKIP_AUD == "TRUE" ]] ; then
+            AUDIO="-c:a copy"
+        else
+            AUDIO="-c:a $CODEC_AUD -b:a "$BIT_AUD"k"
+    fi
+
+    # fix mkv format for avconv
+    EXT_OUT=$FORMAT
+    if [[ $FORMAT == "mkv" ]]; then
+        FORMAT="matroska"
+    fi
+
+    # convert video
+    avconv -i "$INPUT" -f $FORMAT $VIDEO $AUDIO "$PATHNAME".$EXT_OUT
+
+    # TODO: ask if I want to play the file(to check it) and then ask to remove the old one
+    notify-send -i $ICON "Converted: $PATHNAME.$EXT_OUT"
+
+    #reset input
+    INPUT=""
+
+    yad --form --field="Convert another one?":LBL
 done
-
-if [ -z "$NAME" ]; then
-    notify-send -i "avidemux" "Not a video file"
-    exit;
-fi
-
-# default settings
-zenity --question --text="Use default settings? video: mp4|libx264@512kb/s,  audio: copy"
-if [[ $? == 0 ]] ; then
-    FORMAT="mp4"
-    CODEC_VID=libx264
-    BITRATE_VID=512
-    VIDEO="-c:v $CODEC_VID -b:v "$BITRATE_VID"k"
-    AUDIO="-c:a copy"
-else
-    # format & ext_out
-    FORMAT=`zenity --entry --title="Format(container\extensions)" --text="Enter the format" --entry-text=mp4`
-
-    # audio
-    zenity --question --text="Skip audio transcoding?"
-    if [[ $? == 0 ]] ; then
-        AUDIO="-c:a copy"
-    else
-        CODEC_AUD=`zenity --entry --title="Audio Codec" --text="Enter Audio Codec" --entry-text=libmp3lame`
-        BITRATE_AUD=`zenity --entry --title="Audio Bitrate" --text="Enter # in kb/s" --entry-text=128`
-        AUDIO="-c:a $CODEC_AUD -b:a "$BITRATE_AUD"k"
-    fi
-
-    # video
-    CODEC_VID=`zenity --entry --title="Video Codec" --text="Enter Video Codec" --entry-text=libx264`
-    BITRATE_VID=`zenity --entry --title="Video Bitrate" --text="Enter # in kb/s" --entry-text=512`
-    VIDEO="-c:v $CODEC_VID -b:v "$BITRATE_VID"k"
-fi
-
-EXT_OUT=$FORMAT
-if [[ "$FORMAT" == "matroska" ]]; then
-    EXT_OUT="mkv"
-fi
-
-# output
-avconv -i "$NAME.$EXT" -f $FORMAT $VIDEO $AUDIO "$NAME.$EXT_OUT"
-# TODO: ask if I want to play the file(to check it) and then ask to remove the old one
-notify-send -i "avidemux" "Converted: $NAME.$EXT_OUT"
