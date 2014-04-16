@@ -51,7 +51,7 @@ case "$op" in
           fi
           ;;
     $opt2) 
-          app=`zenity --file-selection --title="Select file .apk" | grep ".apk" `
+          app=`zenity --file-selection --title="Select file .apk" --file-filter='*.apk'`
 
           if [ -z "$app" ]
           then
