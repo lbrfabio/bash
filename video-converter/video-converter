@@ -1,7 +1,8 @@
 #!/bin/bash
 ################################################################################
-# for a more complete list of codecs open openshot via bash
-# or see them here http://libav.org/avconv.html  full of options and parameters for avconv
+# for a more complete list of codecs execute avconv -codecs  (same thing for ffmpeg)
+# for more formats: avconv -formats
+# or see them here http://libav.org/avconv.html  full of options and parameters for avconv (or man avconv)
 #
 # A few formats examples: avi, matroska, mp4, ogg, webm
 # A few video codecs examples: libx264, libxvid, libtheora, mpeg4, flv, 

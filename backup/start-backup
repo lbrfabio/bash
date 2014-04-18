@@ -1,13 +1,10 @@
 #!/bin/bash
 #requirements:  rsync 
 
-if [ -e rsync ]; then 
-    # rsync not installed
-    if [ ! -e apt-get ]; then
-        # probably using ubuntu\debian\mint
+if [ -z `which rsync` ]; then          # rsync not installed
+    if [ -z `which apt` ]; then           # probably using ubuntu\debian\mint
         sudo apt-get install rsync
-    elif [ ! -e yum ]; then
-        # probably using fedora\redhat
+    elif [ -z `which yum` ]; then      # probably using fedora\redhat
         sudo yum install rsync
     fi
 fi

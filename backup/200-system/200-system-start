@@ -16,6 +16,8 @@ sudo mv ftp.tar.gz $FOLDER_DST
 
 #COPY LINKS TO EXTERNAL HDD
 cp -P /usr/local/bin/bk $FOLDER_DST
+cp -P /usr/local/bin/clean-filenames $FOLDER_DST
+cp -P /usr/local/bin/video-converter $FOLDER_DST
 cp -P /usr/local/bin/givemedark $FOLDER_DST
 cp -P /usr/local/bin/gtk2-widget-factory $FOLDER_DST
 cp -P /usr/local/bin/jd $FOLDER_DST
