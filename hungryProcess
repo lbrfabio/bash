@@ -65,17 +65,8 @@ line=`top -bn 1 -p$pid | grep $process`
 
 #get memory used by $process
 cut=`echo $line | cut -d ' ' -f 6`
-#cut the 'm' from $mem
-mem=`echo $cut | cut -d 'm' -f 1` 
-
-#check if didn't change anything
-if [ $cut == $mem ] 
-then 
-    #it was giga(g). not mega(m)
-    mem=`echo $mem | cut -d 'g' -f 1`
-    #remove "," and multiply x100(compatibility next if)
-    let mem=${mem/,}*100
-fi
+#convert from kb to mb
+let mem=${cut/,}/1024
 
 #if memory more than what I want then send a gnome shell notification
 if (( $mem > $maxMem ))

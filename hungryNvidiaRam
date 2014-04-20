@@ -40,7 +40,7 @@ fi
 #totalRam=`nvidia-smi -q -d memory| grep Total | head -n1 | cut -d ':' -f 2 | cut -d 'M' -f 1`
 #usedRam=`nvidia-smi -q -d memory| grep Used | cut -d ':' -f 2 | cut -d 'M' -f 1`
 
-memory=`nvidia-smi | grep MB`
+memory=`nvidia-smi | grep MiB`
 usedRam=`echo $memory | cut -d ' ' -f 9 | cut -d 'M' -f 1`
 totalRam=`echo $memory | cut -d ' ' -f 11 | cut -d 'M' -f 1`
 
