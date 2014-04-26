@@ -1,0 +1,32 @@
+#!/bin/sh
+# take a binary app(must be gtk3) as parameter and it set the dark theme
+# "$@" take all the arguments passed to this script
+#
+# gtk-application-prefer-dark-theme=0     #normal theme
+# gtk-application-prefer-dark-theme=1	  #force dark theme
+
+GTK="$HOME/.config/gtk-3.0/settings.ini"
+
+if [ -z "$@" ]; then
+    echo "Usage: givemedark <command> [<arguments>]"
+    exit
+fi
+
+#check presence for dark theme setting
+SETTING=`cat $GTK | grep gtk-application-prefer-dark-theme`
+
+#force the dark theme
+if [ -z "$SETTING" ]; then
+    echo "gtk-application-prefer-dark-theme=1" >> $GTK
+else
+    sed -i 's/dark-theme=0/dark-theme=1/g' $GTK
+fi
+
+#open the app and all its arguments
+"$@" &
+
+#take a knee
+sleep 1
+
+#restore normal theme
+sed -i 's/dark-theme=1/dark-theme=0/g' $GTK
