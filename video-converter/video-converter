@@ -16,6 +16,16 @@
 ICON=avidemux
 INPUT="$1"
 
+EXEC=`which avconv`
+if [ -z "$EXEC" ]; then
+    EXEC=`which ffmpeg` 
+
+    if [ -z "$EXEC" ]; then
+       echo "avconv | ffmpeg not found"
+       exit 0
+    fi
+fi
+
 while [ $? == 0 ]; do
     # open file
     if [[ ! -z "$INPUT" ]]; then
@@ -106,7 +116,7 @@ while [ $? == 0 ]; do
     fi
 
     # convert video
-    avconv -i "$INPUT" -f $FORMAT $VIDEO $AUDIO "$PATHNAME".$EXT_OUT
+    $EXEC -i "$INPUT" -f $FORMAT $VIDEO $AUDIO "$PATHNAME".$EXT_OUT
 
     # TODO: ask if I want to play the file(to check it) and then ask to remove the old one
     notify-send -i $ICON "Converted: $PATHNAME.$EXT_OUT"
