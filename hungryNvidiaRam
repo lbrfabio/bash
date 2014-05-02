@@ -20,8 +20,8 @@ then
    exit 0
 fi
 
-
-pidBlender=`pidof blender`
+#pidBlender=`pidof blender` #this doesn't work in fedora
+pidBlender=`ps -C bash -o pid= | head -n 1`
 
 if [ -z "$pidBlender" ]
 then

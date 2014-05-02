@@ -33,8 +33,8 @@ fi
 
 # check if $process is running
 #pid=`ps -A | grep $process`
-#pid=`pidof $process   #variant withuot cut. with multiple process it's not ok
-pid=`pidof $process | cut -d ' ' -f 1`
+#pid=`pidof $process | cut -d ' ' -f 1` #this doesn't work in fedora
+pid=`ps -C $process -o pid= | head -n 1`
 if [ -z "$pid" ]
 then 
     echo $process is not running
