@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Video Converter
-Exec=/home/fabiolbr/coding/bash/video-converter/video-converter
+Exec=video-converter
 Icon=avidemux
 Terminal=true
 Type=Application

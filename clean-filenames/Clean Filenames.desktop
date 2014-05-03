@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Clean Filenames
-Exec=/home/fabiolbr/coding/bash/clean-filenames/clean-filenames
+Exec=clean-filenames
 Icon=bleachbit
 Terminal=true
 Type=Application

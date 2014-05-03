@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Apktool Zenity
-Exec=/home/fabiolbr/coding/bash/apktool-zenity/apktool-zenity
+Exec=apktool-zenity
 Icon=android
 Terminal=true
 Type=Application
