@@ -15,7 +15,6 @@ sdk=$HOME/coding/android/android-sdk-linux
 aapt=$sdk/build-tools/`cd $sdk/build-tools && ls -1 | tail -1`
 export PATH=${PATH}:$aapt
 
-
 #TODO: add a loop to build\decode the same\other apps
 #while true; do
 
