@@ -11,7 +11,7 @@ signapk=$source_fld/signapk.jar
 pub_key=$source_fld/testkey.x509.pem
 priv_key=$source_fld/testkey.pk8
 
-sdk=~/coding/android/android-sdk-linux
+sdk=$HOME/coding/android/android-sdk-linux
 aapt=$sdk/build-tools/`cd $sdk/build-tools && ls -1 | tail -1`
 export PATH=${PATH}:$aapt
 
