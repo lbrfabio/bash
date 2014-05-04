@@ -5,7 +5,7 @@ text_dest=/home/fabiolbr/temp/
 text_notes=
 text_com_before=
 text_com_after=
-text_addit=-h --stats --exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/mozilla/firefox-trunk/ --exclude=/.cache/mozilla/firefox --exclude=/.cache/epiphany-browser --exclude=/.cache/google-chrome-unstable --exclude=/.android/ --exclude=/lost+found --exclude=/temp
+text_addit=-h --stats --exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/mozilla/firefox-trunk/ --exclude=/.cache/mozilla/firefox --exclude=/.cache/epiphany-browser --exclude=/.cache/google-chrome-unstable --exclude=/.android/ --exclude=/lost+found --exclude=/virtualbox --exclude=/temp
 check_time=true
 check_perm=true
 check_owner=true

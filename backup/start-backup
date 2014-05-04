@@ -1,15 +1,29 @@
 #!/bin/bash
 #requirements:  rsync 
 
-if [ -z `which rsync` ]; then             # rsync not installed
-    if [ ! -z `which apt` ]; then           # probably using ubuntu\debian\mint
-        sudo apt-get install rsync
-    elif [ ! -z `which yum` ]; then      # probably using fedora\redhat
-        sudo yum install rsync
-    else
-        exit 1
-    fi
+#INITALIZATION
+export SCRIPTS=$HOME/coding/bash/backup
+
+#ubuntu or fedora?
+if [ ! -z `which apt 2> /dev/null` ]; then           # probably using ubuntu\debian\mint
+    MOUNT=/media
+    PKGSYS=apt
+elif [ ! -z `which yum 2> /dev/null` ]; then      # probably using fedora\redhat
+    MOUNT=/run/media
+    PKGSYS=yum
+else
+    exit 1
 fi
+
+#rsync missing?
+if [ -z `which rsync 2> /dev/null` ]; then             # rsync not installed
+        sudo $PKGSYS install rsync
+fi
+
+export BASE_BKP=$MOUNT/$USERNAME/Backup
+
+#GO TO BASE PATH OF SCRIPTS
+cd $SCRIPTS
 
 #MEDIA
 echo ""

@@ -1,10 +1,15 @@
 #!/bin/bash
+
+if [[ -z $BASE_BKP ]]; then
+    exit 1
+fi
+
 #rsync parameters
 LOG_FILE="$HOME/.cache/rsync/302-win-downloads-sw-win.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
 SRC="/mnt/win8/Users/lbrfa_000/Downloads/sw-win/"
-DST="/media/fabiolbr/Backup/win/Downloads/sw-win/"
+DST="$BASE_BKP/win/Downloads/sw-win/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 #rsynch backup

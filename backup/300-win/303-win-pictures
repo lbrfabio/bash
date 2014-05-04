@@ -1,10 +1,15 @@
 #!/bin/bash
+
+if [[ -z $BASE_BKP ]]; then
+    exit 1
+fi
+
 #rsync parameters
 LOG_FILE="$HOME/.cache/rsync/303-win-pictures.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
 SRC="/mnt/win8/Users/lbrfa_000/Pictures/"
-DST="/media/fabiolbr/Backup/win/Pictures/"
+DST="$BASE_BKP/win/Pictures/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 #rsynch backup

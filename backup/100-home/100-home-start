@@ -1,9 +1,14 @@
 #!/bin/bash
+
+if [[ -z $BASE_BKP || -z $SCRIPTS ]]; then
+    exit 1
+fi
+
 #######################################
 #RSYNC
 #######################################
 #GO TO RSYNC SCRIPT
-cd $HOME/coding/bash/backup/100-home
+cd $SCRIPTS/100-home
 
 
 #HOME-HIDDEN
@@ -68,7 +73,7 @@ fi
 #######################################
 #BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
-FOLDER_DST="/media/fabiolbr/Backup/home/"
+FOLDER_DST="$BASE_BKP/home"
 cd $HOME
 
 #HOME-WORKSPACE
@@ -78,7 +83,7 @@ echo ""
 read answer
 if [[ $answer == "y" ]]; then
     tar -pcvzf workspace.tar.gz workspace
-    mv workspace.tar.gz $FOLDER_DST
+    mv workspace.tar.gz $FOLDER_DST/
 fi
 
 
@@ -89,7 +94,7 @@ echo ""
 read answer
 if [[ $answer == "y" ]]; then
     tar -pcvzf documents.tar.gz documents
-    mv documents.tar.gz $FOLDER_DST
+    mv documents.tar.gz $FOLDER_DST/
 fi
 
 #HOME-CODING
@@ -99,7 +104,7 @@ echo ""
 read answer
 if [[ $answer == "y" ]]; then
     tar -pcvzf coding.tar.gz coding
-    mv coding.tar.gz $FOLDER_DST
+    mv coding.tar.gz $FOLDER_DST/
 fi
 
 
@@ -110,7 +115,7 @@ echo ""
 read answer
 if [[ $answer == "y" ]]; then
     tar -pcvzf hidden_android.tar.gz .android
-    mv hidden_android.tar.gz $FOLDER_DST
+    mv hidden_android.tar.gz $FOLDER_DST/
 fi
 
 
@@ -123,5 +128,5 @@ if [[ $answer == "y" ]]; then
 #    tar -pcvzf symlinks.tar.gz ../symlinks --exclude=.cache/thumbnails
 #    echo -n "INFO: Excluded   .cache/thumbnails"
     tar -pcvzf symlinks.tar.gz ../symlinks
-    mv symlinks.tar.gz $FOLDER_DST
+    mv symlinks.tar.gz $FOLDER_DST/
 fi

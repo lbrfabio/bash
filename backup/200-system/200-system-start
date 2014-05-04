@@ -1,5 +1,5 @@
 #!/bin/bash
-FOLDER_DST="/media/fabiolbr/Backup/system/"
+FOLDER_DST="$BASE_BKP/system"
 
 cd $HOME
 
@@ -11,5 +11,5 @@ sudo tar -pcvzf etc.tar.gz /etc
 sudo tar -pcvzf ftp.tar.gz /home/ftp
 
 #MOVE TO EXTERNAL HDD
-mv etc.tar.gz $FOLDER_DST
-sudo mv ftp.tar.gz $FOLDER_DST
+mv etc.tar.gz $FOLDER_DST/
+sudo mv ftp.tar.gz $FOLDER_DST/

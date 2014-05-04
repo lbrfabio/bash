@@ -1,12 +1,16 @@
 #!/bin/bash
 
+if [[ -z $BASE_BKP ]]; then
+    exit 1
+fi
+
 #extract home dir name. it can be different from the username...
 DIR=`echo $HOME | sed s/'\/home\/'//g `
 
 #rsync parameters
 LOG_FILE="$HOME/.cache/rsync/101-home-hidden.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
-EXCLUDE="--exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/mozilla/firefox-trunk/ --exclude=/.cache/mozilla/firefox --exclude=/.cache/epiphany-browser --exclude=/.cache/google-chrome-unstable --exclude=/.android/ --exclude=/lost+found --exclude=/$DIR/"
+EXCLUDE="--exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/mozilla/firefox-trunk/ --exclude=/.cache/mozilla/firefox --exclude=/.cache/epiphany-browser --exclude=/.cache/google-chrome-unstable --exclude=/.android/ --exclude=/lost+found --exclude=/virtualbox --exclude=/$DIR/"
 SRC="$HOME/"
 DST="$HOME/$DIR/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
@@ -15,7 +19,7 @@ DST="$HOME/$DIR/"
 #tar.gz parameters
 BKP_NAME=hidden_home.tar.gz
 FOLDER_SRC=$DIR
-FOLDER_DST=/media/fabiolbr/Backup/home
+FOLDER_DST=$BASE_BKP/home
 
 #rsynch backup
 mkdir -p $HOME/.cache/rsync/
@@ -28,7 +32,7 @@ if  [[ -e $FOLDER_SRC ]]; then
     tar -pcvzf $BKP_NAME $FOLDER_SRC
     echo ""
     echo "Moving rsync backup..."
-    mv $BKP_NAME $FOLDER_DST
+    mv $BKP_NAME $FOLDER_DST/
     echo ""
     echo "Need root access to remove .rpmdb"
     sudo rm -rf $FOLDER_SRC  #sudo is for .rpmdb

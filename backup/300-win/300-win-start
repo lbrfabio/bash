@@ -1,4 +1,9 @@
 #!/bin/bash
+
+if [[ -z $BASE_BKP || -z $SCRIPTS ]]; then
+    exit 1
+fi
+
 #MOUNT WINDOWS HDD
 pkexec mount /mnt/win8 && sleep 5
 
@@ -7,7 +12,7 @@ pkexec mount /mnt/win8 && sleep 5
 #RSYNC
 #######################################
 #GO TO RSYNC SCRIPT
-cd $HOME/coding/bash/backup/300-win
+cd $SCRIPTS/300-win
 
 
 #WIN-DOCUMENTS

@@ -1,9 +1,14 @@
 #!/bin/bash
+
+if [[ -z $BASE_BKP || -z $SCRIPTS ]]; then
+    exit 1
+fi
+
 #######################################
 #RSYNC
 #######################################
 #GO TO RSYNC SCRIPT
-cd $HOME/coding/bash/backup/000-media
+cd $SCRIPTS/000-media
 
 #MOVIES
 echo ""
@@ -45,8 +50,8 @@ fi
 #######################################
 #BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
-FOLDER_SRC="/mnt/media/"
-FOLDER_DST="/media/fabiolbr/Backup/media/"
+FOLDER_SRC="/mnt/media"
+FOLDER_DST="$BASE_BKP/media"
 cd $FOLDER_SRC
 
 #XBMC
