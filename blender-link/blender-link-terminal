@@ -28,17 +28,30 @@ else
      exit
 fi
 
+
+if [[ $USER = "root" ]]; then
+    path="/usr/bin"
+else
+    path="$HOME/.local/bin"
+fi
+
 #cleanup symbolic links
-sudo rm /usr/bin/blender
-sudo rm /usr/bin/blenderplayer
+rm "$path/blender" 2> /dev/null
+rm "$path/blenderplayer" 2> /dev/null
 
 #create symbolic links
-sudo ln -s "$folder/blender" /usr/bin/blender
-sudo ln -s "$folder/blender" /usr/bin/blenderplayer
+ln -s $blender "$path/blender"
+ln -s $blenderplayer "$path/blenderplayer"
+
+if [[ $USER = "root" ]]; then
+    path="/usr/share"
+else
+    path="$HOME/.local/share"
+fi
 
 #check if blender.desktop exist
-if [[ ! -e "/usr/share/applications/blender.desktop" ]]; then
-     sudo echo "[Desktop Entry]
+if [[ ! -e "$path/applications/blender.desktop" ]]; then
+     echo "[Desktop Entry]
      Name=Blender
      GenericName=3D modeller
      Comment=3D modeling, animation, rendering and post-production
@@ -48,8 +61,8 @@ if [[ ! -e "/usr/share/applications/blender.desktop" ]]; then
      Type=Application
      Categories=Graphics;3DGraphics;
      MimeType=application/x-blender;
-     " > /usr/share/applications/blender.desktop
-     sudo chmod +x /usr/share/applications/blender.desktop
+     " > $path/applications/blender.desktop
+     chmod +x $path/applications/blender.desktop
 fi
 
 exit

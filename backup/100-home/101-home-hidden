@@ -34,8 +34,8 @@ if  [[ -e $FOLDER_SRC ]]; then
     echo "Moving rsync backup..."
     mv $BKP_NAME $FOLDER_DST/
     echo ""
-    echo "Need root access to remove .rpmdb"
-    sudo rm -rf $FOLDER_SRC  #sudo is for .rpmdb
+    #echo "Need root access to remove .rpmdb"
+    #sudo rm -rf $FOLDER_SRC  #sudo is for .rpmdb
 else 
     echo -e "Error: rsync backup not present"
     exit
