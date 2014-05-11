@@ -1,15 +1,15 @@
 #!/bin/bash
 
-if [[ -z $BASE_BKP ]]; then
+if [[ -z $BACKUP ]]; then
     exit 1
 fi
 
 #rsync parameters
-LOG_FILE="$HOME/.cache/rsync/106-home-videos.log"
+LOG_FILE="$HOME/.cache/rsync/103-home-cgi.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
-EXCLUDE="--exclude=/movies --exclude=/tv-shows"
-SRC="$HOME/videos/"
-DST="$BASE_BKP/home/videos/"
+EXCLUDE=""
+SRC="$HOME/cgi/"
+DST="$BACKUP/home/cgi/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 #rsynch backup

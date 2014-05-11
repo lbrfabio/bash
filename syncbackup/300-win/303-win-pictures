@@ -1,22 +1,16 @@
 #!/bin/bash
 
-if [[ -z $BASE_BKP ]]; then
+if [[ -z $BACKUP ]]; then
     exit 1
 fi
 
 #rsync parameters
-LOG_FILE="$HOME/.cache/rsync/001-media-movies.log"
+LOG_FILE="$HOME/.cache/rsync/303-win-pictures.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
-SRC="/mnt/media/movies/"
-DST="$BASE_BKP/media/movies/"
+SRC="$WINDOWS/Users/lbrfa_000/Pictures/"
+DST="$BACKUP/win/Pictures/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
-
-echo ""
-echo "##### BACKUP MEDIA/MOVIES  ##### "
-
-#clean trash | it's a mount --bind problem...
-rm -rf $SRC.Trash-1000
 
 #rsynch backup
 rsync $PARAMS $EXCLUDE $SRC $DST

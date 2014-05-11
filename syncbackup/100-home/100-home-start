@@ -1,0 +1,38 @@
+#!/bin/bash
+
+if [[ -z $BACKUP || -z $SCRIPTS ]]; then
+    exit 1
+fi
+
+# Source essential functions
+if [ -f "functions.sh" ]; then
+        . "functions.sh"
+fi
+
+echo "#######################################
+                 HOME
+#######################################"
+
+#######################################
+#                                       RSYNC
+#######################################
+#GO TO RSYNC SCRIPT
+cd $SCRIPTS/100-home
+
+startScript "$HOME/.*" "./101-home-hidden"
+startScript "$HOME/android" "./102-home-android"
+startScript "$HOME/cgi" "./103-home-cgi"
+startScript "$HOME/downloads/sw-linux" "./104-home-downloads-sw-linux"
+startScript "$HOME/downloads/operating-systems" "./105-home-downloads-operating-systems"
+startScript "$HOME/videos" "./106-home-videos"
+
+#######################################
+#           BACKUP OTHER FOLDERS  [tar.gz]
+#######################################
+FOLDER_DST="$BACKUP/home"
+cd $HOME
+
+backupFolder "$HOME/workspace" "$FOLDER_DST" "workspace"
+backupFolder "$HOME/documents" "$FOLDER_DST" "documents"
+backupFolder "$HOME/coding" "$FOLDER_DST" "coding"
+backupFolder "/home/symlinks" "$FOLDER_DST" "symlinks"

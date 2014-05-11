@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [[ -z $BACKUP || -z $SCRIPTS ]]; then
+    exit 1
+fi
+
+# Source essential functions
+if [ -f "functions.sh" ]; then
+        . "functions.sh"
+fi
+
+#######################################
+#                                       RSYNC
+#######################################
+#GO TO RSYNC SCRIPT
+cd $SCRIPTS/000-media
+
+startScript "$MEDIA/movies" "./001-media-movies"
+startScript "$MEDIA/music" "./002-media-music"
+startScript "$MEDIA/pictures" "./003-media-pictures"
+startScript "$MEDIA/tv-shows" "./004-media-tv-shows"
+
+#######################################
+#           BACKUP OTHER FOLDERS  [tar.gz]
+#######################################
+FOLDER_DST="$BACKUP/media"
+
+backupFolder "$MEDIA/.xbmc"  "$FOLDER_DST"  "xbmc"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ -z $BASE_BKP ]]; then
+if [[ -z $BACKUP ]]; then
     exit 1
 fi
 
@@ -8,12 +8,11 @@ fi
 LOG_FILE="$HOME/.cache/rsync/003-media-tv-shows.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
-SRC="/mnt/media/tv-shows/"
-DST="$BASE_BKP/media/tv-shows/"
+SRC="$MEDIA/tv-shows/"
+DST="$BACKUP/media/tv-shows/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 echo ""
-echo "##### BACKUP MEDIA/TV-SHOWS  ##### "
 
 #clean trash | it's a mount --bind problem...
 rm -rf $SRC.Trash-1000

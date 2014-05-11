@@ -1,15 +1,15 @@
 #!/bin/bash
 
-if [[ -z $BASE_BKP ]]; then
+if [[ -z $BACKUP ]]; then
     exit 1
 fi
 
 #rsync parameters
-LOG_FILE="$HOME/.cache/rsync/104-home-downloads-sw-linux.log"
+LOG_FILE="$HOME/.cache/rsync/102-home-android.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
-SRC="$HOME/downloads/sw-linux/"
-DST="$BASE_BKP/home/downloads/sw-linux/"
+SRC="$HOME/android/"
+DST="$BACKUP/home/android/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 #rsynch backup

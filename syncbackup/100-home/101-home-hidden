@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ -z $BASE_BKP ]]; then
+if [[ -z $BACKUP ]]; then
     exit 1
 fi
 
@@ -10,7 +10,7 @@ DIR=`echo $HOME | sed s/'\/home\/'//g `
 #rsync parameters
 LOG_FILE="$HOME/.cache/rsync/101-home-hidden.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
-EXCLUDE="--exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/mozilla/firefox-trunk/ --exclude=/.cache/mozilla/firefox --exclude=/.cache/epiphany-browser --exclude=/.cache/google-chrome-unstable --exclude=/.android/ --exclude=/lost+found --exclude=/virtualbox --exclude=/$DIR/"
+EXCLUDE="--exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/mozilla/firefox-trunk/ --exclude=/.cache/mozilla/firefox --exclude=/.cache/epiphany-browser --exclude=/.cache/google-chrome-unstable --exclude=/lost+found --exclude=/virtualbox --exclude=/$DIR/"
 SRC="$HOME/"
 DST="$HOME/$DIR/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
@@ -19,7 +19,7 @@ DST="$HOME/$DIR/"
 #tar.gz parameters
 BKP_NAME=hidden_home.tar.gz
 FOLDER_SRC=$DIR
-FOLDER_DST=$BASE_BKP/home
+FOLDER_DST=$BACKUP/home
 
 #rsynch backup
 mkdir -p $HOME/.cache/rsync/

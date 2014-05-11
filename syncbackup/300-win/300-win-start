@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [[ -z $BACKUP || -z $SCRIPTS ]]; then
+    exit 1
+fi
+
+# Source essential functions
+if [ -f "functions.sh" ]; then
+        . "functions.sh"
+fi
+
+#MOUNT WINDOWS HDD
+pkexec mount $WINDOWS && sleep 5
+
+
+#######################################
+#                                       RSYNC
+#######################################
+#GO TO RSYNC SCRIPT
+cd $SCRIPTS/300-win
+
+startScript "$WINDOWS/*/Documents" "./301-win-documents"
+startScript "$WINDOWS/*/sw-win" "./302-win-downloads-sw-win"
+startScript "$WINDOWS/*/pictures" "./303-win-pictures"
+
+#UNMOUNT WINDOWS HDD
+pkexec umount $WINDOWS
