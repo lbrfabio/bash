@@ -5,7 +5,10 @@ fi
 
 FOLDER_DST="$BACKUP/system"
 
-#PACKAGES LIST
+#######################################
+#            PACKAGES LIST
+#######################################
+
 echo -e "\nBacking up packages list..."
 if [ $PKGSYS = "apt" ]; then
     dpkg --get-selections > $FOLDER_DST/deb_packages.list
@@ -16,7 +19,10 @@ if [ $PKGSYS = "yum" ]; then
     yum list extras > $FOLDER_DST/yum_packages_extras.list
 fi
 
-#BACKUP OTHER FOLDERS
+#######################################
+#    BACKUP OTHER FOLDERS  [tar.gz]
+#######################################
+
 echo -e "\nBacking up /etc & /home/ftp" && sleep 2
 
 sudo tar -pcvzf "$FOLDER_DST/etc.tar.gz" "/etc"
