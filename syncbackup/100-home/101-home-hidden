@@ -4,6 +4,11 @@ if [[ -z $BACKUP ]]; then
     exit 1
 fi
 
+# Source essential functions
+if [ -f "../functions.sh" ]; then
+        . "../functions.sh"
+fi
+
 #extract home dir name. it can be different from the username...
 DIR=`echo $HOME | sed s/'\/home\/'//g `
 
@@ -17,25 +22,22 @@ DST="$HOME/$DIR/"
 #NOTE 2: insert the following line to EXCLUDE the thumbnails folder if it's not a symbolic link to symlinks folder.    --exclude=/.cache/thumbnails
 
 #tar.gz parameters
-BKP_NAME=hidden_home.tar.gz
-FOLDER_SRC=$DIR
+BKP_NAME=hidden_home
+FOLDER_SRC=$HOME/$DIR
 FOLDER_DST=$BACKUP/home
+
+#clean trash
+rm -rf $HOME/.local/share/Trash
 
 #rsynch backup
 mkdir -p $HOME/.cache/rsync/
 pkexec rsync $PARAMS $EXCLUDE $SRC $DST
 
 #create tar.gz and move it to Backup hdd
-cd $HOME
 if  [[ -e $FOLDER_SRC ]]; then
-    echo -e "\nFound rsync backup"
-    tar -pcvzf $BKP_NAME $FOLDER_SRC
-    echo ""
-    echo "Moving rsync backup..."
-    mv $BKP_NAME $FOLDER_DST/
-    echo ""
-    #echo "Need root access to remove .rpmdb"
-    #sudo rm -rf $FOLDER_SRC  #sudo is for .rpmdb
+    echo -e "\nFound rsync backup, creating tar.gz"
+    backupFolder "$FOLDER_SRC" "$FOLDER_DST" "$BKP_NAME" "y"
+    rm -rf "$FOLDER_SRC"
 else 
     echo -e "Error: rsync backup not present"
     exit

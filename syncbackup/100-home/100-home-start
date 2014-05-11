@@ -10,9 +10,10 @@ if [ -f "functions.sh" ]; then
 fi
 
 #######################################
-#                                       RSYNC
+#                 RSYNC
 #######################################
-#GO TO RSYNC SCRIPT
+
+#go to rsync scripts
 cd $SCRIPTS/100-home
 
 startScript "$HOME/.*" "./101-home-hidden"
@@ -23,10 +24,10 @@ startScript "$HOME/downloads/operating-systems" "./105-home-downloads-operating-
 startScript "$HOME/videos" "./106-home-videos"
 
 #######################################
-#           BACKUP OTHER FOLDERS  [tar.gz]
+#    BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
+
 FOLDER_DST="$BACKUP/home"
-cd $HOME
 
 backupFolder "$HOME/workspace" "$FOLDER_DST" "workspace"
 backupFolder "$HOME/documents" "$FOLDER_DST" "documents"

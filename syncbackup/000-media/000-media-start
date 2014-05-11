@@ -10,9 +10,10 @@ if [ -f "functions.sh" ]; then
 fi
 
 #######################################
-#                                       RSYNC
+#                RSYNC
 #######################################
-#GO TO RSYNC SCRIPT
+
+#go to rsync script
 cd $SCRIPTS/000-media
 
 startScript "$MEDIA/movies" "./001-media-movies"
@@ -21,8 +22,9 @@ startScript "$MEDIA/pictures" "./003-media-pictures"
 startScript "$MEDIA/tv-shows" "./004-media-tv-shows"
 
 #######################################
-#           BACKUP OTHER FOLDERS  [tar.gz]
+#    BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
+
 FOLDER_DST="$BACKUP/media"
 
 backupFolder "$MEDIA/.xbmc"  "$FOLDER_DST"  "xbmc"

@@ -4,7 +4,7 @@
 echo "Sync Backup" | figlet
 
 #######################################
-#                               INITALIZATION
+#            INITALIZATION
 #######################################
 
 #go to source of scripts
@@ -17,7 +17,7 @@ if [ -f "functions.sh" ]; then
 fi
 
 #ubuntu or fedora?
-if [ ! -z `which apt 2> /dev/null` ]; then           # probably using ubuntu\debian\mint
+if [ ! -z `which apt 2> /dev/null` ]; then        # probably using ubuntu\debian\mint
     MOUNT=/media
     PKGSYS=apt
 elif [ ! -z `which yum 2> /dev/null` ]; then      # probably using fedora\redhat
@@ -28,11 +28,11 @@ else
 fi
 
 #rsync missing?
-if [ -z `which rsync 2> /dev/null` ]; then          # rsync not installed
+if [ -z `which rsync 2> /dev/null` ]; then        # rsync not installed
         sudo $PKGSYS install rsync
 fi
 
-BACKUP=$MOUNT/$USERNAME/Backup
+BACKUP="$MOUNT/$USERNAME/Backup"
 MEDIA="/mnt/media"
 WINDOWS="/mnt/win8"
 
@@ -44,11 +44,50 @@ export MEDIA
 export WINDOWS
 
 #######################################
-#                                   SCRIPTS
+#               SCRIPTS
 #######################################
 
-#start scripts
-printTitle "MEDIA" && startScript "$MEDIA" "./000-media/000-media-start"
-printTitle "HOME" && startScript "$HOME" "./100-home/100-home-start"
-printTitle "SYSTEM" && startScript "/ (system)" "./200-system/200-system-start"
-printTitle "WINDOWS" && startScript "$WINDOWS" "./300-win/300-win-start"
+while [[ ! $continue = "n" ]]; do
+
+    echo -ne "\nSources to backup:
+    MEDIA     1
+    HOME      2
+    SYSTEM    3
+    WINDOWS   4
+    ALL       5
+
+    Choose: #"
+    read script
+
+    case "$script" in
+        "1")
+        printTitle "MEDIA"
+        startScript "$MEDIA" "./000-media/000-media-start" "y"
+        ;;
+        "2")
+        printTitle "HOME"
+        startScript "$HOME" "./100-home/100-home-start" "y"
+        ;;
+        "3")
+        printTitle "SYSTEM"
+        startScript "/ (system)" "./200-system/200-system-start" "y"
+        ;;
+        "4")
+        printTitle "WINDOWS"
+        startScript "$WINDOWS" "./300-win/300-win-start" "y"
+        ;;
+        "5")
+        printTitle "MEDIA" && startScript "$MEDIA" "./000-media/000-media-start" "y"
+        printTitle "HOME" && startScript "$HOME" "./100-home/100-home-start" "y"
+        printTitle "SYSTEM" && startScript "/ (system)" "./200-system/200-system-start" "y"
+        printTitle "WINDOWS" && startScript "$WINDOWS" "./300-win/300-win-start" "y"
+        ;;
+        *)
+        # no selection
+        exit
+    esac
+
+    echo -ne "\n\n\nBackup something else? [y/n]: "
+    read continue
+
+done

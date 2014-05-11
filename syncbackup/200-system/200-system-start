@@ -5,9 +5,8 @@ fi
 
 FOLDER_DST="$BACKUP/system"
 
-cd $HOME
-
 #PACKAGES LIST
+echo -e "\nBacking up packages list..."
 if [ $PKGSYS = "apt" ]; then
     dpkg --get-selections > $FOLDER_DST/deb_packages.list
 fi 
@@ -17,11 +16,8 @@ if [ $PKGSYS = "yum" ]; then
     yum list extras > $FOLDER_DST/yum_packages_extras.list
 fi
 
-
 #BACKUP OTHER FOLDERS
-sudo tar -pcvzf etc.tar.gz /etc
-sudo tar -pcvzf ftp.tar.gz /home/ftp
+echo -e "\nBacking up /etc & /home/ftp" && sleep 2
 
-#MOVE TO EXTERNAL HDD
-mv etc.tar.gz $FOLDER_DST/
-sudo mv ftp.tar.gz $FOLDER_DST/
+sudo tar -pcvzf "$FOLDER_DST/etc.tar.gz" "/etc"
+sudo tar -pcvzf "$FOLDER_DST/ftp.tar.gz" "/home/ftp"
