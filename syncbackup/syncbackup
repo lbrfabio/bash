@@ -89,5 +89,6 @@ while [[ ! $continue = "n" ]]; do
 
     echo -ne "\n\n\nBackup something else? [y/n]: "
     read continue
+    clear
 
 done
