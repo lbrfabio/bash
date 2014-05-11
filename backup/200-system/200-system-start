@@ -1,10 +1,22 @@
 #!/bin/bash
+if [[ -z $BASE_BKP || -z $PKGSYS ]]; then
+    exit 1
+fi
+
 FOLDER_DST="$BASE_BKP/system"
 
 cd $HOME
 
-#MISC
-dpkg --get-selections > $FOLDER_DST/package.list
+#PACKAGES LIST
+if [ $PKGSYS = "apt" ]; then
+    dpkg --get-selections > $FOLDER_DST/deb_packages.list
+fi 
+
+if [ $PKGSYS = "yum" ]; then
+    yum list installed > $FOLDER_DST/yum_packages_installed.list
+    yum list extras > $FOLDER_DST/yum_packages_extras.list
+fi
+
 
 #BACKUP OTHER FOLDERS
 sudo tar -pcvzf etc.tar.gz /etc

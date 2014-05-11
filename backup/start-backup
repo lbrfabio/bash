@@ -15,6 +15,8 @@ else
     exit 1
 fi
 
+export PKGSYS
+
 #rsync missing?
 if [ -z `which rsync 2> /dev/null` ]; then             # rsync not installed
         sudo $PKGSYS install rsync
