@@ -6,8 +6,12 @@ fi
 FOLDER_DST="$BACKUP/system"
 
 #######################################
-#            PACKAGES LIST
+#                 MISC
 #######################################
+
+echo -e "\nBacking up $USER's dconf settings"
+dconf dump / > settings.txt
+
 
 echo -e "\nBacking up packages list..."
 if [ $PKGSYS = "apt" ]; then
@@ -18,6 +22,7 @@ if [ $PKGSYS = "yum" ]; then
     yum list installed > $FOLDER_DST/yum_packages_installed.list
     yum list extras > $FOLDER_DST/yum_packages_extras.list
 fi
+
 
 #######################################
 #    BACKUP OTHER FOLDERS  [tar.gz]
