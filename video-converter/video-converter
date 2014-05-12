@@ -37,8 +37,9 @@ while [ $? == 0 ]; do
         INPUT=`yad --file --title="Video Converter" --center --on-top \
             --width=640 --height=480 \
             --window-icon=$ICON \
-            --file-filter='Videos | *.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mov *.ogg *.mpeg *.matroska' \
+            --file-filter='Videos | *.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mov *.ogg *.mpeg *.matroska *.asf' \
             --file-filter='*.avi | *.avi' \
+            --file-filter='*.asf | *.asf' \
             --file-filter='*.flv | *.flv' \
             --file-filter='*.m4v | *.m4v' \
             --file-filter='*.matroska | *.matroska' \
@@ -51,7 +52,7 @@ while [ $? == 0 ]; do
     fi
 
     # split input to {path/name,  extension}
-    FORMAT="mp4 mkv avi flv webm m4v mov ogg mpeg matroska"
+    FORMAT="mp4 mkv avi flv webm m4v mov ogg mpeg matroska asf"
     EXT=($FORMAT)
     for EXT in "${EXT[@]}"
     do
