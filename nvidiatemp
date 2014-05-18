@@ -4,7 +4,7 @@
 # NEED:
 # USAGE:
 
-# fix problem with gnome 3.8\3.10 that not send libnotify notifications is script used with cron
+# fix execution notify-send from cron. (problem since gnome3.8) 
 export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
 
 

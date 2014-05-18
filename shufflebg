@@ -1,25 +1,21 @@
 #!/bin/bash
-# NAME: changewall-gnome3
+# NAME: shufflebg
 # DESCRIPTION: randomly set a png\jpg as wallpaper from a specified directory
 # NEED: gnome3
 # OPTIONAL: crontab |  gnome-schedule   (crontab gui editor) 
 # USAGE: change the DIR folder and execute it from whatever you want
 
-# fix problem with gnome 3.8\3.10 that not set the wallpaper correctly
+# fix execution dconf from cron. (problem since gnome3.8) 
 export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
 
 # directory with wallpapers (relative path)
-DIR="coding/bash/changewall-gnome3/img-links"
+DIR=".config/shufflebg"
 
 #full path
 FOLDER=$HOME/$DIR
 
 # random selection of png\jpg file from $FOLDER 
-#WALL=`ls $FOLDER/*.{png,jpg} | shuf -n1`
-WALL=`ls $FOLDER/*.jpg | shuf -n1`
+WALL=`ls $FOLDER/*.{png,jpg} | shuf -n1`
 
 #set wallpaper on gnome3 through GSettings configuration tool
 dconf write /org/gnome/desktop/background/picture-uri "'file://$WALL'"
-
-
-#exit 0

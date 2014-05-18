@@ -1,5 +1,5 @@
 #!/bin/bash
-# NAME: random_slideshow
+# NAME: slideshow
 # DESCRIPTION: randomly take some pictures from a folder and then start a slideshow with eog
 # NEED: feh
 # EXAMPLE:   ./slideshow ~/pictures 4

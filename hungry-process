@@ -1,5 +1,5 @@
 #!/bin/bash
-# NAME: hungryProcess
+# NAME: hungry-process
 # DESCRIPTION: send a gnome-shell notification if a process is using too much memory
 # NEED: zenity
 #
