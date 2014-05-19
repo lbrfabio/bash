@@ -1,0 +1,286 @@
+#!/bin/bash
+# NAME: nettygear
+# DESCRIPTION: let manage the router Netgear DG834G
+# REQUIREMENTS: libnotify curl
+# OPTIONAL: figlet
+
+#TODO: move functions to another file
+########################################
+#             FUNCTIONS                #
+########################################
+
+function showHelp () {
+    if [[ ! -z "$GUI" ]]; then
+        notify-send -i $IC_HELP "Usage:" "nettygear   [ -g ]  [ r, n, d, i, h, a, c ]   [ -l ]"
+        exit 0
+    fi
+
+    echo -e "Usage: nettygear [ -g ] {[OPTION] | [ -l ]}
+    -g   \tshow visual notifications [requires libnotify\zenity]
+
+    -r,  \treboot router
+    -n,  \tchange current IP
+    -d,  \tshow current downstream speed
+    -i,  \tshow current external IP address
+    -h,  \thelp info
+    -a,  \tset new authentication
+    -c,  \tclear configuration
+
+    -l   \tstart with graphical list [requires libnotify\zenity]"
+}
+
+# $1 icon;  $2 bold;  $3 message;
+function notify () {
+    if [[ "$GUI" == "true" ]]; then
+        notify-send -i "$1" "$2" "$3"
+    else
+        echo -e "\033[1m$2 \e[0m$3\n"
+    fi
+}
+
+# $1 page\todo;  $2 print curl output;   2 seconds timeout
+function executeURL () {
+    OUT="`curl -m 2 -s -u $U:$P $HOST/$1`"
+    if [[ "$2" == "print" ]]; then
+        echo "$OUT"
+    fi
+}
+
+function rebootRouter() {
+    notify $IC_NET "Rebooting!" "This will take a minute... "
+    executeURL $REBOOT
+    sleep 65
+    executeURL " "
+    showIP
+}
+
+# 10 seconds timeout
+function getIP() {
+    echo "`curl -m 10 -s "http://checkip.amazonaws.com"`"
+}
+
+function showIP() {
+    IP=`getIP`
+    if [[ ! -z "$IP" ]]; then
+        notify $IC_CHECK "IP address:" $IP
+    else
+        notify $IC_NET_ERROR "IP address:" "0.0.0.0"
+    fi
+}
+
+function newIP() {
+    notify $IC_NET "Changing IP address!" "This will take a few seconds..."
+    executeURL $DISCONNECT
+    executeURL $CONNECT
+    sleep 10 #let the router connect first
+    showIP
+}
+
+function showDLspeed() {
+    OUT=`executeURL $DOWNSPEED "print"`
+
+    #get extract speed
+    LINE=`echo "$OUT" | grep kbps | head -n 1`
+    DLSPEED=`echo $LINE | cut -d '>' -f 3 | cut -d ' ' -f 1`
+    notify $IC_MONITOR "Downstream:" "$DLSPEED kbps"
+}
+
+
+function showListGUI() {
+    if [[ -z `which zenity 2> /dev/null` ]]; then
+        notify $IC_NET "Dependency issue:" "zenity not found"
+        exit 2
+    fi
+
+    GUI=true
+
+    opt1="Reboot"
+    opt2="Show Net IP"
+    opt3="Change IP"
+    opt4="Show DL Speed"
+    opt5="Set Autenticazione"
+    opt6="Clear Configuration"
+
+    op=`zenity --window-icon="IC_NET" --height=245 --list --radiolist --title="Netty Gear" \
+    --text 'Select operation:' \
+    --column '' \
+    --column 'Operation' FALSE "$opt1" FALSE "$opt2" FALSE "$opt3" FALSE "$opt4" FALSE "$opt5" FALSE "$opt6"`
+
+    case "$op" in
+        $opt1)
+            rebootRouter
+        ;;
+        $opt2)
+            showIP
+        ;;
+        $opt3)
+            newIP
+        ;;
+        $opt4)
+            showDLspeed
+        ;;
+        $opt5)
+            setAuthentication
+        ;;
+        $opt6)
+            clearConfiguration "force"
+        ;;
+    esac
+}
+
+function setAuthentication() {
+    if [[ -z "$U" || -z "$P" || "$1" == "force" ]];then
+        if [[ "$GUI" == "true" ]];then
+            SET=`zenity --title="Netty Gear" --password --username`
+            U=`echo "$SET" |  cut -d '|' -f 1`
+            P=`echo "$SET" |  cut -d '|' -f 2`
+        else
+            echo -n "Enter Username: "
+            read U
+            echo -n "Enter Password: "
+            read P
+        fi
+        echo "USER=$U" > $CONF
+        echo "PASS=$P" >> $CONF
+        echo -e "Username & Password saved in $CONF\n"
+    fi
+}
+
+
+function clearConfiguration() {
+    rm "$CONF" 2> /dev/null
+    notify $IC_REMOVE "Configuration cleared."
+}
+
+########################################
+#             PARAMETERS               #
+########################################
+
+# parameters
+CONF=$HOME/.config/nettygear.conf
+HOST="192.168.0.1"
+U=`cat "$CONF" 2> /dev/null | grep USER | cut -d '=' -f 2`
+P=`cat "$CONF" 2> /dev/null | grep PASS | cut -d '=' -f 2`
+
+# commands
+REBOOT="?todo=reboot"
+DISCONNECT="?todo=disconnect"
+CONNECT="?todo=connect"
+DOWNSPEED="stattbl.htm"
+
+# icons
+IC_HELP=gnome-help                 #for printHelp gui
+IC_NET=preferences-system-network  #for rebooting info
+IC_MONITOR=gnome-monitor           #downspeed success
+IC_NET_ERROR=network-error         #reboot\downspeed error
+IC_NET_TOOL=gnome-nettool          #myip
+IC_CHECK=checkbox                  #newip success
+IC_ERROR=error                     #wrong arguments, login error
+IC_REMOVE=gtk-remove               #remove configuration
+
+########################################
+#            INITALIZATION             #
+########################################
+# be sure to use the GUI mode if requested
+if [[ ! -z "`echo "$@" | grep "\-g"`"  ]]; then
+    GUI=true
+elif [[ ! -z `which figlet 2> /dev/null` ]]; then
+        echo "Netty Gear" | figlet
+        echo ""
+fi
+
+# 0 parameters?
+if [[ $# == 0 ]]; then
+    showHelp
+    exit 0
+fi
+
+# too many?
+if [[ "$GUI" == "true" && $# > 2  || ! "$GUI" == "true" && $# > 1 ]]; then
+    notify $IC_ERROR "Too many arguments"
+    exit 1
+fi
+
+
+
+# first login
+#XXX: the repeat of curl is a hack to be sure user\pass are really wrong|correct
+setAuthentication
+LOGIN=`curl -s -u $U:$P $HOST`
+LOGIN=`curl -s -u $U:$P $HOST`
+
+if [[ -z "$LOGIN" ]]; then
+    notify $IC_ERROR "Login:" "Network is Down"
+    exit 2
+else
+    CHECK="Another Administrator online"
+    ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
+    if (( $ANSWER == 1 )); then
+        notify $IC_ERROR "Login:" "$CHECK"
+        exit 3
+    fi
+    CHECK="Authorization warning"
+    ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
+    if (( $ANSWER == 1 )); then 
+        notify $IC_ERROR "Login:" "$CHECK"
+        clearConfiguration
+        exit 4
+    fi
+fi
+
+
+########################################
+#               COMMANDS               #
+########################################
+
+# letter surronded by : require an argument
+while getopts "ghlrindac" opt; do
+    case "$opt" in
+      g)
+        ;;
+      h)                    #help
+        showHelp
+        exit 0
+        ;;
+      l)                    #list [force GUI=true, selection mode with zenity]
+        showListGUI
+        exit 0
+        ;;
+      r)                    #reboot
+        rebootRouter
+        exit 0
+        ;;
+      i)                    #show net IP
+        showIP
+        exit 0
+        ;;
+      n)                    #new IP
+        newIP
+        exit 0
+        ;;
+      d)                    #show DL speed
+        showDLspeed
+        exit 0
+        ;;
+      a)                    #set username & password
+        setAuthentication  "force"
+        ;;
+      c)                    #clear configuration
+        clearConfiguration
+        ;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+      :)
+        echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
+      *)
+         showHelp
+         break
+         ;;
+    esac
+done
+
+exit 0
