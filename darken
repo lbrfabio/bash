@@ -7,7 +7,7 @@
 
 GTK="$HOME/.config/gtk-3.0/settings.ini"
 
-if [ -z "$@" ]; then
+if [[ -z "$@" ]]; then
     echo "Usage: givemedark <command> [<arguments>]"
     exit
 fi
