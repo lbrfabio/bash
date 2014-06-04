@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Link Zenity
-Exec=/home/fabiolbr/coding/bash/blender-link/blender-link-zenity
+Exec=blender-link
 Icon=blender
 Terminal=true
 Type=Application

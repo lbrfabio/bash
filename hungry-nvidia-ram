@@ -36,7 +36,6 @@ totalRam=`echo $memory | cut -d ' ' -f 11 | cut -d 'M' -f 1`
 
 if (( usedRam >= warningMb ))
 then
-    #zenity --notification --window-icon="info"  --text="Nvidia ram used is $usedRam Mb of $totalRam Mb"	
     notify-send "Nvidia ram used is $usedRam Mb of $totalRam Mb"
 fi
 

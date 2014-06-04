@@ -6,36 +6,38 @@
 # more info on zenity: http://help.gnome.org/users/zenity/3.6/
 #select blender folder
 
+#TODO: implement parsing of $@ to choose interface: terminal \ gui
+
 folder=`zenity --file-selection --directory --title="Select blender folder" --filename="~/"`
 echo "Folder="$folder
 
 blender="$folder/blender"
 blenderplayer="$folder/blenderplayer"
+blenderthumbnailer="$folder/blender-thumbnailer.py"
 
 #check if blender and blenderplayer are present in $folder
 if  [[ -e "$blender"  && -e "$blenderplayer" ]]; then
      echo -e "\nFOUND: blender & blenderplayer \n"
-else 
-     #TODO undestand how to solve not to enter here when parentesi or space in folder
-     #echo -e "\nERROR: blender & blenderplayer not found. Make sure you have the correct folder"
-     #zenity --notification --window-icon="error"  --text="ERROR: blender & blenderplayer not found. Make sure you have the correct folder"
+else
      notify-send -i "error" "ERROR: blender & blenderplayer not found. Make sure you have the correct folder"
      exit
 fi
 
 if [[ $USER = "root" ]]; then
-    path="/usr/bin"
+    path="/usr"
 else
-    path="$HOME/.local/bin"
+    path="$HOME/.local"
 fi
 
 #cleanup symbolic links
-rm "$path/blender" 2> /dev/null
-rm "$path/blenderplayer" 2> /dev/null
+rm "$path/bin/blender" 2> /dev/null
+rm "$path/bin/blenderplayer" 2> /dev/null
+rm "$path/bin/blender-thumbnailer.py" 2> /dev/null
 
 #create symbolic links
-ln -s $blender "$path/blender"
-ln -s $blenderplayer "$path/blenderplayer"
+ln -s $blender "$path/bin/blender"
+ln -s $blenderplayer "$path/bin/blenderplayer"
+ln -s $blenderthumbnailer "$path/bin/blender-thumbnailer.py"
 
 if [[ $USER = "root" ]]; then
     path="/usr/share"
@@ -45,18 +47,24 @@ fi
 
 #check if blender.desktop exist
 if [[ ! -e "$path/applications/blender.desktop" ]]; then
-     echo "[Desktop Entry]
-     Name=Blender
-     GenericName=3D modeller
-     Comment=3D modeling, animation, rendering and post-production
-     Exec=blender
-     Icon=blender
-     Terminal=false
-     Type=Application
-     Categories=Graphics;3DGraphics;
-     MimeType=application/x-blender;
-     " > $path/applications/blender.desktop
-     chmod +x $path/applications/blender.desktop
+echo "[Desktop Entry]
+Name=Blender
+GenericName=3D modeller
+Comment=3D modeling, animation, rendering and post-production
+Exec=blender
+Icon=blender
+Terminal=false
+Type=Application
+Categories=Graphics;3DGraphics;
+MimeType=application/x-blender;" > $path/applications/blender.desktop
+fi
+
+#check if thumbnailer entry exist
+if [[ ! -e "$path/thumbnailers/blender.thumbnailer" ]]; then
+echo "[Thumbnailer Entry]
+TryExec=blender-thumbnailer.py
+Exec=blender-thumbnailer.py %u %o
+MimeType=application/x-blender;" > $path/thumbnailers/blender.thumbnailer
 fi
 
 #zenity --notification --window-icon="info"  --text="Aggiornati link blender"

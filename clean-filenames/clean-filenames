@@ -1,5 +1,6 @@
 #!/bin/bash
 # find, recursively, files with a specified text in the name and rename the file without the text
+FILES="/tmp/list.txt"
 
 opt1="DDLValley.net_"
 opt2="ReleaseThread_"
@@ -28,19 +29,18 @@ DIR=`zenity --file-selection --directory`
 cd "$DIR"
 
 # text in any part of the filename
-find . -name "*$TEXT*" > lista.txt
+find . -name "*$TEXT*" > $FILES
 
 # text only at the beginning
-#find . -name "$TEXT"* > lista.txt
+#find . -name "$TEXT"* > $FILES
 
 while read FILE  ; do
         NEWFILE=`echo "$FILE" | sed s/$TEXT//g `
-        #TODO: insert a confirm before mv a file
         echo "Renaming  "$FILE"    TO     "$NEWFILE""
         mv "$FILE" "$NEWFILE"
-done < lista.txt
+done < $FILES
 
-rm lista.txt
+rm $FILES
 
 
 notify-send -i "bleachbit" "CLEANED: $DIR"

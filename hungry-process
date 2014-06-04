@@ -71,7 +71,6 @@ let mem=${cut/,}/1024
 #if memory more than what I want then send a gnome shell notification
 if (( $mem > $maxMem ))
 then
-    #zenity --notification --window-icon="info"  --text="$process is using $mem Mb"
     notify-send "$process is using $mem Mb"
     #TODO: add or not a dialog with a restart of the process?
     #pid=pidof $process
