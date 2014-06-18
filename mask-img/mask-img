@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#TODO: add an output folder(default $SOURCE/imgs)
+#TODO: add evaluation of arguments with getopts
+#TODO: use "file" in a different to be sure they are images 100%
+
+SOURCE=$HOME/coding/bash/mask-img
+FILES="/tmp/list.txt"
+
+# setup directory
+DIR=`zenity --file-selection --title="Select directory with images"  --directory --filename="$SOURCE/imgs/"`
+
+# black = hide;    white = keep
+MASK=`zenity --file-selection --title="Select mask .png" --file-filter='*.png' --filename="$SOURCE/"`
+
+# create list
+file "$DIR"/* | grep "image data" | cut -d ':' -f 1 > "$FILES"
+
+# apply mask
+while read IMG ; do
+    convert "$IMG" "$MASK" -alpha off -compose copy-opacity -composite "$IMG"
+done < "$FILES"

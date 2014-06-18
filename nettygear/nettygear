@@ -52,6 +52,7 @@ function rebootRouter() {
     sleep 65
     executeURL " "
     showIP
+    showDLspeed
 }
 
 # 10 seconds timeout

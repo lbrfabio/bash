@@ -3,7 +3,7 @@
 FILES="/tmp/list.txt"
 
 opt1="DDLValley.net_"
-opt2="ReleaseThread_"
+opt2="TwoDDL_"
 optn="Custom String"
 
 op=`zenity --hide-header --height=150 --list --radiolist --title="Clean Filenames" --text 'Select text to replace:' --column '' --column 'Text' TRUE "$opt1" FALSE "$opt2" FALSE "$optn"`

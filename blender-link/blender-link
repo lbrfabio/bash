@@ -67,13 +67,11 @@ Exec=blender-thumbnailer.py %u %o
 MimeType=application/x-blender;" > $path/thumbnailers/blender.thumbnailer
 fi
 
-#zenity --notification --window-icon="info"  --text="Aggiornati link blender"
-notify-send -i blender "Aggiornati link blender"
+notify-send -i blender "Blender is now linked"
 
-zenity --question --text="Do you want to open blender?"
+zenity --question --text="Do you want to try blender?"
 answer=$?
 if [ "$answer" -eq "0" ]; then
-     #TODO: how to close the terminal but still open blender? 
      blender
 fi
 exit
