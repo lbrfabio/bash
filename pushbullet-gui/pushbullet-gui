@@ -126,7 +126,9 @@ do
     if [[ "$res" == "All|||" || "$res" == "All|`pwd`|" ]]; then
         continue
     else
-        output=`push $i $res`
+        output=`push "$i" "$res"`
         notify-send -i $ICON "$output"
     fi
 done
+
+rm -rf "$TMP"
