@@ -2,8 +2,11 @@
 #NAME: pushbullet-gui
 #REQUIREMENTS: yad; notify-send; pushbullet(https://github.com/Red5d/pushbullet-bash)
 
+SOURCE="$HOME/coding/bash/pushbullet-gui"
 ICON="pushbullet"
-TMP="/tmp/pusbullet"
+LOGO="logo.png"
+TMP="/tmp/pushbullet"
+KEY="1234522"
 
 isAPIset () {
     CONFIG=~/.config/pushbullet
@@ -62,14 +65,6 @@ function push () {
 
 isAPIset
 
-if [[ -f "$1" ]]; then
-    output=`push 3 "All|$1|"`
-    notify-send -i $ICON "$output"
-    exit
-fi
-
-
-
 #Extract and format devices list
 mkdir -p $TMP
 pushbullet list > $TMP/devices
@@ -83,37 +78,58 @@ while read DEVICE ; do
 done < "$TMP/devices"
 DEVICES=`echo -n "$DEVICES" | head -c -1` #remove last ;
 
-yad --plug=12359 --tabnum=1 --form \
+
+if [[ -f "$1" ]]; then
+    res=`yad --title="Pushbullet" --center --width="235" --center \
+    --window-icon="$ICON" --image="$SOURCE/$LOGO" --image-on-top --form \
+        --field="Devices":CB "$DEVICES" \
+        --field="File":FL "$1" \
+        --columns=1 \
+        --item-separator=';' \
+        --button="Push it"`
+
+    if [ $? != 0 ] ; then
+        exit
+    fi
+
+    output=`push 3 "$res"`
+    notify-send -i $ICON "$output"
+    exit
+fi
+
+yad --plug=$KEY --tabnum=1 --form \
     --field="Devices":CB "$DEVICES" \
     --field="Title" "" \
     --field="Note":TXT "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab1 &
-yad --plug=12359 --tabnum=2 --form \
+yad --plug=$KEY --tabnum=2 --form \
     --field="Devices":CB "$DEVICES" \
     --field="Title" "" \
     --field="URL" "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab2 &
-yad --plug=12359 --tabnum=3 --form \
+yad --plug=$KEY --tabnum=3 --form \
     --field="Devices":CB "$DEVICES" \
     --field="File":FL "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab3 &
-yad --plug=12359 --tabnum=4 --form \
+yad --plug=$KEY --tabnum=4 --form \
     --field="Devices":CB "$DEVICES" \
     --field="Title" "" \
     --field="Items":TXT "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab4 &
-yad --plug=12359 --tabnum=5 --form \
+yad --plug=$KEY --tabnum=5 --form \
     --field="Devices":CB "$DEVICES" \
     --field="Name" "" \
     --field="Address" "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab5 &
-yad --notebook --key=12359 --tab="Note" --tab="Link" --tab="File" --tab="List" --tab="Address" \
-    --title="Pushbullet" --center --window-icon="$ICON"
+yad --notebook --key=$KEY --tab="Note" --tab="Link" --tab="File" --tab="List" --tab="Address" \
+    --title="Pushbullet" --center --window-icon="$ICON" --image="$SOURCE/$LOGO" --image-on-top \
+    --button="Push it"
+
 
 if [ $? != 0 ] ; then
     exit
