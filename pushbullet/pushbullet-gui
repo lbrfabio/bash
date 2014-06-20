@@ -1,0 +1,132 @@
+#!/bin/bash
+#NAME: pushbullet-gui
+#REQUIREMENTS: yad; notify-send; pushbullet(https://github.com/Red5d/pushbullet-bash)
+
+ICON="pushbullet"
+TMP="/tmp/pusbullet"
+
+isAPIset () {
+    CONFIG=~/.config/pushbullet
+    source $CONFIG
+    if [ "$API_KEY" = "" ]; then
+        notify-send -i $ICON "Warning, your API key is not set"
+        exit 1
+    fi
+}
+
+function isUrlAlive () {
+    ping -c 2 "$1" > /dev/null
+
+    if [ $? -eq 0 ]; then
+        echo "true"; #alive
+    else
+        echo "false"; #dead
+    fi
+}
+
+function push () {
+    DEVICE=`echo "$2" | cut -d '|' -f 1`
+
+    case $1 in
+    1)
+        TITLE=`echo "$2" | cut -d '|' -f 2`
+        TEXT=`echo "$2" | cut -d '|' -f 3`
+        pushbullet push "$DEVICE" note "$TITLE" "$TEXT"
+        ;;
+    2)
+        TITLE=`echo "$2" | cut -d '|' -f 2`
+        URL=`echo "$2" | cut -d '|' -f 3`
+        if [[ `isUrlAlive $URL` == "true" ]]; then
+            pushbullet push "$DEVICE" link "$TITLE" "$URL"
+        else
+            echo "Url is unknown or down"
+        fi
+        ;;
+    3)
+        FILE=`echo "$2" | cut -d '|' -f 2`
+        pushbullet push "$DEVICE" file "$FILE"
+        ;;
+    4)
+        TITLE=`echo "$2" | cut -d '|' -f 2`
+        ITEMS=`echo -e "$2" | cut -d '|' -f 3 |  sed -e 's/\\n/" "/g'`
+        ITEMS="\""$ITEMS"\""
+        pushbullet push "$DEVICE" list "$TITLE" "$ITEMS"
+        ;;
+    5)
+        NAME=`echo "$2" | cut -d '|' -f 2`
+        ADDRESS=`echo "$2" | cut -d '|' -f 3`
+        pushbullet push "$DEVICE" address "$NAME" "$ADDRESS"
+        ;;
+    esac
+}
+
+isAPIset
+
+if [[ -f "$1" ]]; then
+    output=`push 3 "All|$1|"`
+    notify-send -i $ICON "$output"
+    exit
+fi
+
+
+
+#Extract and format devices list
+mkdir -p $TMP
+pushbullet list > $TMP/devices
+sed -i 's/all/All/g' $TMP/devices
+sed -i '/Available devices:/d' $TMP/devices
+sed -i '/------------------/d' $TMP/devices
+
+
+while read DEVICE ; do
+    DEVICES="$DEVICE;$DEVICES"
+done < "$TMP/devices"
+DEVICES=`echo -n "$DEVICES" | head -c -1` #remove last ;
+
+yad --plug=12359 --tabnum=1 --form \
+    --field="Devices":CB "$DEVICES" \
+    --field="Title" "" \
+    --field="Note":TXT "" \
+    --columns=1 \
+    --item-separator=';' &> $TMP/tab1 &
+yad --plug=12359 --tabnum=2 --form \
+    --field="Devices":CB "$DEVICES" \
+    --field="Title" "" \
+    --field="URL" "" \
+    --columns=1 \
+    --item-separator=';' &> $TMP/tab2 &
+yad --plug=12359 --tabnum=3 --form \
+    --field="Devices":CB "$DEVICES" \
+    --field="File":FL "" \
+    --columns=1 \
+    --item-separator=';' &> $TMP/tab3 &
+yad --plug=12359 --tabnum=4 --form \
+    --field="Devices":CB "$DEVICES" \
+    --field="Title" "" \
+    --field="Items":TXT "" \
+    --columns=1 \
+    --item-separator=';' &> $TMP/tab4 &
+yad --plug=12359 --tabnum=5 --form \
+    --field="Devices":CB "$DEVICES" \
+    --field="Name" "" \
+    --field="Address" "" \
+    --columns=1 \
+    --item-separator=';' &> $TMP/tab5 &
+yad --notebook --key=12359 --tab="Note" --tab="Link" --tab="File" --tab="List" --tab="Address" \
+    --title="Pushbullet" --center --window-icon="$ICON"
+
+if [ $? != 0 ] ; then
+    exit
+fi
+
+
+for i in 1 2 3 4 5
+do
+    res=`cat "$TMP/tab$i"`
+    if [[ "$res" == "All|||" || "$res" == "All|`pwd`|" ]]; then
+        continue
+    else
+        output=`push $i $res`
+        notify-send -i $ICON "$output"
+    fi
+done
