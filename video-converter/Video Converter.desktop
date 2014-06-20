@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Video Converter
-Exec=video-converter
+Exec=video-converter %f
 Icon=avidemux
 Terminal=true
 Type=Application

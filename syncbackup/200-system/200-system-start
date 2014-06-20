@@ -10,7 +10,7 @@ FOLDER_DST="$BACKUP/system"
 #######################################
 
 echo -e "\nBacking up $USER's dconf settings"
-dconf dump / > settings.txt
+dconf dump / > $FOLDER_DST/settings.txt
 
 
 echo -e "\nBacking up packages list..."

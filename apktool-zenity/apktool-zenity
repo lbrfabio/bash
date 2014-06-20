@@ -3,6 +3,34 @@
 
 # more info on zenity http://help.gnome.org/users/zenity/
 
+decode () {
+    if [ -z "$apk" ]; then
+        notify-send --icon="error"  "NOT APK"
+    else
+        echo -e "APK:$apk\n"
+        cd "$output_fld"
+        java -jar $apktool d -s "$apk"
+  fi
+}
+
+compile () {
+    cd $apkfolder && cd ..
+
+    yml="$apkfolder/apktool.yml"
+    echo $yml
+    #check if apktool.yml is present(a little help to identify decoded folder)
+    if  [ -e "$yml" ]; then
+        java -jar $apktool b "$apkfolder"
+    else 
+        return 2 #not a decoded app
+    fi
+}
+
+signApk () {
+    java -jar $signapk $pub_key $priv_key "$apkfolder/dist/$apkname.apk" "$apkfolder/dist/$apkname-signed.apk"
+}
+
+
 output_fld=$HOME/android/apktool/
 source_fld=$HOME/coding/bash/apktool-zenity
 icon=$source_fld/apktool-zenity.svg
@@ -15,61 +43,59 @@ sdk=$HOME/coding/android/android-sdk-linux
 aapt=$sdk/build-tools/`cd $sdk/build-tools && ls -1 | tail -1`
 export PATH=${PATH}:$aapt
 
-#TODO: add a loop to build\decode the same\other apps
-#while true; do
-
 opt1="Build"
 opt2="Decode"
-op=`zenity --height=150 --list --radiolist --title="apktool 1.52" --text 'Select operation:' --column '' --column 'Operation' TRUE "$opt1" FALSE "$opt2"`
-echo "Chosen option: "$op
+if [[ "$1" == *.apk ]]; then
+    op=$opt2
+    apk=$1
+else 
+    op=`zenity --height=150 --list --radiolist --title="apktool 1.52" \
+    --text 'Select operation:' \--column '' --column 'Operation' \
+    TRUE "$opt1" FALSE "$opt2"`
+fi
+echo -e "Chosen option: $op\n"
 
 case "$op" in
-    $opt1) 
-          apkfolder=`zenity --file-selection --directory --filename="$output_fld" --title="Select decompiled apk folder"`
-          cd $apkfolder && cd ..
+    $opt1)
+        apkfolder=`zenity --file-selection --directory --filename="$output_fld" --title="Select decompiled apk folder"`
+        compile
 
-          yml="$apkfolder/apktool.yml"
-          echo $yml
-          #check if apktool.yml is present(a little help to identify decoded folder)
-          if  [ -e "$yml" ]
-               then
-                    java -jar $apktool b "$apkfolder"
-                    #TODO: check if building apk failed or not maybe checking if $apkname exisist? 
-                    echo $apkfolder
-                    apkname=`cat "$apkfolder"/apktool.yml | grep apk | cut -d ":" -f 2| cut -d "." -f 1 | xargs` #xargs fà il trim
+        case $? in
+        0)
+            apkname=`cat "$apkfolder"/apktool.yml | grep apk | cut -d ":" -f 2| cut -d "." -f 1 | xargs` #xargs does the trim
+            notify-send --icon="$icon" "APK BUILT: $apkname"
+            signApk
+            ;;
+        2)
+            notify-send --icon="error" "NOT A DECODED APK: $apkfolder"
+            ;;
+        *)
+            notify-send --icon="error" "ERROR WHILE COMPILING: $apkfolder"
+            ;;
+        esac
+        ;;
+    $opt2)
+        if [[ -z $apk ]]; then
+            apk=`zenity --file-selection --title="Select file .apk" --file-filter='*.apk'`
+        fi
+        decode $apk
+        exitcode=$?
 
-                    java -jar $signapk $pub_key $priv_key "$apkfolder/dist/$apkname.apk" "$apkfolder/dist/$apkname-signed.apk"
-
-                    #zenity --info --title="APK BUILT" --text="`cat $apkfolder/apktool.yml | grep apk`"%
-                    #zenity --notification --window-icon="info"  --text="APK BUILT `cat $apkfolder/apktool.yml | grep apk`"
-                    #notify-send "APK BUILT `cat $apkfolder/apktool.yml | grep apk`"
-                    notify-send --icon="$icon" "APK BUILT: $apkname"
-          else 
-                    #zenity --error --title="NOT A DECODED APP" --text="$apkfolder"
-                   zenity --notification --window-icon="error"  --text="NOT A DECODED APP $apkfolder"
-                   #notify-send -i "error" "NOT A DECODED APP $apkfolder" 
-          fi
-          ;;
-    $opt2) 
-          app=`zenity --file-selection --title="Select file .apk" --file-filter='*.apk'`
-
-          if [ -z "$app" ]
-          then
-            notify-send --icon="error"  "NOT APK"
-          else
-            echo "APK:$app"
-            cd "$output_fld"
-            java -jar $apktool d -s "$app"
-            #java -jar $apktool d $app
-            #TODO: check if decoding apk failed or not with the appropiate notification e icona $icon in caso positivo oppure qualcosa stock tipo OK (la V)
-          fi
-          ;;
+        count=`echo "$apk" | grep -o "/" | wc -l`
+        apkname=`echo "$apk" | cut -d '/' -f $(($count+1))`
+        case $exitcode in
+        0)
+            notify-send --icon="$icon" "DECODED: $apkname"
+            ;;
+        *)
+            notify-send --icon="error" "ERROR WHILE DECODING: $apkname"
+            rm -rf $apkfolder
+        esac
+        ;;
       *) 
       exit;
 esac
 
 rm -rf ~/apktool
-
-#done
 
 exit
