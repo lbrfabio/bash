@@ -2,7 +2,7 @@
 # find, recursively, files with a specified text in the name and rename the file without the text
 FILES="/tmp/list.txt"
 
-opt1="DDLValley.net_"
+opt1="DDLValley.rocks_"
 opt2="TwoDDL_"
 optn="Custom String"
 

@@ -6,7 +6,7 @@ SOURCE="$HOME/coding/bash/pushbullet-gui"
 ICON="pushbullet"
 LOGO="logo.png"
 TMP="/tmp/pushbullet"
-KEY="1234522"
+KEY="12345"
 
 isAPIset () {
     CONFIG=~/.config/pushbullet
@@ -51,9 +51,10 @@ function push () {
         ;;
     4)
         TITLE=`echo "$2" | cut -d '|' -f 2`
-        ITEMS=`echo -e "$2" | cut -d '|' -f 3 |  sed -e 's/\\n/" "/g'`
-        ITEMS="\""$ITEMS"\""
-        pushbullet push "$DEVICE" list "$TITLE" "$ITEMS"
+        echo -n -e "$2" | head -c -1 | cut -d '|' -f 3 > $TMP/list
+        IFS=$'\n' read -d '' -r -a "ITEMS" <  $TMP/list
+
+        pushbullet push "$DEVICE" list "$TITLE" "${ITEMS[@]}"
         ;;
     5)
         NAME=`echo "$2" | cut -d '|' -f 2`
@@ -82,8 +83,8 @@ DEVICES=`echo -n "$DEVICES" | head -c -1` #remove last ;
 if [[ -f "$1" ]]; then
     res=`yad --title="Pushbullet" --center --width="300" --center \
     --window-icon="$ICON" --image="$SOURCE/$LOGO" --image-on-top --form \
-        --field="Device":CB "$DEVICES" \
-        --field="File":FL "$1" \
+        --field="  Device":CB "$DEVICES" \
+        --field="  File":FL "$1" \
         --columns=1 \
         --item-separator=';' \
         --button="Push it"`
@@ -98,32 +99,32 @@ if [[ -f "$1" ]]; then
 fi
 
 yad --plug=$KEY --tabnum=1 --form \
-    --field="Device":CB "$DEVICES" \
-    --field="Title" "" \
-    --field="Note":TXT "" \
+    --field=" Device":CB "$DEVICES" \
+    --field=" Title" "" \
+    --field=" Note":TXT "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab1 &
 yad --plug=$KEY --tabnum=2 --form \
-    --field="Device":CB "$DEVICES" \
-    --field="Title" "" \
-    --field="URL" "" \
+    --field=" Device":CB "$DEVICES" \
+    --field=" Title" "" \
+    --field=" URL" "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab2 &
 yad --plug=$KEY --tabnum=3 --form \
-    --field="Device":CB "$DEVICES" \
-    --field="File":FL "" \
+    --field=" Device":CB "$DEVICES" \
+    --field=" File":FL "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab3 &
 yad --plug=$KEY --tabnum=4 --form \
-    --field="Device":CB "$DEVICES" \
-    --field="Title" "" \
-    --field="Items":TXT "" \
+    --field=" Device":CB "$DEVICES" \
+    --field=" Title" "" \
+    --field=" Items":TXT "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab4 &
 yad --plug=$KEY --tabnum=5 --form \
-    --field="Device":CB "$DEVICES" \
-    --field="Name" "" \
-    --field="Address" "" \
+    --field=" Device":CB "$DEVICES" \
+    --field=" Name" "" \
+    --field=" Address" "" \
     --columns=1 \
     --item-separator=';' &> $TMP/tab5 &
 yad --notebook --key=$KEY --tab="    Note   " --tab="    Link   " --tab="    File   " --tab="   List   " --tab="    Address   " \

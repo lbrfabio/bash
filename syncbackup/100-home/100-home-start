@@ -22,6 +22,7 @@ startScript "$HOME/cgi" "./103-home-cgi"
 startScript "$HOME/downloads/sw-linux" "./104-home-downloads-sw-linux"
 startScript "$HOME/downloads/operating-systems" "./105-home-downloads-operating-systems"
 startScript "$HOME/videos" "./106-home-videos"
+startScript "$HOME/guitar" "./107-home-guitar"
 
 #######################################
 #    BACKUP OTHER FOLDERS  [tar.gz]

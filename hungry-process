@@ -10,8 +10,8 @@
 # fix problem with gnome 3.8\3.10 that not send libnotify notifications is script used with cron
 export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
 
-#SLEEP_START=1
-#SLEEP_STOP=9
+SLEEP_START=1
+SLEEP_STOP=9
 
 #hour=`date | cut -d ' ' -f 6 | cut -d '.' -f 1`
 hour=`date +%H`
