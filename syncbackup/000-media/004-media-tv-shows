@@ -14,8 +14,5 @@ DST="$BACKUP/media/tv-shows/"
 
 echo ""
 
-#clean trash | it's a mount --bind problem...
-rm -rf $SRC.Trash-1000
-
 #rsynch backup
 rsync $PARAMS $EXCLUDE $SRC $DST

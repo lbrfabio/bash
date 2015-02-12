@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Apktool Zenity
+Exec=apktool-zenity %f
+Icon=android
+Terminal=true
+Type=Application

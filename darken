@@ -5,6 +5,11 @@
 # gtk-application-prefer-dark-theme=0     #normal theme
 # gtk-application-prefer-dark-theme=1	  #force dark theme
 
+# modalità supportata di default. problema: metacity non viene temizzato
+# with gtk 3.16(o 3.18?) it won't be a problem anymore
+#THEME=`dconf read /org/gnome/shell/extensions/user-theme/name  | sed -r "s/'//g"`
+#GTK_THEME=$THEME:dark "$@" &
+
 GTK="$HOME/.config/gtk-3.0/settings.ini"
 
 if [[ -z "$@" ]]; then

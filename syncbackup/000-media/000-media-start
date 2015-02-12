@@ -27,4 +27,4 @@ startScript "$MEDIA/tv-shows" "./004-media-tv-shows"
 
 FOLDER_DST="$BACKUP/media"
 
-backupFolder "$MEDIA/.xbmc"  "$FOLDER_DST"  "xbmc"
+backupFolder "$MEDIA/.kodi"  "$FOLDER_DST"  "kodi"

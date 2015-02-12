@@ -51,7 +51,7 @@ echo "[Desktop Entry]
 Name=Blender
 GenericName=3D modeller
 Comment=3D modeling, animation, rendering and post-production
-Exec=blender
+Exec=blender %f
 Icon=blender
 Terminal=false
 Type=Application

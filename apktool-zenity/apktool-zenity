@@ -43,6 +43,7 @@ sdk=$HOME/coding/android/android-sdk-linux
 aapt=$sdk/build-tools/`cd $sdk/build-tools && ls -1 | tail -1`
 export PATH=${PATH}:$aapt
 
+
 opt1="Build"
 opt2="Decode"
 if [[ "$1" == *.apk ]]; then
@@ -78,12 +79,10 @@ case "$op" in
         if [[ -z $apk ]]; then
             apk=`zenity --file-selection --title="Select file .apk" --file-filter='*.apk'`
         fi
+        apkname=`basename -s -a $apk`
         decode $apk
-        exitcode=$?
 
-        count=`echo "$apk" | grep -o "/" | wc -l`
-        apkname=`echo "$apk" | cut -d '/' -f $(($count+1))`
-        case $exitcode in
+        case $? in
         0)
             notify-send --icon="$icon" "DECODED: $apkname"
             ;;

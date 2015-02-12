@@ -3,10 +3,12 @@
 FILES="/tmp/list.txt"
 
 opt1="DDLValley.rocks_"
-opt2="TwoDDL_"
+opt2="TwoDDL.eu_"
+opt3="Micromkv.com - "
+opt4="Micromkv.com -_"
 optn="Custom String"
 
-op=`zenity --hide-header --height=150 --list --radiolist --title="Clean Filenames" --text 'Select text to replace:' --column '' --column 'Text' TRUE "$opt1" FALSE "$opt2" FALSE "$optn"`
+op=`zenity --hide-header --height=150 --list --radiolist --title="Clean Filenames" --text 'Select text to replace:' --column '' --column 'Text' TRUE "$opt1" FALSE "$opt2" FALSE "$opt3" FALSE "$opt4" FALSE "$optn"`
 echo "Chosen option: "$op
 
 case "$op" in
@@ -15,6 +17,12 @@ case "$op" in
     ;;
     $opt2)
     TEXT=$opt2
+    ;;
+    $opt3)
+    TEXT="$opt3"
+    ;;
+    $opt4)
+    TEXT="$opt4"
     ;;
     $optn)
     TEXT=`zenity --entry --title="Custom Text to Replace" --text="Enter the text" --entry-text=XXXXXX`
@@ -35,7 +43,7 @@ find . -name "*$TEXT*" > $FILES
 #find . -name "$TEXT"* > $FILES
 
 while read FILE  ; do
-        NEWFILE=`echo "$FILE" | sed s/$TEXT//g `
+        NEWFILE=`echo "$FILE" | sed s/"$TEXT"//g `
         echo "Renaming  "$FILE"    TO     "$NEWFILE""
         mv "$FILE" "$NEWFILE"
 done < $FILES
