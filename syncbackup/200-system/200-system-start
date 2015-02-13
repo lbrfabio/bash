@@ -28,7 +28,6 @@ fi
 #    BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
 
-echo -e "\nBacking up /etc & /home/ftp" && sleep 2
+echo -e "\nBacking up /etc" && sleep 2
 
 sudo tar -pcvzf "$FOLDER_DST/etc.tar.gz" "/etc"
-sudo tar -pcvzf "$FOLDER_DST/ftp.tar.gz" "/home/ftp"

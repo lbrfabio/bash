@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=ShuffleBG
+Exec=shufflebg %f
+Icon=wallpaper
+Terminal=false
+Type=Application

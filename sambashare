@@ -1,6 +1,6 @@
 #!/bin/bash
 
-do_delete() {
+delete() {
     # select one or multiple usershare
     files=`zenity --title="Samba Share" --file-selection --separator=" " --multiple --filename=/var/lib/samba/usershares/`
     if [ $? == 1 ]; then
@@ -19,7 +19,7 @@ do_delete() {
     done
 }
 
-do_add() {
+add() {
     # select directory to share
     DIR=`zenity --title="Samba Share" --file-selection --directory --filename=$HOME/`
     if [ $? == 1 ]; then
@@ -48,10 +48,10 @@ function extract_name() {
 
 case "$1" in
 	-a | --add)
-        do_add
+        add
 	;;
 	-r | --remove)
-		do_delete
+		delete
 	;;
 	*)
 	echo -e "\nUsage: $0 {-r|-a}

@@ -1,0 +1,82 @@
+#!/bin/bash
+# NAME: shufflebg
+# DESCRIPTION: randomly set an image as wallpaper from a config directory
+# REQUIRES: gnome3
+# OPTIONAL: crontab |  gnome-schedule   (crontab gui editor)
+# USAGE: move photos or symlink photos in $HOME/.config/shufflebg.
+#        Copy\symlink shuffle.bg desktop for "Open with" support
+
+################################################################################
+##                                   FUNCTIONS                                ##
+################################################################################
+
+isImage () {
+    file -L -i "$1" | grep "image/"
+}
+
+addImage () {
+    isImage "$1"
+    if [ ! $? -eq 0 ]; then
+        echo "$1 is not an image"
+        exit 1
+    fi
+
+    # identify  and name for files with relative path
+    SRC_DIR=`cd "$( dirname "$1" )" && pwd`
+    SRC_NAME=`basename -s -a "$1"`
+
+    ln -vs "$SRC_DIR/$SRC_NAME" "$WALLS_DIR"
+    if [ $? -eq 0 ]; then
+        echo "New image added"
+    fi
+
+    #  if image exist or just added, set as wallpaper
+    setWallpaper "$WALLS_DIR/$SRC_NAME"
+    echo "New wallpaper set"
+}
+
+randomImage () {
+#   ls $CONFIG_DIR/*.{png,jpg} | shuf -n1
+    file -L -i $WALLS_DIR/* | grep "image/" | cut -d: -f1 | shuf -n1
+}
+
+
+setWallpaper () {
+    isImage "$1" > /dev/null
+    if [ ! $? -eq 0 ]; then
+        echo "$1 is not an image"
+        exit 1
+    fi
+
+    # XXX: fix execution dconf from cron. (problem since gnome3.8).
+    export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
+
+    # set wallpaper on gnome3 through GSettings configuration tool
+    dconf write /org/gnome/desktop/background/picture-uri "'file://$1'"
+}
+
+
+################################################################################
+##                                   MAIN                                     ##
+################################################################################
+
+# config directory (for now it contains only  wallpapers
+WALLS_DIR="$HOME/.config/shufflebg"
+
+
+#TODO: use zenity\yad for file selection [remove, add, set wallpaper]
+#TODO: use notify-send for notifications?
+
+if [[ ! -z $1 ]];then
+    addImage "$1"
+    exit
+fi
+
+
+IMAGE=`randomImage`
+echo "Shuffle selection: $IMAGE"
+
+setWallpaper "$IMAGE"
+if [ $? -eq 0 ]; then
+    echo "New wallpaper set"
+fi

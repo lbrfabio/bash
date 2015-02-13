@@ -1,9 +1,12 @@
-## Attivo la barra di stato
+## Enable status bar
 set const
 
-
-## Abilita il check ortografico
+## Enable spell check
 set speller "aspell check"
+
+## Set tab size to 4 and tab as spaces
+set tabsize 4
+set tabstospaces
 
 ## Nanorc
 include "/usr/share/nano/nanorc.nanorc"
@@ -146,27 +149,6 @@ color white ""(\\.|[^\"])*""
 color green "#.*"
 
 
-syntax "bash" "\.sh$"
-header "^#!.*/(ba|k|pdk)?sh[-0-9_]*"
-# Some Bash syntax first
-# Control
-color magenta "\<(if|else|for|function|case|esac|in|select|until|while|do|elif|then|set|\.|done|fi)\>"
-# Brackets and redirects
-color yellow "[(){}[;|<>]"
-color yellow "\]"
-# Builtins
-color red "\<(source|alias|bg|bind|break|builtin|cd|command|compgen|complete|continue|dirs|disown|echo|enable|eval|exec|exit|fc|fg|getopts|hash|help|history|jobs|kill|let|logout|popd|printf|pushd|pwd|return|set|shift|shopt|suspend|test|times|trap|type|ulimit|umask|unalias|wait)\>"
-# Unix Commands
-color red "\<(arch|awk|bash|bunzip2|bzcat|bzcmp|bzdiff|bzegrep|bzfgrep|bzgrep|bzip2|bzip2recover|bzless|bzmore|cat|chattr|chgrp|chmod|chown|chvt|cp|date|dd|deallocvt|df|dir|dircolors|dmesg|dnsdomainname|domainname|du|dumpkeys|echo|ed|egrep|false|fgconsole|fgrep|fuser|gawk|getkeycodes|gocr|grep|groups|gunzip|gzexe|gzip|hostname|igawk|install|kbd_mode|kbdrate|killall|last|lastb|link|ln|loadkeys|loadunimap|login|ls|lsattr|lsmod|lsmod.old|mapscrn|mesg|mkdir|mkfifo|mknod|mktemp|more|mount|mv|nano|netstat|nisdomainname|openvt|pgawk|pidof|ping|ps|pstree|pwd|rbash|readlink|red|resizecons|rm|rmdir|run-parts|sash|sed|setfont|setkeycodes|setleds|setmetamode|setserial|sh|showkey|shred|sleep|ssed|stat|stty|su|sync|tar|tempfile|touch|true|umount|uname|unicode_start|unicode_stop|unlink|utmpdump|uuidgen|vdir|wall|wc|ypdomainname|zcat|zcmp|zdiff|zegrep|zfgrep|zforce|zgrep|zless|zmore|znew|zsh)\>"
-# More Unix Commands
-color red "\<(aclocal|aconnect|aplay|apm|apmsleep|apropos|ar|arecord|as|as86|autoconf|autoheader|automake|awk|basename|bc|bison|c\+\+|cal|cat|cc|cdda2wav|cdparanoia|cdrdao|cd-read|cdrecord|chfn|chgrp|chmod|chown|chroot|chsh|clear|cmp|co|col|comm|cp|cpio|cpp|cut|dc|dd|df|diff|diff3|dir|dircolors|directomatic|dirname|du|env|expr|fbset|file|find|flex|flex\+\+|fmt|free|ftp|funzip|fuser|g\+\+|gawk|gc|gcc|gdb|getent|getopt|gettext|gettextize|gimp|gimp-remote|gimptool|gmake|gs|head|hexdump|id|install|join|kill|killall|ld|ld86|ldd|less|lex|ln|locate|lockfile|logname|lp|lpr|ls|lynx|m4|make|man|mkdir|mknod|msgfmt|mv|namei|nasm|nawk|nice|nl|nm|nm86|nmap|nohup|nop|od|passwd|patch|pcregrep|pcretest|perl|perror|pidof|pr|printf|procmail|prune|ps2ascii|ps2epsi|ps2frag|ps2pdf|ps2ps|psbook|psmerge|psnup|psresize|psselect|pstops|rcs|rev|rm|scp|sed|seq|setterm|shred|size|size86|skill|slogin|snice|sort|sox|split|ssh|ssh-add|ssh-agent|ssh-keygen|ssh-keyscan|stat|strings|strip|sudo|suidperl|sum|tac|tail|tee|test|tr|uniq|unlink|unzip|updatedb|updmap|uptime|users|vmstat|w|wc|wget|whatis|whereis|which|who|whoami|write|xargs|yacc|yes|zip|zsoelim)\>"
-# Strings
-color blue "\"(\\.|[^\"])*\""
-color blue "'(\\.|[^\'])*'"
-# Variables, keep it below the strings, such that vars are highlighted inside strings.
-color cyan start="[$@%]" end="([[:alnum:]]|_)*"
-# Comments
-color green "#.*$"
 
 
 ### all *tab files ( e.g. fstab, crontab, inittab )
@@ -335,3 +317,105 @@ icolor brightred "^[[:space:]]*[.0-9A-Z_]*:"
 color magenta "[.0-9A-Za-z_]*[[:space:]]*[.0-9A-Za-z_]*[[:space:]]<"
 color brightyellow "<(\\.|[^\"])*>"
 color brightwhite "commit[[:space:]]*[.0-9A-Z_]*$"
+
+
+
+syntax "yum" "\.repo$|yum.*\.conf$"
+
+color brightblack "^[[:space:]]*[^=]*="
+color brightmagenta "^[[:space:]]*\[.*\]$"
+color brightyellow "\$(releasever|arch|basearch|uuid|YUM[0-9])"
+color cyan "(^|[[:space:]])#([^{].*)?$"
+color ,green "[[:space:]]+$"
+color ,red "    + +| +  +"
+# +EXTRALINT
+
+
+syntax "keymap" "\.(k|key)?map$|Xmodmap$"
+
+color brightblack  "\<(add|clear|compose|keycode|keymaps|keysym|remove|string)\>"
+color brightblack  "\<(control|alt|shift)\>"
+color blue   "\<[0-9]+\>"
+color red "="
+color yellow ""(\\.|[^"])*"|'(\\.|[^'])*'"
+color cyan  "^!.*$"
+color ,green "[[:space:]]+$"
+color ,red "    + +| +  +"
+# +EXTRALINT
+
+
+
+syntax "gitconfig" "git(config|modules)$|\.git/config$"
+
+color brightcyan "\<(true|false)\>"
+color brightblack "^[[:space:]]*[^=]*="
+color brightmagenta "^[[:space:]]*\[.*\]$"
+color yellow ""(\\.|[^"])*"|'(\\.|[^'])*'"
+color cyan "(^|[[:space:]])#([^{].*)?$"
+color ,green "[[:space:]]+$"
+color ,red "    + +| +  +"
+# +EXTRALINT
+
+syntax "git-editmsg" "(COMMIT|TAG)_EDITMSG$"
+
+color cyan   "^#.*$"
+color ,red "[[:space:]]+$"
+
+syntax "git-rebase" "git-rebase-todo$"
+
+color brightblack "^(edit|fixup|pick|reword|squash|exec|[efprsx])\>"
+color blue  "\<[0-9a-f]{7,40}\>"
+color cyan "^#.*"
+
+
+
+syntax "xresources" "X(defaults|resources)$"
+
+color green     "^[[:alnum:]]+\*"
+color brightyellow "\*[[:alnum:]]+\:"
+color blue   "\<[0-9]+\>"
+color red "[*:=]"
+color brightcyan "\<(true|false)\>"
+color cyan "(^|[[:space:]])#([^{].*)?$"
+color ,green "[[:space:]]+$"
+color ,red "    + +| +  +"
+# +EXTRALINT
+
+
+## inspired by /usr/nano/share/sh.nanorc but with differents comments, more commands. Also support for .bash* files and some other exec.
+syntax "sh" "\.sh$"  "\.bash$" "bashrc$" "bash_profile$" "profile" "bash_aliases"
+header "^#!.*/(ba|k|pdk)?sh[-0-9_]*"
+magic "(POSIX|Bourne.*) shell script text"
+
+icolor brightgreen "^[0-9A-Z_]+\(\)"
+color magenta "\<(break|case|continue|do|done|elif|else|esac|exit|fi|for|function|if|in|read|return|select|shift|then|time|until|while)\>"
+color magenta "\<(declare|eval|exec|export|let|local)\>"
+color brightmagenta "[{}():;|`$<>!=&\\]" "(\]|\[)"
+color brightmagenta "-[Ldefgruwx]\>"
+color brightmagenta "-(eq|ne|gt|lt|ge|le|s|n|z)\>"
+color brightblue "\<(awk|cat|cd|ch(grp|mod|own)|cp|echo|env|grep|install|ln|make|mkdir|mv|popd|printf|pushd|rm|rmdir|sed|set|tar|touch|umask|unset)\>"
+
+# Builtins
+color brightgreen "\<(source|alias|bg|bind|break|builtin|cd|command|compgen|complete|continue|dirs|disown|echo|enable|eval|exec|exit|fc|fg|getopts|hash|help|history|jobs|kill|let|logout|popd|printf|pushd|pwd|return|set|shift|shopt|suspend|test|times|trap|type|ulimit|umask|unalias|wait)\>"
+
+# Unix Commands
+color brightgreen "\<(arch|awk|bunzip2|bzcat|bzcmp|bzdiff|bzegrep|bzfgrep|bzgrep|bzip2|bzip2recover|bzless|bzmore|cat|chattr|chgrp|chmod|chown|chvt|cp|date|dd|deallocvt|df|dir|dircolors|dmesg|dnsdomainname|domainname|du|dumpkeys|echo|ed|egrep|false|fgconsole|fgrep|fuser|gawk|getkeycodes|gocr|grep|groups|gunzip|gzexe|gzip|hostname|igawk|install|kbd_mode|kbdrate|killall|last|lastb|link|ln|loadkeys|loadunimap|login|ls|lsattr|lsmod|lsmod.old|mapscrn|mesg|mkdir|mkfifo|mknod|mktemp|more|mount|mv|nano|netstat|nisdomainname|openvt|pgawk|pidof|ping|ps|pstree|pwd|rbash|readlink|red|resizecons|rm|rmdir|run-parts|sash|sed|setfont|setkeycodes|setleds|setmetamode|setserial|sh|showkey|shred|sleep|ssed|stat|stty|su|sync|tar|tempfile|touch|true|umount|uname|unicode_start|unicode_stop|unlink|utmpdump|uuidgen|vdir|wall|wc|ypdomainname|zcat|zcmp|zdiff|zegrep|zfgrep|zforce|zgrep|zless|zmore|znew|zsh)\>"
+
+# More Unix Commands
+color brightgreen "\<(aclocal|aconnect|aplay|apm|apmsleep|apropos|ar|arecord|as|as86|autoconf|autoheader|automake|awk|basename|bc|bison|c\+\+|cal|cat|cc|cdda2wav|cdparanoia|cdrdao|cd-read|cdrecord|chfn|chgrp|chmod|chown|chroot|chsh|clear|cmp|co|col|comm|cp|cpio|cpp|cut|dc|dd|df|diff|diff3|dir|dircolors|directomatic|dirname|du|env|expr|fbset|file|find|flex|flex\+\+|fmt|free|ftp|funzip|fuser|g\+\+|gawk|gc|gcc|gdb|getent|getopt|gettext|gettextize|gimp|gimp-remote|gimptool|gmake|gs|head|hexdump|id|install|join|kill|killall|ld|ld86|ldd|less|lex|ln|locate|lockfile|logname|lp|lpr|ls|lynx|m4|make|man|mkdir|mknod|msgfmt|mv|namei|nasm|nawk|nice|nl|nm|nm86|nmap|nohup|nop|od|passwd|patch|pcregrep|pcretest|perl|perror|pidof|pr|printf|procmail|prune|ps2ascii|ps2epsi|ps2frag|ps2pdf|ps2ps|psbook|psmerge|psnup|psresize|psselect|pstops|rcs|rev|rm|scp|sed|seq|setterm|shred|size|size86|skill|slogin|snice|sort|sox|split|ssh|ssh-add|ssh-agent|ssh-keygen|ssh-keyscan|stat|strings|strip|sudo|suidperl|sum|tac|tail|tee|test|tr|uniq|unlink|unzip|updatedb|updmap|uptime|users|vmstat|w|wc|wget|whatis|whereis|which|who|whoami|write|xargs|yacc|yes|zip|zsoelim)\>"
+
+
+# Basic variable names (no braces).
+color brightred "\$[-0-9@*#?$!]" "\$[[:alpha:]_][[:alnum:]_]*"
+# More complicated variable names; handles braces and replacements and arrays.
+color brightred "\$\{[#!]?([-@*#?$!]|[0-9]+|[[:alpha:]_][[:alnum:]_]*)(\[([[:space:]]*[[:alnum:]_]+[[:space:]]*|@)\])?(([#%/]|:?[-=?+])[^}]*\}|\[|\})"
+
+# Comments
+color green "#.*$"
+
+# Strings.
+color brightyellow ""(\\.|[^"])*"" "'(\\.|[^'])*'"
+
+# Trailing whitespace.
+color ,green "[[:space:]]+$"
+
