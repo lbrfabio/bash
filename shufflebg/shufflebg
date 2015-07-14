@@ -66,6 +66,7 @@ WALLS_DIR="$HOME/.config/shufflebg"
 
 #TODO: use zenity\yad for file selection [remove, add, set wallpaper]
 #TODO: use notify-send for notifications?
+#TODO: support for add directory (as parameter)
 
 if [[ ! -z $1 ]];then
     addImage "$1"

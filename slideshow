@@ -9,9 +9,9 @@ if [ -e feh ]; then
     if [ ! -e apt-get ]; then
         # probably using ubuntu\debian\mint
         sudo apt-get install feh
-    elif [ ! -e yum ]; then
+    elif [ ! -e dnf ]; then
         # probably using fedora\redhat
-        sudo yum install feh
+        sudo dnf install feh
     fi
 fi
 

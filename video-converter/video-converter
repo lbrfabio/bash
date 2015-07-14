@@ -34,7 +34,7 @@ while [ $? == 0 ]; do
             exit
         fi
     else 
-        INPUT=`yad --file --title="Video Converter" --center --on-top \
+        INPUT=`yad --file --title="Video Converter" --name="Video Converter" --center --on-top \
             --width=640 --height=480 \
             --window-icon=$ICON \
             --file-filter='Videos | *.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mov *.ogg *.mpeg *.matroska *.asf *.wmv' \
@@ -74,7 +74,7 @@ while [ $? == 0 ]; do
     #DIR=`echo "$PATHNAME" | sed s/."$NAME"//g`
 
     # forms parameters
-    CODEC_VID="libx264 libxvid libtheora mpeg4 flv"
+    CODEC_VID="hevc libx264 libxvid libtheora mpeg4 flv"
     CODEC_AUD="libmp3lame libvorbis vorbis aac ac3 flac"
     BIT_VID="512 16..65536 32"
     BIT_AUD="192 16..1536 32"

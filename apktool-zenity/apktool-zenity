@@ -43,14 +43,15 @@ sdk=$HOME/coding/android/android-sdk-linux
 aapt=$sdk/build-tools/`cd $sdk/build-tools && ls -1 | tail -1`
 export PATH=${PATH}:$aapt
 
+name="Apktool Zenity"
 
 opt1="Build"
 opt2="Decode"
 if [[ "$1" == *.apk ]]; then
     op=$opt2
     apk=$1
-else 
-    op=`zenity --height=150 --list --radiolist --title="apktool 1.52" \
+else
+    op=`zenity --name="$name" --height=150 --list --radiolist --title="apktool 1.52" \
     --text 'Select operation:' \--column '' --column 'Operation' \
     TRUE "$opt1" FALSE "$opt2"`
 fi
@@ -58,12 +59,13 @@ echo -e "Chosen option: $op\n"
 
 case "$op" in
     $opt1)
-        apkfolder=`zenity --file-selection --directory --filename="$output_fld" --title="Select decompiled apk folder"`
+        apkfolder=`zenity --name="$name" --file-selection --directory --filename="$output_fld" --title="Select decompiled apk folder"`
         compile
 
         case $? in
         0)
-            apkname=`cat "$apkfolder"/apktool.yml | grep apk | cut -d ":" -f 2| cut -d "." -f 1 | xargs` #xargs does the trim
+            #apkname=`cat "$apkfolder"/apktool.yml | grep .apk | cut -d ":" -f 2| cut -d "." -f 1 | xargs` #xargs does the trim
+            apkname=$(basename -s .apk `grep .apk "$apkfolder/apktool.yml" | cut -d ":" -f 2`)
             notify-send --icon="$icon" "APK BUILT: $apkname"
             signApk
             ;;
@@ -77,7 +79,7 @@ case "$op" in
         ;;
     $opt2)
         if [[ -z $apk ]]; then
-            apk=`zenity --file-selection --title="Select file .apk" --file-filter='*.apk'`
+            apk=`zenity --name="$name" --file-selection --title="Select file .apk" --file-filter='*.apk'`
         fi
         apkname=`basename -s -a $apk`
         decode $apk

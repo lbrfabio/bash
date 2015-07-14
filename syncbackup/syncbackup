@@ -1,5 +1,5 @@
 #!/bin/bash
-#requirements:  rsync,  yum|apt,  figlet
+#requirements:  rsync,  dnf|apt,  figlet
 
 echo "Sync Backup" | figlet
 
@@ -20,9 +20,9 @@ fi
 if [ ! -z `which apt 2> /dev/null` ]; then        # probably using ubuntu\debian\mint
     MOUNT=/media
     PKGSYS=apt
-elif [ ! -z `which yum 2> /dev/null` ]; then      # probably using fedora\redhat
+elif [ ! -z `which dnf 2> /dev/null` ]; then      # probably using fedora\redhat
     MOUNT=/run/media
-    PKGSYS=yum
+    PKGSYS=dnf
 else
     exit 1
 fi

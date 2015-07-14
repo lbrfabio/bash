@@ -2,13 +2,15 @@
 # find, recursively, files with a specified text in the name and rename the file without the text
 FILES="/tmp/list.txt"
 
+name="Clean Filenames"
+
 opt1="DDLValley.rocks_"
 opt2="TwoDDL.eu_"
 opt3="Micromkv.com - "
 opt4="Micromkv.com -_"
 optn="Custom String"
 
-op=`zenity --hide-header --height=150 --list --radiolist --title="Clean Filenames" --text 'Select text to replace:' --column '' --column 'Text' TRUE "$opt1" FALSE "$opt2" FALSE "$opt3" FALSE "$opt4" FALSE "$optn"`
+op=`zenity --name="$name" --hide-header --height=150 --list --radiolist --title="$name" --text 'Select text to replace:' --column '' --column 'Text' TRUE "$opt1" FALSE "$opt2" FALSE "$opt3" FALSE "$opt4" FALSE "$optn"`
 echo "Chosen option: "$op
 
 case "$op" in
@@ -25,7 +27,7 @@ case "$op" in
     TEXT="$opt4"
     ;;
     $optn)
-    TEXT=`zenity --entry --title="Custom Text to Replace" --text="Enter the text" --entry-text=XXXXXX`
+    TEXT=`zenity --name="$name" --entry --title="Custom Text to Replace" --text="Enter the text" --entry-text=XXXXXX`
     ;;
     *)
     # no selection

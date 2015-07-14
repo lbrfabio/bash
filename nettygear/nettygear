@@ -16,7 +16,7 @@ function showHelp () {
     fi
 
     echo -e "Usage: nettygear [ -g ] {[OPTION] | [ -l ]}
-    -g   \tshow visual notifications [requires libnotify\zenity]
+    -g   \tenable gui [requires libnotify\zenity]
 
     -r,  \treboot router
     -n,  \tchange current IP
@@ -102,7 +102,7 @@ function showListGUI() {
     opt5="Set Autenticazione"
     opt6="Clear Configuration"
 
-    op=`zenity --window-icon="IC_NET" --height=245 --list --radiolist --title="Netty Gear" \
+    op=`zenity --name="nettygear" --window-icon="$IC_NET" --height=245 --list --radiolist --title="Netty Gear" \
     --text 'Select operation:' \
     --column '' \
     --column 'Operation' FALSE "$opt1" FALSE "$opt2" FALSE "$opt3" FALSE "$opt4" FALSE "$opt5" FALSE "$opt6"`
@@ -132,7 +132,7 @@ function showListGUI() {
 function setAuthentication() {
     if [[ -z "$U" || -z "$P" || "$1" == "force" ]];then
         if [[ "$GUI" == "true" ]];then
-            SET=`zenity --title="Netty Gear" --password --username`
+            SET=`zenity --name="nettygear" --window-icon="$IC_NET" --title="Netty Gear" --password --username`
             U=`echo "$SET" |  cut -d '|' -f 1`
             P=`echo "$SET" |  cut -d '|' -f 2`
         else
