@@ -40,17 +40,25 @@ function notify () {
 
 # $1 page\todo;  $2 print curl output;   2 seconds timeout
 function executeURL () {
-    OUT="`curl -m 2 -s -u $U:$P $HOST/$1`"
+    #OUT="`curl -m 2 -s -u $U:$P $HOST/$1`"          #no auth
+    #OUT="`curl -m 2 -s -u $U:$P -digest $HOST/$1`"  #auth correct, params not used
+    OUT="`wget --http-user=$U --http-password=$P -q -O - "$HOST/$1"`"
     if [[ "$2" == "print" ]]; then
         echo "$OUT"
     fi
 }
 
 function rebootRouter() {
-    notify $IC_NET "Rebooting!" "This will take a minute... "
+    notify $IC_NET "Rebooting!" "This will take a while... "
     executeURL $REBOOT
-    sleep 65
-    executeURL " "
+    while [ -z `getIP` ]; do
+        sleep 1
+        let TIME++
+        echo -ne "$TIME"'\r';
+    done
+
+    notify $IC_NET "Online" "in $TIME seconds\n"
+    executeURL " " #needed for auth
     showIP
     showDLspeed
 }
@@ -71,14 +79,15 @@ function showIP() {
 
 function newIP() {
     notify $IC_NET "Changing IP address!" "This will take a few seconds..."
+    echo "disconnecting..."
     executeURL $DISCONNECT
+    echo "connecting..."
     executeURL $CONNECT
-    sleep 10 #let the router connect first
     showIP
 }
 
 function showDLspeed() {
-    OUT=`executeURL $DOWNSPEED "print"`
+    OUT=`executeURL $STATS "print"`
 
     #get extract speed
     LINE=`echo "$OUT" | grep kbps | head -n 1`
@@ -159,15 +168,15 @@ function clearConfiguration() {
 
 # parameters
 CONF=$HOME/.config/nettygear.conf
-HOST="192.168.0.1"
+HOST="192.168.1.1"
 U=`cat "$CONF" 2> /dev/null | grep USER | cut -d '=' -f 2`
 P=`cat "$CONF" 2> /dev/null | grep PASS | cut -d '=' -f 2`
 
 # commands
-REBOOT="?todo=reboot"
-DISCONNECT="?todo=disconnect"
-CONNECT="?todo=connect"
-DOWNSPEED="stattbl.htm"
+REBOOT="cgi-bin/reboot_waiting.asp?reboot&rebootFlag=1&yes=Yes"
+DISCONNECT="cgi-bin/RST_conn_status.asp?connect_status&Saveflag=1&DipConnFlag=2&Saveflag_reget=0"
+CONNECT="cgi-bin/RST_conn_status.asp?connect_status&Saveflag=1&DipConnFlag=1&Saveflag_reget=1"
+STATS="cgi-bin/RST_statistic.asp"
 
 # icons
 IC_HELP=gnome-help                 #for printHelp gui
@@ -222,7 +231,7 @@ else
     fi
     CHECK="Authorization warning"
     ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
-    if (( $ANSWER == 1 )); then 
+    if (( $ANSWER == 1 )); then
         notify $IC_ERROR "Login:" "$CHECK"
         clearConfiguration
         exit 4

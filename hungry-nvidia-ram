@@ -13,7 +13,8 @@ export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SES
 SLEEP_START=1
 SLEEP_STOP=9
 
-hour=`date +%H`
+hour=`date +%H | sed 's/^0*//'`
+
 
 if (( $hour >= SLEEP_START && $hour <= SLEEP_STOP ))
 then

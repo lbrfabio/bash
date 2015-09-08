@@ -17,14 +17,18 @@ if [ -f "functions.sh" ]; then
 fi
 
 #ubuntu or fedora?
-if [ ! -z `which apt 2> /dev/null` ]; then        # probably using ubuntu\debian\mint
+which apt > /dev/null  2>&1
+if [ "$?" == "0" ]; then        # probably using ubuntu\debian\mint
     MOUNT=/media
     PKGSYS=apt
-elif [ ! -z `which dnf 2> /dev/null` ]; then      # probably using fedora\redhat
-    MOUNT=/run/media
-    PKGSYS=dnf
 else
-    exit 1
+    which dnf > /dev/null  2>&1
+    if [ "$?" == "0" ]; then    # probably using fedora\redhat
+        MOUNT=/run/media
+        PKGSYS=dnf
+    else
+        exit 1
+    fi
 fi
 
 #rsync missing?
