@@ -1,0 +1,112 @@
+#!/bin/bash
+
+function checkExec () {
+    if [ -z `which $1` ]; then
+        echo "$1 not present"
+        exit
+    fi
+}
+
+#checkExec "mozdownload"
+checkExec "rpmwand"
+
+# variables
+PKG_NAME=firefox-tar
+BRANCH=mozilla-central
+#BRANCH=mozilla-aurora
+SKEL=$HOME/coding/bash/update-firefox/$PKG_NAME-skel  #source of skeleton and script
+DEST=$HOME/downloads/git/firefox  #destination of rpm and tar.bz2
+TEMP=/tmp/$PKG_NAME-rpm
+
+# download firefox to $DEST
+mkdir -p $DEST && mkdir -p $TEMP
+
+# move old deb\rpm in old folder. TODO: aggiungere un comando che vede la data dei file e eventualmente li cancella
+mv $DEST/*.{tar.bz2,rpm} $DEST/old 2> /dev/null
+
+
+VERSION=`curl mxr.mozilla.org/$BRANCH/source/browser/config/version.txt?raw=1\.en-US.linux-x86_64.tar.bz2 -s`
+echo "Version: $VERSION"
+
+# download only if there isn't a firefox tar.bz2 package as parameter
+if [[ "$1" = *firefox*.tar.bz2 ]]; then
+    FILE="$1"  #FIXME: doesn't work with relative path
+else
+    #mozdownload  --type=daily --branch=$BRANCH--platform=linux64 --directory=$DEST
+    URL=https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-$BRANCH/firefox-$VERSION.en-US.linux-x86_64.tar.bz2
+    echo "Downloading: $URL"
+    cd $DEST && curl $URL -O -#
+    FILE=`ls $DEST/*.tar.bz2`
+fi
+
+
+# copy rpm skeleton to $TEMP
+cp -rf $SKEL $TEMP
+# extract the tar.bz2 then move inside the skeleton
+#file-roller --extract-to=$TEMP "$FILE"
+tar xf $FILE -C $TEMP
+
+# fix all the things
+rm -rf $TEMP/firefox/browser/searchplugins
+mv $TEMP/firefox $TEMP/$PKG_NAME-skel/usr/lib64/
+
+
+# create default prefs
+mkdir -p $TEMP/$PKG_NAME-skel/usr/lib64/firefox/browser/defaults/preferences
+echo -e "pref(\"app.update.auto\",                     false);
+pref(\"app.update.enabled\",                  false);
+pref(\"app.update.autoInstallEnabled\",       false);
+pref(\"general.smoothScroll\",                true);
+pref(\"intl.locale.matchOS\",                 true);
+pref(\"toolkit.storage.synchronous\",         0);
+pref(\"toolkit.networkmanager.disable\",      false);
+pref(\"offline.autoDetect\",                  true);
+pref(\"browser.backspace_action\",            2);
+pref(\"browser.display.use_system_colors\",   true);
+pref(\"browser.download.folderList\",         1);
+pref(\"browser.link.open_external\",          3);
+pref(\"browser.shell.checkDefaultBrowser\",   false);
+pref(\"network.manage-offline-status\",       true);
+pref(\"dom.ipc.plugins.enabled.nswrapper*\",  false);
+pref(\"extensions.shownSelectionUI\",         true);
+pref(\"gfx.color_management.enablev4\",       true);
+pref(\"ui.SpellCheckerUnderlineStyle\",       1);
+pref(\"startup.homepage_override_url\",       \"\");
+pref(\"browser.startup.homepage\",            \"data:text/plain,browser.startup.homepage=about:newtab\");
+pref(\"browser.newtabpage.pinned\",           '[{\"url\":\"http://start.fedoraproject.org/\",\"title\":\"Fedora Project - Start Page\"}]');" > $TEMP/$PKG_NAME-skel/usr/lib64/firefox/browser/defaults/preferences/firefox-redhat-default-prefs.js
+
+
+#initialize and edit *spec.in
+cd $TEMP && rpmwand initspec $PKG_NAME
+sed -i 's/Summary: TODO. PLEASE EDIT ME!/Summary: Safe and easy web browser from Mozilla/g'  "$PKG_NAME".spec.in
+sed -i 's/Vendor: TODO. PLEASE EDIT ME!/Vendor: Mozilla/g'  "$PKG_NAME".spec.in
+sed -i 's/Packager: TODO. PLEASE EDIT ME!/Packager: fabiolbr/g'  "$PKG_NAME".spec.in
+sed -i 's/License: TODO. PLEASE EDIT ME!/License: GPL v3/g'  "$PKG_NAME".spec.in
+sed -i 's/Group: TODO. PLEASE EDIT ME!/Group: Applications\/Internet/g'  "$PKG_NAME".spec.in
+sed -i 's/URL: http:\/\/TODO.example.com\//URL: http:\/\/nightly.mozilla.org/g'  "$PKG_NAME".spec.in
+
+# editing *files.txt and fix conflicts
+rpmwand files $PKG_NAME
+sed '/^%dir \/usr\/bin$/d' -i "$PKG_NAME"-files.txt
+sed '/^%dir \/usr\/lib64$/d' -i "$PKG_NAME"-files.txt
+
+# build rpm
+VERSION=`cat "$PKG_NAME"-skel/usr/lib64/firefox/application.ini | grep Version | cut -d '=' -f 2 | tail -n 1`
+RELEASE=`cat "$PKG_NAME"-skel/usr/lib64/firefox/application.ini | grep BuildID | cut -d '=' -f 2`
+HOME=$TEMP #this force to build inside $TEMP and not $HOME
+rpmwand build $PKG_NAME $VERSION $RELEASE x86_64
+
+# erase the old package (to avoid unwanted files around the system...)
+sudo dnf -y erase $PKG_NAME
+sudo dnf -y erase firefox #remove also the original firefox considering with version I use "firefox"
+
+# install
+sudo dnf -y install $TEMP/RPMS/x86_64/$PKG_NAME-$VERSION-$RELEASE.x86_64.rpm
+
+# save the rpm
+cp $TEMP/RPMS/x86_64/$PKG_NAME-$VERSION-$RELEASE.x86_64.rpm $DEST/
+
+# cleanup
+#rm -rf $HOME/rpmbuild
+rm -rf $TEMP
+

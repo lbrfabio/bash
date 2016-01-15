@@ -20,6 +20,7 @@ startScript "$MEDIA/movies" "./001-media-movies"
 startScript "$MEDIA/music" "./002-media-music"
 startScript "$MEDIA/pictures" "./003-media-pictures"
 startScript "$MEDIA/tv-shows" "./004-media-tv-shows"
+startScript "$MEDIA/anime" "./005-media-anime"
 
 #######################################
 #    BACKUP OTHER FOLDERS  [tar.gz]

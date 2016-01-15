@@ -33,7 +33,8 @@ add() {
         echo "Share name not selected"
         exit
     fi
-    net usershare add $SHARENAME $DIR
+    #net usershare add $SHARENAME $DIR
+    net usershare add $SHARENAME $DIR " " "S-1-1-0:F"
 }
 
 function extract_name() {

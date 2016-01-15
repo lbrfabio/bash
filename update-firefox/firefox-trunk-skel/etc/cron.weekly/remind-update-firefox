@@ -1,0 +1,7 @@
+#!/bin/sh
+
+user=`who | grep " :0" | cut -d ' ' -f 1`
+dbus='export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)'
+cmd='notify-send -i firefox-trunk "It has been a week. Time to update firefox-nightly"'
+
+su $user -c "$dbus && $cmd"

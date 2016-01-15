@@ -70,11 +70,12 @@ function getIP() {
 
 function showIP() {
     IP=`getIP`
-    if [[ ! -z "$IP" ]]; then
-        notify $IC_CHECK "IP address:" $IP
-    else
-        notify $IC_NET_ERROR "IP address:" "0.0.0.0"
+
+    if [[ -z "$IP" ]]; then
+        IP="0.0.0.0"
     fi
+
+    notify $IC_CHECK "IP address:" $IP
 }
 
 function newIP() {
@@ -92,6 +93,11 @@ function showDLspeed() {
     #get extract speed
     LINE=`echo "$OUT" | grep kbps | head -n 1`
     DLSPEED=`echo $LINE | cut -d '>' -f 3 | cut -d ' ' -f 1`
+
+    if [[ -z "$DLSPEED" ]]; then
+        DLSPEED="0"
+    fi
+
     notify $IC_MONITOR "Downstream:" "$DLSPEED kbps"
 }
 
