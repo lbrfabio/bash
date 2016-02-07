@@ -12,10 +12,10 @@ checkExec "rpmwand"
 
 # variables
 PKG_NAME=firefox-tar
-BRANCH=mozilla-central
-#BRANCH=mozilla-aurora
-SKEL=$HOME/coding/bash/update-firefox/$PKG_NAME-skel  #source of skeleton and script
-DEST=$HOME/downloads/git/firefox  #destination of rpm and tar.bz2
+#BRANCH=mozilla-central
+BRANCH=mozilla-aurora
+SKEL=$HOME/git/bash/update-firefox/$PKG_NAME-skel  #source of skeleton and script
+DEST=$HOME/git/firefox-desktop  #destination of rpm and tar.bz2
 TEMP=/tmp/$PKG_NAME-rpm
 
 # download firefox to $DEST

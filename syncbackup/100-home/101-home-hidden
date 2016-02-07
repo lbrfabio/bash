@@ -6,39 +6,20 @@ fi
 
 # Source essential functions
 if [ -f "../functions.sh" ]; then
-        . "../functions.sh"
+    . "../functions.sh"
 fi
 
-#extract home dir name. it can be different from the username...
-DIR=`echo $HOME | sed s/'\/home\/'//g `
 
-#rsync parameters
-LOG_FILE="$HOME/.cache/rsync/101-home-hidden.log"
-PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
-EXCLUDE="--exclude=/cgi --exclude=/android --exclude=/documents --exclude=/coding --exclude=/downloads --exclude=/guitar --exclude=/music --exclude=/pictures --exclude=/university --exclude=/videos --exclude=/workspace --exclude=/.local/share/Trash/ --exclude=/.cache/rsync --exclude=/.cache/mozilla* --exclude=/.cache/epiphany* --exclude=/.cache/google-chrome --exclude=/lost+found --exclude=/virtualbox --exclude=/$DIR/"
-SRC="$HOME/"
-DST="$HOME/$DIR/"
-#NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
-#NOTE 2: insert the following line to EXCLUDE the thumbnails folder if it's not a symbolic link to symlinks folder.    --exclude=/.cache/thumbnails
+EXCLUDE="--exclude=*/.cache/rsync --exclude=*/.cache/mozilla*
+         \--exclude=*/.cache/epiphany* --exclude=*/.cache/google-chrome
+         \--exclude=*/.nv"
 
-#tar.gz parameters
+DIR_SRC=$HOME
+BKP_DST=$BACKUP/home
 BKP_NAME=hidden_home
-FOLDER_SRC=$HOME/$DIR
-FOLDER_DST=$BACKUP/home
 
 #clean trash
-rm -rf $HOME/.local/share/Trash
+#rm -rf $HOME/.local/share/Trash
+gvfs-trash  --empty
 
-#rsynch backup
-mkdir -p $HOME/.cache/rsync/
-pkexec rsync $PARAMS $EXCLUDE $SRC $DST
-
-#create tar.gz and move it to Backup hdd
-if  [[ -e $FOLDER_SRC ]]; then
-    echo -e "\nFound rsync backup, creating tar.gz"
-    backupFolder "$FOLDER_SRC" "$FOLDER_DST" "$BKP_NAME" "y"
-    rm -rf "$FOLDER_SRC"
-else 
-    echo -e "Error: rsync backup not present"
-    exit
-fi
+find $HOME -maxdepth 1 -name ".?*" -exec tar pcvzf "$BKP_DST/$BKP_NAME".tar.gz $EXCLUDE {} +

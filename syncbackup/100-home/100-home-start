@@ -6,7 +6,7 @@ fi
 
 # Source essential functions
 if [ -f "functions.sh" ]; then
-        . "functions.sh"
+    . "functions.sh"
 fi
 
 #######################################
@@ -28,9 +28,12 @@ startScript "$HOME/guitar" "./107-home-guitar"
 #    BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
 
-FOLDER_DST="$BACKUP/home"
+BKP_DST="$BACKUP/home"
 
-backupFolder "$HOME/workspace" "$FOLDER_DST" "workspace"
-backupFolder "$HOME/documents" "$FOLDER_DST" "documents"
-backupFolder "$HOME/coding" "$FOLDER_DST" "coding"
-backupFolder "/home/symlinks" "$FOLDER_DST" "symlinks"
+DIRS=(coding documents git workspace)
+for DIR in "${DIRS[@]}"
+do
+    backupFolder "$HOME/$DIR" "$BKP_DST" "$DIR"
+done
+
+backupFolder "/home/symlinks" "$BKP_DST" "symlinks"

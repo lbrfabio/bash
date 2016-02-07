@@ -3,24 +3,24 @@ if [[ -z $BACKUP || -z $PKGSYS ]]; then
     exit 1
 fi
 
-FOLDER_DST="$BACKUP/system"
+BKP_DST="$BACKUP/system"
 
 #######################################
 #                 MISC
 #######################################
 
 echo -e "\nBacking up $USER's dconf settings"
-dconf dump / > "$FOLDER_DST/dconf_dump.txt"
+dconf dump / > "$BKP_DST/dconf_dump.txt"
 
 
 echo -e "\nBacking up packages list..."
 if [ $PKGSYS == "apt" ]; then
-    dpkg --get-selections > "$FOLDER_DST/deb_packages.list"
+    dpkg --get-selections > "$BKP_DST/deb_packages.list"
 fi
 
 if [ $PKGSYS == "dnf" ]; then
-    sudo dnf list installed >  "$FOLDER_DST/dnf_packages_installed.list"
-    sudo dnf list extras > "$FOLDER_DST/dnf_packages_extras.list"
+    sudo dnf list installed >  "$BKP_DST/dnf_packages_installed.list"
+    sudo dnf list extras > "$BKP_DST/dnf_packages_extras.list"
 fi
 
 
@@ -30,4 +30,4 @@ fi
 
 echo -e "\nBacking up /etc" && sleep 2
 
-sudo tar -pcvzf "$FOLDER_DST/etc.tar.gz" "/etc"
+sudo tar -pcvzf "$BKP_DST/etc.tar.gz" "/etc"

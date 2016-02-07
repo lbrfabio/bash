@@ -6,7 +6,7 @@ fi
 
 # Source essential functions
 if [ -f "functions.sh" ]; then
-        . "functions.sh"
+    . "functions.sh"
 fi
 
 #mount windows hdd

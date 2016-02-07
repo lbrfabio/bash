@@ -13,8 +13,8 @@ checkExec "xsel"
 # variables
 PKG_NAME=firefox-trunk
 BRANCH=mozilla-central
-SKEL=$HOME/coding/bash/update-firefox/$PKG_NAME-skel  #source of skeleton and script
-DEST=$HOME/downloads/git/firefox  #destination of rpm and deb
+SKEL=$HOME/git/bash/update-firefox/$PKG_NAME-skel  #source of skeleton and script
+DEST=$HOME/git/firefox-desktop  #destination of rpm and deb
 TEMP=/tmp/$PKG_NAME-rpm
 URL="https://launchpad.net/~ubuntu-mozilla-daily/+archive/ppa/+packages"
 

@@ -8,7 +8,7 @@ echo "Sync Backup" | figlet
 #######################################
 
 #go to source of scripts
-SCRIPTS=$HOME/coding/bash/syncbackup
+SCRIPTS=$HOME/git/bash/syncbackup
 cd $SCRIPTS
 
 # Source essential functions

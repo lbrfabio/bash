@@ -6,7 +6,7 @@ fi
 
 # Source essential functions
 if [ -f "functions.sh" ]; then
-        . "functions.sh"
+    . "functions.sh"
 fi
 
 #######################################
@@ -26,6 +26,12 @@ startScript "$MEDIA/anime" "./005-media-anime"
 #    BACKUP OTHER FOLDERS  [tar.gz]
 #######################################
 
-FOLDER_DST="$BACKUP/media"
+BKP_DST="$BACKUP/media"
 
-backupFolder "$MEDIA/.kodi"  "$FOLDER_DST"  "kodi"
+#DIRS=(.kodi)
+#for DIR in "${DIRS[@]}"
+#do
+#   backupFolder "$MEDIA/$DIR" "$BKP_DST" "$DIR"
+#done
+
+backupFolder "$MEDIA/.kodi"  "$BKP_DST"  "kodi"
