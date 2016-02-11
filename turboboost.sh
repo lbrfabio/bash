@@ -9,7 +9,7 @@
 
 # SOURCES
 # https://github.com/DropD/fnc-simplex/blob/master/linux_turboboost.sh
-# http://askubuntu.com/questions/643875/solved-overclocking-multiplier-raise-up-doesnt-effect-current-freq
+# http://askubuntu.com/questions/619875/disabling-intel-turbo-boost-in-ubuntu
 
 
 # EXPLANATION AND MANUAL ALTERNATIVE

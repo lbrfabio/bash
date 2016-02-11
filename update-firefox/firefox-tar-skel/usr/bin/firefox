@@ -83,19 +83,10 @@ MOZILLA_FIVE_HOME="$MOZ_DIST_BIN"
 export MOZILLA_FIVE_HOME
 
 ##
-## Select the propper plugin dir
-## Wrapped plug-ins are located in /lib/mozilla/plugins-wrapped
-##
-if [ -x "/usr/bin/mozilla-plugin-config" ]
-then
-  MOZ_PLUGIN_DIR="plugins-wrapped"
-else
-  MOZ_PLUGIN_DIR="plugins"
-fi
-
-##
 ## Make sure that we set the plugin path
 ##
+MOZ_PLUGIN_DIR="plugins"
+
 if [ "$MOZ_PLUGIN_PATH" ]
 then
   MOZ_PLUGIN_PATH=$MOZ_PLUGIN_PATH:$MOZ_LIB_DIR/mozilla/$MOZ_PLUGIN_DIR:$MOZ_DIST_BIN/$MOZ_PLUGIN_DIR
@@ -108,14 +99,6 @@ export MOZ_PLUGIN_PATH
 ## Set MOZ_APP_LAUNCHER for gnome-session
 ##
 export MOZ_APP_LAUNCHER="/usr/bin/firefox"
-
-##
-## If plugins are wrapped, check them
-##
-if [ -x "/usr/bin/mozilla-plugin-config" ]
-then
-  /usr/bin/mozilla-plugin-config
-fi
 
 ##
 ## Set FONTCONFIG_PATH for Xft/fontconfig
@@ -142,6 +125,16 @@ export FONTCONFIG_PATH
 GNOME_DISABLE_CRASH_DIALOG=1
 export GNOME_DISABLE_CRASH_DIALOG
 
+##
+## Disable the SLICE allocator (rhbz#1014858)
+##
+export G_SLICE=always-malloc
+
+##
+## Enable Xinput2 (mozbz#1207973)
+##
+export MOZ_USE_XINPUT2=1
+
 # OK, here's where all the real work gets done
 
 
@@ -163,9 +156,9 @@ FEDORA_LANGPACK_CONFIG="$MOZ_EXTENSIONS_PROFILE_DIR/.fedora-langpack-install"
 # MOZ_DISABLE_LANGPACKS disables language packs completely
 MOZILLA_DOWN=0
 if ! [ $MOZ_DISABLE_LANGPACKS ] || [ $MOZ_DISABLE_LANGPACKS -eq 0 ]; then
-    if [ -x $MOZ_DIST_BIN/mozilla-xremote-client ]; then
+    if [ -x $MOZ_DIST_BIN/$MOZ_FIREFOX_FILE ]; then
         # Is firefox running?
-        $MOZ_DIST_BIN/mozilla-xremote-client -a firefox 'ping()' > /dev/null 2>&1
+        /usr/bin/pidof firefox > /dev/null 2>&1
         MOZILLA_DOWN=$?
     fi
 fi
