@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [[ -z $BACKUP ]]; then
+    exit 1
+fi
+
+# Source essential functions
+if [ -f "../functions.sh" ]; then
+    . "../functions.sh"
+fi
+
+
+#EXCLUDE="--exclude=.cache/rsync --exclude=.cache/mozilla
+#         \--exclude=.cache/epiphany* --exclude=*.cache/google-chrome
+#         \--exclude=.nv"
+
+#EXCLUDE="--exclude=.cache/epiphany*"
+
+DIR_SRC=$HOME
+BKP_DST=$BACKUP/home
+BKP_NAME=dot.home
+
+# clean trash
+gvfs-trash  --empty
+
+(cd $HOME && find . -maxdepth 1 -name ".?*" -exec tar pcvzf "$BKP_DST/$BKP_NAME".tar.gz $EXCLUDE {} +)
+
+# symbolic links
+DIRS=(.mozilla .android .gradle)
+for DIR in "${DIRS[@]}"
+do
+    backupFolder "`readlink -q $HOME/$DIR`" "$BKP_DST" "dot$DIR"
+done

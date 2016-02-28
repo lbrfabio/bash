@@ -51,3 +51,13 @@ StartupNotify=true
 Categories=Network;WebBrowser;
 Keywords=web;browser;internet;
 X-Desktop-File-Install-Version=0.22
+
+Actions=ProfileManager;Minimal;
+
+[Desktop Action ProfileManager]
+Name=Open Profile Manager
+Exec=firefox -P
+
+[Desktop Action Minimal]
+Name=Open Minimal Profile
+Exec=firefox -P minimal -no-remote

@@ -2,6 +2,6 @@
 # better alternative to gksu\gksudo integrated to gnome-shell
 if [[ -z "$@" ]]; then
     echo "Usage: gksu <command> [<arguments>]"
-    exit 
+    exit
 fi
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY "$@"
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY DESKTOP_SESSION=$DESKTOP_SESSION "$@"

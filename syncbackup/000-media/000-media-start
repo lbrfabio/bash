@@ -13,7 +13,7 @@ fi
 #                RSYNC
 #######################################
 
-#go to rsync script
+# go to rsync script
 cd $SCRIPTS/000-media
 
 startScript "$MEDIA/movies" "./001-media-movies"
@@ -23,7 +23,7 @@ startScript "$MEDIA/tv-shows" "./004-media-tv-shows"
 startScript "$MEDIA/anime" "./005-media-anime"
 
 #######################################
-#    BACKUP OTHER FOLDERS  [tar.gz]
+#    BACKUP FOLDERS  [tar.gz]
 #######################################
 
 BKP_DST="$BACKUP/media"

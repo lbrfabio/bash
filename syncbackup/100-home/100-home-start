@@ -13,10 +13,10 @@ fi
 #                 RSYNC
 #######################################
 
-#go to rsync scripts
+# go to rsync scripts
 cd $SCRIPTS/100-home
 
-startScript "$HOME/.*" "./101-home-hidden"
+startScript "$HOME/.*" "./101-home-dot"
 startScript "$HOME/android" "./102-home-android"
 startScript "$HOME/cgi" "./103-home-cgi"
 startScript "$HOME/downloads/sw-linux" "./104-home-downloads-sw-linux"
@@ -25,7 +25,7 @@ startScript "$HOME/videos" "./106-home-videos"
 startScript "$HOME/guitar" "./107-home-guitar"
 
 #######################################
-#    BACKUP OTHER FOLDERS  [tar.gz]
+#    BACKUP FOLDERS  [tar.gz]
 #######################################
 
 BKP_DST="$BACKUP/home"
@@ -33,7 +33,11 @@ BKP_DST="$BACKUP/home"
 DIRS=(coding documents git workspace)
 for DIR in "${DIRS[@]}"
 do
-    backupFolder "$HOME/$DIR" "$BKP_DST" "$DIR"
+    if [ ! -h "$HOME/$DIR" ]; then
+        backupFolder "$HOME/$DIR" "$BKP_DST" "$DIR"
+    else
+        backupFolder "`readlink -q $HOME/$DIR`" "$BKP_DST" "$DIR"
+    fi
 done
 
-backupFolder "/home/symlinks" "$BKP_DST" "symlinks"
+backupFolder "`readlink -q $HOME/documents/school`" "$BKP_DST" "school"
