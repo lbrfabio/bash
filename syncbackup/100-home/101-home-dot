@@ -11,10 +11,10 @@ fi
 
 
 #EXCLUDE="--exclude=.cache/rsync --exclude=.cache/mozilla
-#         \--exclude=.cache/epiphany* --exclude=*.cache/google-chrome
+#         \--exclude=.cache/epiphany-* --exclude=*.cache/google-chrome*
 #         \--exclude=.nv"
 
-#EXCLUDE="--exclude=.cache/epiphany*"
+EXCLUDE="--exclude=.cache/epiphany-* --exclude=.cache/thumbnails"
 
 DIR_SRC=$HOME
 BKP_DST=$BACKUP/home

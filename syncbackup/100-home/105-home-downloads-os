@@ -5,11 +5,11 @@ if [[ -z $BACKUP ]]; then
 fi
 
 #rsync parameters
-LOG_FILE="$HOME/.cache/rsync/105-home-downloads-operating-systems.log"
+LOG_FILE="$HOME/.cache/rsync/105-home-downloads-os.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
-SRC="$HOME/downloads/operating-systems/"
-DST="$BACKUP/home/downloads/operating-systems/"
+SRC="$HOME/downloads/os/"
+DST="$BACKUP/home/downloads/os/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 #rsynch backup

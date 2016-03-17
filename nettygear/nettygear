@@ -5,7 +5,7 @@
 # OPTIONAL: figlet
 
 # fix execution notify-send from cron. (problem since gnome3.8)
-export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
+#export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
 
 #TODO: move functions to another file
 ########################################

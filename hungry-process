@@ -5,74 +5,49 @@
 #
 # USAGE: set it with a keyboard shortcut or with cron. 
 # Pass two parameters:  process's name and for how much Mb you want a notification
-# $HOME/YOURPATH/hungryProcess PROCESSNAME MB
+# $HOME/YOURPATH/hungry-process PROCESSNAME MB
 
 # fix problem with gnome 3.8\3.10 that not send libnotify notifications is script used with cron
-export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
-
-SLEEP_START=1
-SLEEP_STOP=9
-
-hour=`date +%H | sed 's/^0*//'`
-
-if (( $hour >= SLEEP_START && $hour <= SLEEP_STOP ))
-then
-   exit 0
-fi
+#export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
 
 process=$1
-maxMem=$2
+maxmem=$2
 
 # check if parameter number is ok
 if (($# < 2))
 then
-    echo "Usage $0 processName maxMem "
+    echo "Usage $0 processName maxmem "
     exit 1
 fi
 
 # check if $process is running
 #pid=`ps -A | grep $process`
-pid=`pidof $process | cut -d ' ' -f 1` #this doesn't work in fedora
-if [ -z "$pid" ]
-then 
+pid=`pidof $process | cut -d ' ' -f 1`
+if [ -z "$pid" ]; then
     echo $process is not running
     exit 2
 fi
 
-# check if $maxMem is a number
-if ! [[ "$maxMem" =~ ^[0-9]+$ ]] ; then
-   exec >&2; echo "error: maxMem Not a number"; exit 1
+# check if $maxmem is a number
+if ! [[ "$maxmem" =~ ^[0-9]+$ ]]; then
+   exec >&2; echo "error: maxMem Not a number";
+   exit 1
 fi
 
-# a litte hack to be sure zenity processes are not running (sometimes they get stuck)   // NOT NECESSARY IF I USE notify-send!!!!
-#if ! [ -z "zenity" ]; then
-#   killall zenity
-#fi
+# get line of top. -bn is the only parameter to make it work on cron
+#line=`top -bn 1 -p$pid | grep $process`
+# get memory used by $process
+#kbmem=`echo $line | cut -d ' ' -f 6`
 
-# get info about $process
+# get Proportional Set Size (Pss) instead of Resident Set Size (Rss)
+kbmem=`cat /proc/$pid/smaps | grep -e "^Pss:" | awk '{print $2}'| paste -sd+ | bc `
 
-#TODO: remove this. it's not necessary anymore. pidof and top -p$pid solve it.
-# using while because sometimes top doesn't return nothing
-#while [ -z "$line" ]
-#do
-#    line=`top -n 1 | grep $process`
-#done
+#convert from Kb to Mb
+let mem=${kbmem/,}/1024
 
-#get line of top. -bn is the only parameter to make it work on cron!
-line=`top -bn 1 -p$pid | grep $process`
-
-#get memory used by $process
-cut=`echo $line | cut -d ' ' -f 6`
-#convert from kb to mb
-let mem=${cut/,}/1024
-
-#if memory more than what I want then send a gnome shell notification
-if (( $mem > $maxMem ))
-then
+#if memory more $2 then send notification
+if (( $mem > $maxmem )); then
     notify-send "$process is using $mem Mb"
-    #TODO: add or not a dialog with a restart of the process?
-    #pid=pidof $process
-    #kill -9 $pid
 fi
 
 exit 0

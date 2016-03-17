@@ -415,5 +415,8 @@ icolor red "\$\{?[0-9A-Z_!@#$*?-]+\}?"
 # Comments
 color green "(^|[[:space:]])#.*$"
 
+# Comments common markers
+color brightmagenta "(XXX|TODO|FIXME|\?\?\?)"
+
 # Trailing whitespace.
 color ,green "[[:space:]]+$"

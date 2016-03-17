@@ -4,7 +4,7 @@
 # NEED: feh
 # EXAMPLE:   ./slideshow ~/pictures 4
 
-if [ -e feh ]; then 
+if [ -e feh ]; then
     # feh not installed
     if [ ! -e apt-get ]; then
         # probably using ubuntu\debian\mint

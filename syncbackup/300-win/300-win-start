@@ -10,7 +10,9 @@ if [ -f "functions.sh" ]; then
 fi
 
 #mount windows hdd
-pkexec mount $WINDOWS && sleep 5
+#pkexec mount $WINDOWS && sleep 5
+mount $WINDOWS && sleep 5
+
 
 
 #######################################
@@ -25,4 +27,6 @@ startScript "$WINDOWS/*/sw-win" "./302-win-downloads-sw-win"
 startScript "$WINDOWS/*/pictures" "./303-win-pictures"
 
 #unmount windows hdd
-pkexec umount $WINDOWS
+#pkexec umount $WINDOWS
+umount $WINDOWS
+
