@@ -13,9 +13,9 @@ function checkExec () {
 checkExec "rpmwand"
 
 #PKG_NAME=firefox-trunk
-PKG_NAME=firefox-aurora
+PKG_NAME=firefox-dev #firefox-aurora
 SKEL=$HOME/git/bash/rpm-scripts/firefox/$PKG_NAME-skel  #source of skeleton and script
-DEST=$HOME/git/rpm-localrepo  #destination of rpm and tar.bz2
+DEST=$HOME/git/localrepo  #destination of rpm and tar.bz2
 TEMP=/tmp/$PKG_NAME-rpm
 
 mkdir -p $DEST && mkdir -p $TEMP && cd $TEMP
@@ -53,10 +53,10 @@ tar xf $FILE -C .
 
 # fix all the things
 rm -rf firefox/browser/searchplugins
-mv firefox $PKG_NAME-skel/usr/lib64/
+mv firefox $PKG_NAME-skel/usr/lib64/$PKG_NAME
 
 # create default prefs
-mkdir -p $PKG_NAME-skel/usr/lib64/firefox/browser/defaults/preferences
+mkdir -p $PKG_NAME-skel/usr/lib64/$PKG_NAME/browser/defaults/preferences
 echo -e -n "pref(\"app.update.auto\",                     false);
 pref(\"app.update.enabled\",                  false);
 pref(\"app.update.autoInstallEnabled\",       false);
@@ -78,7 +78,7 @@ pref(\"ui.SpellCheckerUnderlineStyle\",       1);
 pref(\"startup.homepage_override_url\",       \"\");
 pref(\"browser.startup.homepage\",            \"data:text/plain,browser.startup.homepage=about:newtab\");
 pref(\"browser.newtabpage.pinned\",           '[{\"url\":\"http://start.fedoraproject.org/\",\"title\":\"Fedora Project - Start Page\"}]');
-" > $PKG_NAME-skel/usr/lib64/firefox/browser/defaults/preferences/firefox-redhat-default-prefs.js
+" > $PKG_NAME-skel/usr/lib64/$PKG_NAME/browser/defaults/preferences/firefox-redhat-default-prefs.js
 
 ################################################################################
 #                                   SPEC                                       #
@@ -102,8 +102,8 @@ sed '/^%dir \/usr\/lib64$/d' -i "$PKG_NAME"-files.txt
 #                                   BUILD                                      #
 ################################################################################
 # build rpm
-VERSION=`cat "$PKG_NAME"-skel/usr/lib64/firefox/application.ini | grep Version | cut -d '=' -f 2 | tail -n 1`
-RELEASE=`cat "$PKG_NAME"-skel/usr/lib64/firefox/application.ini | grep BuildID | cut -d '=' -f 2`
+VERSION=`cat "$PKG_NAME"-skel/usr/lib64/$PKG_NAME/application.ini | grep Version | cut -d '=' -f 2 | tail -n 1`
+RELEASE=`cat "$PKG_NAME"-skel/usr/lib64/$PKG_NAME/application.ini | grep BuildID | cut -d '=' -f 2`
 ARCH="x86_64"
 HOME=$TEMP #this force to build inside $TEMP and not $HOME
 rpmwand build $PKG_NAME $VERSION $RELEASE $ARCH
@@ -114,7 +114,7 @@ rpmwand build $PKG_NAME $VERSION $RELEASE $ARCH
 RPM="$TEMP/RPMS/$ARCH/$PKG_NAME-$VERSION-$RELEASE.$ARCH.rpm"
 
 # erase the old package (to avoid unwanted files around the system...)
-sudo dnf -y erase $PKG_NAME firefox #remove also the default firefox
+sudo dnf -y erase $PKG_NAME
 
 # install
 sudo dnf -y install $RPM

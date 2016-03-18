@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.0
-Name=Firefox
+Name=Firefox Dev
 GenericName=Web Browser
 GenericName[ca]=Navegador web
 GenericName[cs]=Webový prohlížeč
@@ -42,22 +42,26 @@ Comment[pt]=Navegue na Internet
 Comment[pt_BR]=Navegue na Internet
 Comment[sk]=Prehliadanie internetu
 Comment[sv]=Surfa på webben
-Exec=firefox %u
-Icon=firefox
+Exec=firefox-dev --class="firefox-dev" -P dev-edition-default %u
+Icon=firefox-developer-icon
 Terminal=false
 Type=Application
 MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
 StartupNotify=true
 Categories=Network;WebBrowser;
 Keywords=web;browser;internet;
+Actions=new-window;new-private-window;ProfileManager;
 X-Desktop-File-Install-Version=0.22
+StartupWMClass=firefox-dev
 
-Actions=ProfileManager;Minimal;
+[Desktop Action new-window]
+Name=Open a New Window
+Exec=firefox-dev --class="firefox-dev" -P dev-edition-default %u
+
+[Desktop Action new-private-window]
+Name=Open a New Private Window
+Exec=firefox-dev --class="firefox-dev" --private-window -P dev-edition-default %u
 
 [Desktop Action ProfileManager]
 Name=Open Profile Manager
-Exec=firefox -P
-
-[Desktop Action Minimal]
-Name=Open Minimal Profile
-Exec=firefox -P minimal -no-remote
+Exec=firefox-dev --class="firefox-dev" -P
