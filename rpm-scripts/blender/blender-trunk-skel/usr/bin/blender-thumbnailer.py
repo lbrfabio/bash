@@ -1,0 +1,1 @@
+/opt/blender/blender-thumbnailer.py

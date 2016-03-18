@@ -1,0 +1,103 @@
+#!/bin/bash
+
+################################################################################
+#                                   INIT                                       #
+################################################################################
+function checkExec () {
+    if [ -z `which $1` ]; then
+        echo "$1 not present"
+        exit
+    fi
+}
+
+checkExec "rpmwand"
+
+PKG_NAME=blender-trunk
+SKEL=$HOME/git/bash/rpm-scripts/blender/$PKG_NAME-skel  #source of skeleton and script
+DEST=$HOME/git/localrepo  #destination of rpm and tar.bz2
+TEMP=/tmp/$PKG_NAME-rpm
+
+mkdir -p $DEST && mkdir -p $TEMP && cd $TEMP
+
+# move old rpm, tar.bz2 in old folder
+mv $DEST/blender*.{tar.bz2,rpm} $DEST/old 2> /dev/null
+
+################################################################################
+#                                   DOWNLOAD                                   #
+################################################################################
+URL="http://builder.blender.org/download/"
+
+# download only if there isn't a blender tar.bz2 as parameter
+if [[ "$1" = *blender*.tar.bz2 ]]; then
+    FILE="$1"
+else
+    #open the blender downloads page. You need to copy the tar.bz2 link. It will be used later
+    #notify-send -i blender "Copy link Blender 64 bit glibc219 then close epiphany"
+    #killall epiphany | sleep 2 && epiphany $URL
+    #wget `xsel -b` -P $DEST
+    #FILE=`ls *.tar.bz2`   #blender-2.77-4af287f-linux-glibc219-x86_64
+    wget -q $URL
+    FILE=`egrep  ">blender.*glibc219-x86_64.tar.bz2" -o index.html  | cut -c 2-`
+    wget $URL/$FILE
+fi
+
+################################################################################
+#                                   SKELETON                                   #
+################################################################################
+# copy rpm skeleton to $TEMP
+cp -rf $SKEL .
+# extract the tar.gz then move inside the skeleton
+tar -xvjf $FILE -C .
+
+# fix all the things
+mv `basename -s .tar.bz2 $FILE`  $PKG_NAME-skel/opt/blender
+
+################################################################################
+#                                   SPEC                                       #
+################################################################################
+#initialize and edit *spec.in
+rpmwand initspec $PKG_NAME
+sed -i 's/Summary: TODO. PLEASE EDIT ME!/Summary: 3D modeling, animation, rendering and post-production/g'  "$PKG_NAME".spec.in
+sed -i 's/Vendor: TODO. PLEASE EDIT ME!/Vendor: Blender Foundation/g'  "$PKG_NAME".spec.in
+sed -i 's/Packager: TODO. PLEASE EDIT ME!/Packager: fabiolbr/g'  "$PKG_NAME".spec.in
+sed -i 's/License: TODO. PLEASE EDIT ME!/License: GPLv2/g'  "$PKG_NAME".spec.in
+sed -i 's/Group: TODO. PLEASE EDIT ME!/Group: Applications\/Multimedia/g'  "$PKG_NAME".spec.in
+sed -i 's/URL: http:\/\/TODO.example.com\//URL: http:\/\/www.blender.org/g'  "$PKG_NAME".spec.in
+#sed -i 's/#Requires:/Requires: google-droid-sans-fonts python3-numpy python3-requests /g' "$PKG_NAME".spec.in
+
+# Turn off the brp-python-bytecompile script
+# %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
+sed -i "1i$(cat $SKEL/../turn-off-python-bytecompile)\n" "$PKG_NAME".spec.in
+
+# editing *files.txt and fix conflicts
+rpmwand files $PKG_NAME
+sed '/^%dir \/usr\/bin$/d' -i "$PKG_NAME"-files.txt
+
+################################################################################
+#                                   BUILD                                      #
+################################################################################
+# build rpm
+VERSION=`echo $FILE | cut -d '-' -f 2`
+RELEASE=`echo $FILE | cut -d '-' -f 3`
+ARCH=`echo $FILE | cut -d '-' -f 6 | cut -d '.' -f 1`
+HOME=$TEMP #this force to build inside $TEMP and not $HOME
+rpmwand build $PKG_NAME $VERSION $RELEASE $ARCH
+
+################################################################################
+#                               INSTALL & CLEANUP                              #
+################################################################################
+RPM="$TEMP/RPMS/$ARCH/$PKG_NAME-$VERSION-$RELEASE.$ARCH.rpm"
+
+# erase the old package (to avoid unwanted files around the system...)
+sudo dnf -y erase $PKG_NAME #remove also the default firefox
+
+# install
+sudo dnf -y install $RPM
+
+# save the rpm
+cp $RPM $DEST/
+# save the tar.bz2
+cp $FILE $DEST/
+
+# cleanup
+rm -rf $TEMP

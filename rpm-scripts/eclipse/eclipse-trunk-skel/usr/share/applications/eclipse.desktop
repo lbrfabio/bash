@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Eclipse
+Comment=Eclipse Integrated Development Environment
+Icon=eclipse
+Exec=eclipse
+Terminal=false
+Categories=Development;IDE;Java;
+StartupNotify=true

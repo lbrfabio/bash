@@ -1,0 +1,100 @@
+#!/bin/bash
+
+################################################################################
+#                                   INIT                                       #
+################################################################################
+function checkExec () {
+    if [ -z `which $1` ]; then
+        echo "$1 not present"
+        exit
+    fi
+}
+
+checkExec "epiphany"
+checkExec "rpmwand"
+checkExec "xsel"
+
+PKG_NAME=eclipse-trunk
+SKEL=$HOME/git/bash/rpm-scripts/eclipse/$PKG_NAME-skel  #source of skeleton and script
+DEST=$HOME/git/localrepo  #destination of rpm and tar.gz
+TEMP=/tmp/$PKG_NAME-rpm
+
+mkdir -p $DEST && mkdir -p $TEMP && cd $TEMP
+
+# move old tar.gz\rpm in old folder
+mv $DEST/eclipse*.{tar.gz,rpm} $DEST/old 2> /dev/null
+
+################################################################################
+#                                   DOWNLOAD                                   #
+################################################################################
+URL="http://www.eclipse.org/downloads/?osType=linux"
+
+# download only if there isn't a eclipse-trunk deb package as parameter
+if [[ "$1" = *eclipse*.tar.gz ]]; then
+    FILE="$1"
+else
+    #open the eclipse downloads page. You need to copy the tar.gg link. It will be used later
+    notify-send -i eclipse "Copy link Eclipse IDE for Java Developers 64bit then close epiphany"
+    killall epiphany | sleep 2 && epiphany $URL
+    wget `xsel -b` -P $DEST
+    FILE=`ls *.tar.gz`
+fi
+
+################################################################################
+#                                   SKELETON                                   #
+################################################################################
+# copy rpm skeleton to $TEMP
+cp -rf $SKEL .
+# extract the tar.gz then move inside the skeleton
+tar -xvzf $FILE -C .
+
+# fix all the things
+mv eclipse $PKG_NAME-skel/opt/
+cp $SKEL/../extra/splash.bmp $PKG_NAME-skel/opt/eclipse/plugins/org.eclipse.platform*/
+
+################################################################################
+#                                   SPEC                                       #
+################################################################################
+#initialize and edit *spec.in
+rpmwand initspec $PKG_NAME
+sed -i 's/Summary: TODO. PLEASE EDIT ME!/Summary: Eclipse Java Development Tools/g'  "$PKG_NAME".spec.in
+sed -i 's/Vendor: TODO. PLEASE EDIT ME!/Vendor: Eclipse Foundation/g'  "$PKG_NAME".spec.in
+sed -i 's/Packager: TODO. PLEASE EDIT ME!/Packager: fabiolbr/g'  "$PKG_NAME".spec.in
+sed -i 's/License: TODO. PLEASE EDIT ME!/License: EPL/g'  "$PKG_NAME".spec.in
+sed -i 's/Group: TODO. PLEASE EDIT ME!/Group: Applications\/Development Tools/g'  "$PKG_NAME".spec.in
+sed -i 's/URL: http:\/\/TODO.example.com\//URL:  http:\/\/www.eclipse.org/g'  "$PKG_NAME".spec.in
+sed -i 's/TODO. PLEASE EDIT ME!/Eclipse Java Development Tools. This package is required to use Eclipse for developing software written in the Java programming language./g' "$PKG_NAME".spec.in
+
+# editing *files.txt and fix symbolics links and other conflicts
+rpmwand files $PKG_NAME
+sed '/^%dir \/usr\/bin$/d' -i "$PKG_NAME"-files.txt
+sed 's/%attr(,-,-) \/opt\/eclipse\/plugins\/org.eclipse.recommenders.doc_1.0.5.v20130822-0858-b90\/media\/graffle\/udc-draft (Autosaved).graffle/%attr(664,-,-) \"\/opt\/eclipse\/plugins\/org.eclipse.recommenders.doc_1.0.5.v20130822-0858-b90\/media\/graffle\/udc-draft (Autosaved).graffle\"/g' -i "$PKG_NAME"-files.txt
+
+################################################################################
+#                                   BUILD                                      #
+################################################################################
+# build rpm
+VERSION=`cat $PKG_NAME-skel/opt/eclipse/configuration/config.ini | grep buildId | cut -d '=' -f 2 | cut -c -5`
+RELEASE=`cat $PKG_NAME-skel/opt/eclipse/configuration/config.ini | grep buildId | cut -d '-' -f 1 | cut -c 23-`
+ARCH="x86_64"
+HOME=$TEMP #this force to build inside $TEMP and not $HOME
+rpmwand build $PKG_NAME $VERSION $RELEASE $ARCH
+
+################################################################################
+#                               INSTALL & CLEANUP                              #
+################################################################################
+RPM="$TEMP/RPMS/$ARCH/$PKG_NAME-$VERSION-$RELEASE.$ARCH.rpm"
+
+# erase the old package (to avoid some misc files around the system...)
+sudo dnf -y erase $PKG_NAME
+
+# install
+sudo dnf -y install $RPM
+
+# save the rpm
+cp $RPM $DEST/
+# save the tar.gz
+#cp $FILE $DEST/
+
+# cleanup
+rm -rf $TEMP
