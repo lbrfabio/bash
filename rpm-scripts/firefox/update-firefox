@@ -3,22 +3,15 @@
 ################################################################################
 #                                   INIT                                       #
 ################################################################################
-function checkExec () {
-    if [ -z `which $1` ]; then
-        echo "$1 not present"
-        exit
-    fi
-}
+RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
+if [ -f "$RPMEASY" ]; then
+        . "$RPMEASY"
+fi
 
-checkExec "rpmwand"
-
-#PKG_NAME=firefox-trunk
-PKG_NAME=firefox-dev #firefox-aurora
-SKEL=$HOME/git/bash/rpm-scripts/firefox/$PKG_NAME-skel  #source of skeleton and script
-DEST=$HOME/git/localrepo  #destination of rpm and tar.bz2
-TEMP=/tmp/$PKG_NAME-rpm
-
-mkdir -p $DEST && mkdir -p $TEMP && cd $TEMP
+#firefox-trunk(mozilla-central), firefox-dev (mozilla-aurora)
+prepare_env "firefox-dev" \
+            "$HOME/git/bash/rpm-scripts/firefox/firefox-dev-skel" \
+            "$HOME/git/localrepo"
 
 # move old rpm, tar.bz2 in old folder
 mv $DEST/firefox*.{tar.bz2,rpm} $DEST/old 2> /dev/null
@@ -26,17 +19,19 @@ mv $DEST/firefox*.{tar.bz2,rpm} $DEST/old 2> /dev/null
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
+# TODO: changed branch based on PKG_NAME
 BRANCH=mozilla-aurora
 #BRANCH=mozilla-central
 
 VERSION=`curl mxr.mozilla.org/$BRANCH/source/browser/config/version.txt?raw=1\.en-US.linux-x86_64.tar.bz2 -s`
-echo "Version: $VERSION"
+#echo "Version: $VERSION"
+
+URL=https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-$BRANCH/firefox-$VERSION.en-US.linux-x86_64.tar.bz2
 
 # download only if there isn't a firefox tar.bz2 package as parameter
 if [[ "$1" = *firefox*.tar.bz2 ]]; then
     FILE="$1"  #FIXME: doesn't work with relative path
 else
-    URL=https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-$BRANCH/firefox-$VERSION.en-US.linux-x86_64.tar.bz2
     echo "Downloading: $URL"
     curl $URL -O -#
     FILE=`ls *.tar.bz2`
@@ -48,7 +43,6 @@ fi
 # copy rpm skeleton to $TEMP
 cp -rf $SKEL .
 # extract the tar.bz2 then move inside the skeleton
-#file-roller --extract-to=$TEMP "$FILE"
 tar xf $FILE -C .
 
 # fix all the things
@@ -83,46 +77,33 @@ pref(\"browser.newtabpage.pinned\",           '[{\"url\":\"http://start.fedorapr
 ################################################################################
 #                                   SPEC                                       #
 ################################################################################
-#initialize and edit *spec.in
-rpmwand initspec $PKG_NAME
-sed -i 's/Summary: TODO. PLEASE EDIT ME!/Summary: Safe and easy web browser from Mozilla/g'  "$PKG_NAME".spec.in
-sed -i 's/Vendor: TODO. PLEASE EDIT ME!/Vendor: Mozilla/g'  "$PKG_NAME".spec.in
-sed -i 's/Packager: TODO. PLEASE EDIT ME!/Packager: fabiolbr/g'  "$PKG_NAME".spec.in
-sed -i 's/License: TODO. PLEASE EDIT ME!/License: GPL v3/g'  "$PKG_NAME".spec.in
-sed -i 's/Group: TODO. PLEASE EDIT ME!/Group: Applications\/Internet/g'  "$PKG_NAME".spec.in
-sed -i 's/URL: http:\/\/TODO.example.com\//URL: http:\/\/nightly.mozilla.org/g'  "$PKG_NAME".spec.in
-sed -i 's/#Requires:/Requires: mozilla-filesystem sqlite/g' "$PKG_NAME".spec.in
+# generate package info
+echo "Summary: Safe and easy web browser from Mozilla
+Vendor: Mozilla
+Packager: fabiolbr
+License: GPL v3
+Group: Applications/Internet
+URL: http://nightly.mozilla.org
+Requires: mozilla-filesystem sqlite" > pkg.in
 
-# editing *files.txt and fix conflicts
-rpmwand files $PKG_NAME
-sed '/^%dir \/usr\/bin$/d' -i "$PKG_NAME"-files.txt
-sed '/^%dir \/usr\/lib64$/d' -i "$PKG_NAME"-files.txt
+prepare_build
+
+# fix conflicts
+sed '/^%dir \/usr\/bin$/d' -i *files.txt
+sed '/^%dir \/usr\/lib64$/d' -i *files.txt
 
 ################################################################################
-#                                   BUILD                                      #
+#                                BUILD + INSTALL                               #
 ################################################################################
 # build rpm
 VERSION=`cat "$PKG_NAME"-skel/usr/lib64/$PKG_NAME/application.ini | grep Version | cut -d '=' -f 2 | tail -n 1`
 RELEASE=`cat "$PKG_NAME"-skel/usr/lib64/$PKG_NAME/application.ini | grep BuildID | cut -d '=' -f 2`
-ARCH="x86_64"
-HOME=$TEMP #this force to build inside $TEMP and not $HOME
-rpmwand build $PKG_NAME $VERSION $RELEASE $ARCH
+#ARCH=`echo $FILE | cut -d '.' -f 3`
+build_rpm $VERSION $RELEASE
 
-################################################################################
-#                               INSTALL & CLEANUP                              #
-################################################################################
-RPM="$TEMP/RPMS/$ARCH/$PKG_NAME-$VERSION-$RELEASE.$ARCH.rpm"
+# save the tar.bz2 #TODO: use the option inside rpmeasy-functions
+cp $FILE $DEST/
 
-# erase the old package (to avoid unwanted files around the system...)
-sudo dnf -y erase $PKG_NAME
+install_rpm
 
-# install
-sudo dnf -y install $RPM
 
-# save the rpm
-cp $RPM $DEST/
-# save the tar.bz2
-#cp $FILE $DEST/
-
-# cleanup
-rm -rf $TEMP

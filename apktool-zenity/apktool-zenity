@@ -32,7 +32,7 @@ signApk () {
 
 
 output_fld=$HOME/android/apktool/
-source_fld=$HOME/coding/bash/apktool-zenity
+source_fld=$HOME/git/bash/apktool-zenity
 icon=$source_fld/apktool-zenity.svg
 apktool=$source_fld/apktool.jar
 signapk=$source_fld/signapk.jar

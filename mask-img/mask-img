@@ -4,7 +4,7 @@
 #TODO: add evaluation of arguments with getopts
 #TODO: use "file" in a different to be sure they are images 100%
 
-SOURCE=$HOME/coding/bash/mask-img
+SOURCE=$HOME/git/bash/mask-img
 FILES="/tmp/list.txt"
 
 # setup directory

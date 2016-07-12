@@ -50,7 +50,7 @@ MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xm
 StartupNotify=true
 Categories=Network;WebBrowser;
 Keywords=web;browser;internet;
-Actions=new-window;new-private-window;ProfileManager;
+Actions=new-window;new-private-window;profile-manager;restart;
 X-Desktop-File-Install-Version=0.22
 StartupWMClass=firefox-dev
 
@@ -62,6 +62,10 @@ Exec=firefox-dev --class="firefox-dev" -P dev-edition-default %u
 Name=Open a New Private Window
 Exec=firefox-dev --class="firefox-dev" --private-window -P dev-edition-default %u
 
-[Desktop Action ProfileManager]
+[Desktop Action profile-manager]
 Name=Open Profile Manager
 Exec=firefox-dev --class="firefox-dev" -P
+
+[Desktop Action restart]
+Name=Restart
+Exec=bash -c 'wmctrl -x -c firefox-dev; while [ `pidof firefox` ]; do sleep 0.5; done; firefox-dev --class="firefox-dev" -P dev-edition-default &'

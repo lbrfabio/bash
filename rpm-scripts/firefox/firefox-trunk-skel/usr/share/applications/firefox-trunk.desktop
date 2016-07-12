@@ -43,14 +43,14 @@ Comment[pt_BR]=Navegue na Internet
 Comment[sk]=Prehliadanie internetu
 Comment[sv]=Surfa på webben
 Exec=firefox-trunk --class="firefox-trunk" %u
-Icon=firefox-trunkeloper-icon
+Icon=firefox-trunk
 Terminal=false
 Type=Application
 MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
 StartupNotify=true
 Categories=Network;WebBrowser;
 Keywords=web;browser;internet;
-Actions=new-window;new-private-window;ProfileManager;
+Actions=new-window;new-private-window;profile-manager;restart;
 X-Desktop-File-Install-Version=0.22
 StartupWMClass=firefox-trunk
 
@@ -62,6 +62,10 @@ Exec=firefox-trunk --class="firefox-trunk" %u
 Name=Open a New Private Window
 Exec=firefox-trunk --class="firefox-trunk" --private-window %u
 
-[Desktop Action ProfileManager]
+[Desktop Action profile-manager]
 Name=Open Profile Manager
 Exec=firefox-trunk --class="firefox-trunk" -P
+
+[Desktop Action restart]
+Name=Restart
+Exec=bash -c 'wmctrl -x -c firefox-dev; while [ `pidof firefox` ]; do sleep 0.5; done; firefox-trunk --class="firefox-trunk" &'
