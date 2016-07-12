@@ -21,9 +21,10 @@ mv $DEST/firefox*.{tar.bz2,rpm} $DEST/old 2> /dev/null
 ################################################################################
 # TODO: changed branch based on PKG_NAME
 BRANCH=mozilla-aurora
+#BRANCH=mozilla-beta
 #BRANCH=mozilla-central
 
-VERSION=`curl mxr.mozilla.org/$BRANCH/source/browser/config/version.txt?raw=1\.en-US.linux-x86_64.tar.bz2 -s`
+VERSION=`curl https://hg.mozilla.org/releases/$BRANCH/raw-file/tip/browser/config/version.txt -s`
 #echo "Version: $VERSION"
 
 URL=https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-$BRANCH/firefox-$VERSION.en-US.linux-x86_64.tar.bz2
