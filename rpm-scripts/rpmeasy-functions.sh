@@ -40,7 +40,7 @@ function prepare_build() {
     # initialize and edit *spec.in
     rpmwand initspec $PKG_NAME
 
-    if [ $1 == "python" ]; then 
+    if [[ $1 == "python" ]]; then
         build_python_bytecompile_off
     fi
 

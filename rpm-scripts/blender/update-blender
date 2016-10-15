@@ -57,6 +57,9 @@ prepare_build python
 
 # fix conflicts
 sed '/^%dir \/usr\/bin$/d' -i *files.txt
+sed '/%attr/s/.*/&"/' -i *files.txt                    #add " at the end of every line with attr
+sed 's/,-,-) /,-,-) "/g' -i *files.txt                 #add " before the file name for every attr line
+sed 's/%attr(,-,-)/%attr(644,-,-)/g' -i *files.txt     #fix permissions
 
 ################################################################################
 #                                BUILD + INSTALL                               #
