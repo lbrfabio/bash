@@ -1,8 +1,9 @@
 #!/bin/bash
-pkg=$(adb shell pm path com.koushikdutta.backup 2> /tmp/carbon-backup)
+BASE=$(dirname $0)
+pkg=$(adb shell pm path com.koushikdutta.backup 2> /tmp/helium-backup)
 
-status=`cat /tmp/carbon-backup`
-rm /tmp/carbon-backup
+status=`cat /tmp/helium-backup`
+rm /tmp/helium-backup
 
 if [  "$status" == "error: device not found" ]
 then

@@ -25,7 +25,7 @@ if [[ "$1" = *eclipse*.tar.gz ]]; then
     FILE="$1"
 else
     #open the eclipse downloads page. You need to copy the tar.gg link. It will be used later
-    notify-send -i eclipse "Copy link Eclipse IDE for Java Developers 64bit then close epiphany"
+    notify-send -i eclipse "Copy link Eclipse IDE for Java Developers(or Java EE) 64bit then close epiphany"
     killall epiphany | sleep 2 && epiphany $URL
     wget `xsel -b` -P $DEST
     FILE=`ls *.tar.gz`
@@ -60,7 +60,6 @@ prepare_build
 
 # fix symbolics links and other conflicts
 sed '/^%dir \/usr\/bin$/d' -i *files.txt
-sed 's/%attr(,-,-) \/opt\/eclipse\/plugins\/org.eclipse.recommenders.doc_1.0.5.v20130822-0858-b90\/media\/graffle\/udc-draft (Autosaved).graffle/%attr(664,-,-) \"\/opt\/eclipse\/plugins\/org.eclipse.recommenders.doc_1.0.5.v20130822-0858-b90\/media\/graffle\/udc-draft (Autosaved).graffle\"/g' -i *files.txt
 
 ################################################################################
 #                                BUILD + INSTALL                               #
