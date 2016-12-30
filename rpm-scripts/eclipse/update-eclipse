@@ -3,6 +3,10 @@
 ################################################################################
 #                                   INIT                                       #
 ################################################################################
+if [[ "$1" = *eclipse*.@(tar.bz2|tar.gz) ]]; then
+    FILE=`realpath $1`
+fi
+
 RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
 if [ -f "$RPMEASY" ]; then
         . "$RPMEASY"
@@ -12,23 +16,21 @@ prepare_env "eclipse-trunk" \
             "$HOME/git/bash/rpm-scripts/eclipse/eclipse-trunk-skel" \
             "$HOME/git/localrepo"
 
-# move old tar.gz\rpm in old folder
-mv $DEST/eclipse*.{tar.gz,rpm} $DEST/old 2> /dev/null
+# move old tar.gz, tar.bz2 or rpm in old folder
+mv $DEST/eclipse*.{tar.bz2,tar.gz,rpm} $DEST/old 2> /dev/null
 
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
 URL="http://www.eclipse.org/downloads/?osType=linux"
 
-# download only if there isn't a eclipse-trunk deb package as parameter
-if [[ "$1" = *eclipse*.tar.gz ]]; then
-    FILE="$1"
-else
+# download only if custom FILE is not set
+if [ -z "$FILE" ]; then
     #open the eclipse downloads page. You need to copy the tar.gg link. It will be used later
     notify-send -i eclipse "Copy link Eclipse IDE for Java Developers(or Java EE) 64bit then close epiphany"
     killall epiphany | sleep 2 && epiphany $URL
-    wget `xsel -b` -P $DEST
-    FILE=`ls *.tar.gz`
+    wget `xsel -b` -P $TEMP/src
+    FILE=`ls $TEMP/src/*eclipse*.tar.gz`
 fi
 
 ################################################################################
@@ -56,7 +58,7 @@ URL: http://www.eclipse.org
 Description: Eclipse Java Development Tools. This package is required to use Eclipse for developing software written in the Java programming language
 #Requires:" > pkg.in
 
-prepare_build
+prepare_build jar-repack_off
 
 # fix symbolics links and other conflicts
 sed '/^%dir \/usr\/bin$/d' -i *files.txt

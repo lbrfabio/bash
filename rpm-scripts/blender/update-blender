@@ -3,6 +3,10 @@
 ################################################################################
 #                                   INIT                                       #
 ################################################################################
+if [[ "$1" = *blender*.@(tar.bz2|tar.gz) ]]; then
+    FILE=`realpath $1`
+fi
+
 RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
 if [ -f "$RPMEASY" ]; then
         . "$RPMEASY"
@@ -12,21 +16,19 @@ prepare_env "blender-trunk" \
             "$HOME/git/bash/rpm-scripts/blender/blender-trunk-skel" \
             "$HOME/git/localrepo"
 
-# move old rpm, tar.bz2 in old folder
-mv $DEST/blender*.{tar.bz2,rpm} $DEST/old 2> /dev/null
+# move old tar.gz, tar.bz2 or rpm in old folder
+mv $DEST/blender*.{tar.bz2,tar.gz,rpm} $DEST/old 2> /dev/null
 
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
 URL="http://builder.blender.org/download/"
 
-# download only if there isn't a blender tar.bz2 as parameter
-if [[ "$1" = *blender*.tar.bz2 ]]; then
-    FILE="$1"
-else
+# download only if custom FILE is not set
+if [ -z "$FILE" ]; then
     wget -q $URL
     FILE=`egrep  ">blender.*glibc219-x86_64.tar.bz2" -o index.html  | cut -c 2-`
-    wget $URL/$FILE
+    wget $URL/$FILE -P $TEMP/src
 fi
 
 ################################################################################
@@ -34,7 +36,7 @@ fi
 ################################################################################
 # copy rpm skeleton to $TEMP
 cp -rf $SKEL .
-# extract the tar.gz then move inside the skeleton
+# extract the tar.bz2 then move inside the skeleton
 tar -xjf $FILE -C .
 
 # fix all the things
@@ -53,7 +55,7 @@ URL: http://www.blender.org
 Description: Blender is the essential software solution you need for 3D, from modeling,animation, rendering and post-production to interactive creation and playback.
 #Requires: google-droid-sans-fonts python3-numpy python3-requests" > pkg.in
 
-prepare_build python
+prepare_build python_off
 
 # fix conflicts
 sed '/^%dir \/usr\/bin$/d' -i *files.txt

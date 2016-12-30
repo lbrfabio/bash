@@ -40,9 +40,7 @@ function prepare_build() {
     # initialize and edit *spec.in
     rpmwand initspec $PKG_NAME
 
-    if [[ $1 == "python" ]]; then
-        build_python_bytecompile_off
-    fi
+    prepare_build_turn-off $@
 
     # update spec.in
     while read LINE; do
@@ -73,11 +71,18 @@ function prepare_build() {
     rpmwand files $PKG_NAME
 }
 
-function build_python_bytecompile_off() {
-    # Turn off the brp-python-bytecompile script
-    # %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
-    PYTHON_COMPILE_OFF="$SOURCE_DIR/turn-off-python-bytecompile"
-    sed -i "1i$(cat $PYTHON_COMPILE_OFF)\n" *spec.in
+function prepare_build_turn-off() {
+    if [[ $@ == *python_off* ]]; then
+        # Turn off the brp-python-bytecompile script
+        # %global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
+        PYTHON_COMPILE_OFF="$SOURCE_DIR/turn-off-python-bytecompile"
+        sed -i "1i$(cat $PYTHON_COMPILE_OFF)\n" *spec.in
+    fi
+
+    if [[ $@ == *jar-repack_off* ]]; then
+        # Turn off jar repackaging
+        sed -i "1i%define __jar_repack %{nil}\n" *spec.in
+    fi
 }
 
 function build_rpm() {

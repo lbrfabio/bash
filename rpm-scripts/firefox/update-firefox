@@ -1,20 +1,24 @@
 #!/bin/bash
+#firefox-trunk(mozilla-central), firefox-dev (mozilla-aurora)
 
 ################################################################################
 #                                   INIT                                       #
 ################################################################################
+if [[ "$1" = *firefox*.@(tar.bz2|tar.gz) ]]; then
+    FILE=`realpath $1`
+fi
+
 RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
 if [ -f "$RPMEASY" ]; then
         . "$RPMEASY"
 fi
 
-#firefox-trunk(mozilla-central), firefox-dev (mozilla-aurora)
 prepare_env "firefox-dev" \
             "$HOME/git/bash/rpm-scripts/firefox/firefox-dev-skel" \
             "$HOME/git/localrepo"
 
-# move old rpm, tar.bz2 in old folder
-mv $DEST/firefox*.{tar.bz2,rpm} $DEST/old 2> /dev/null
+# move old tar.gz, tar.bz2 or rpm in old folder
+mv $DEST/firefox*.{tar.bz2,tar.gz,rpm} $DEST/old 2> /dev/null
 
 ################################################################################
 #                                   DOWNLOAD                                   #
@@ -29,13 +33,11 @@ VERSION=`curl https://hg.mozilla.org/releases/$BRANCH/raw-file/tip/browser/confi
 
 URL=https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-$BRANCH/firefox-$VERSION.en-US.linux-x86_64.tar.bz2
 
-# download only if there isn't a firefox tar.bz2 package as parameter
-if [[ "$1" = *firefox*.tar.bz2 ]]; then
-    FILE="$1"  #FIXME: doesn't work with relative path
-else
+# download only if custom FILE is not set
+if [ -z "$FILE" ]; then
     echo "Downloading: $URL"
     curl $URL -O -#
-    FILE=`ls *.tar.bz2`
+    FILE=`ls $TEMP/*.tar.bz2`
 fi
 
 ################################################################################
