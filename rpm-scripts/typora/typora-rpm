@@ -1,0 +1,74 @@
+#!/bin/bash
+
+################################################################################
+#                                   INIT                                       #
+################################################################################
+RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
+if [ -f "$RPMEASY" ]; then
+        . "$RPMEASY"
+fi
+
+prepare_env "typora" \
+            "$HOME/git/bash/rpm-scripts/typora/typora-skel" \
+            "$HOME/git/localrepo"
+
+# move old deb or rpm in old folder
+mv $DEST/typora*.{deb,rpm} $DEST/old 2> /dev/null
+
+################################################################################
+#                                   DOWNLOAD                                   #
+################################################################################
+URL=https://www.typora.io/linux/Packages
+
+# download only if custom FILE is not set
+if [ -z "$FILE" ]; then
+    echo "Downloading: $URL"
+    wget -q $URL
+    URL=https://typora.io/`tac $TEMP/Packages | grep -m1 amd64.deb | cut -d ' ' -f 2`
+    wget $URL -P $TEMP
+    FILE=`ls $TEMP/*.deb`
+fi
+
+################################################################################
+#                                   SKELETON                                   #
+################################################################################
+# copy rpm skeleton to $TEMP
+cp -rf $SKEL .
+# extract the deb then move inside the skeleton
+ar -x $FILE
+(cd $PKG_NAME-skel && tar -xJf $TEMP/data.tar.xz)
+
+################################################################################
+#                                   SPEC                                       #
+################################################################################
+# generate package info
+echo "Summary: Typora
+Vendor: Typora
+Packager: fabiolbr
+License: Commercial
+Group: Applications/Editors
+URL:  http://typora.io
+Description: a minimal Markdown reading & writing app. A minimal markdown editor
+#Requires:" > pkg.in
+
+prepare_build
+
+# fix symbolics links and other conflicts
+sed '/^%dir \/usr\/bin$/d' -i *files.txt
+sed '/%attr/s/.*/&"/' -i *files.txt                    #add " at the end of every line with attr
+sed 's/,-,-) /,-,-) "/g' -i *files.txt                 #add " before the file name for every attr line
+sed 's/%attr(,-,-)/%attr(755,-,-)/g' -i *files.txt     #fix permissions
+
+################################################################################
+#                                BUILD + INSTALL                               #
+################################################################################
+# build rpm
+VERSION=`tac Packages | grep -m1 Version | cut -d ' ' -f 2 | tr '-' '_'`
+RELEASE=`tac Packages | grep -m1 MD5sum | cut -d ' ' -f 2`
+ARCH="x86_64" #i686
+build_rpm $VERSION $RELEASE $ARCH
+
+# save the deb #TODO: use the option inside rpmeasy-functions
+#cp $FILE $DEST/
+
+install_rpm
