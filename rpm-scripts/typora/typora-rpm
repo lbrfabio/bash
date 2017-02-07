@@ -22,7 +22,6 @@ URL=https://www.typora.io/linux/Packages
 
 # download only if custom FILE is not set
 if [ -z "$FILE" ]; then
-    echo "Downloading: $URL"
     wget -q $URL
     URL=https://typora.io/`tac $TEMP/Packages | grep -m1 amd64.deb | cut -d ' ' -f 2`
     wget $URL -P $TEMP
@@ -49,7 +48,7 @@ License: Commercial
 Group: Applications/Editors
 URL:  http://typora.io
 Description: a minimal Markdown reading & writing app. A minimal markdown editor
-#Requires:" > pkg.in
+Requires: libXScrnSaver" > pkg.in
 
 prepare_build
 
