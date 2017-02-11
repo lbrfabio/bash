@@ -12,9 +12,6 @@ prepare_env "typora" \
             "$HOME/git/bash/rpm-scripts/typora/typora-skel" \
             "$HOME/git/localrepo"
 
-# move old deb or rpm in old folder
-mv $DEST/typora*.{deb,rpm} $DEST/old 2> /dev/null
-
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
@@ -66,6 +63,10 @@ VERSION=`tac Packages | grep -m1 Version | cut -d ' ' -f 2 | tr '-' '_'`
 RELEASE=`tac Packages | grep -m1 MD5sum | cut -d ' ' -f 2`
 ARCH="x86_64" #i686
 build_rpm $VERSION $RELEASE $ARCH
+
+#TODO: implement inside rpmeasy a new var for "OLD"
+# move old deb or rpm in old folder 
+mv $DEST/typora*.{deb,rpm} $DEST/old 2> /dev/null
 
 # save the deb #TODO: use the option inside rpmeasy-functions
 #cp $FILE $DEST/

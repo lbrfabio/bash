@@ -1,6 +1,6 @@
 #!/bin/bash
 # NAME: nettygear
-# DESCRIPTION: let manage the router Netgear DG834G
+# DESCRIPTION: let manage the router Netgear D6000
 # REQUIREMENTS: libnotify curl
 # OPTIONAL: figlet
 

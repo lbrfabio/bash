@@ -3,10 +3,6 @@
 ################################################################################
 #                                   INIT                                       #
 ################################################################################
-if [[ "$1" = *eclipse*.@(tar.bz2|tar.gz) ]]; then
-    FILE=`realpath $1`
-fi
-
 RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
 if [ -f "$RPMEASY" ]; then
         . "$RPMEASY"
@@ -16,16 +12,15 @@ prepare_env "eclipse-trunk" \
             "$HOME/git/bash/rpm-scripts/eclipse/eclipse-trunk-skel" \
             "$HOME/git/localrepo"
 
-# move old tar.gz, tar.bz2 or rpm in old folder
-mv $DEST/eclipse*.{tar.bz2,tar.gz,rpm} $DEST/old 2> /dev/null
-
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
-URL="http://www.eclipse.org/downloads/?osType=linux"
+if [[ "$1" = *eclipse*.@(tar.bz2|tar.gz) ]]; then
+    FILE=`realpath $1`
+fi
 
-# download only if custom FILE is not set
 if [ -z "$FILE" ]; then
+    URL="http://www.eclipse.org/downloads/?osType=linux"
     #open the eclipse downloads page. You need to copy the tar.gg link. It will be used later
     notify-send -i eclipse "Copy link Eclipse IDE for Java Developers(or Java EE) 64bit then close epiphany"
     killall epiphany | sleep 2 && epiphany $URL
@@ -71,5 +66,8 @@ VERSION=`cat $PKG_NAME-skel/opt/eclipse/configuration/config.ini | grep buildId 
 RELEASE=`cat $PKG_NAME-skel/opt/eclipse/configuration/config.ini | grep buildId | cut -d '-' -f 1 | cut -c 23-`
 #ARCH="x86_64"
 build_rpm $VERSION $RELEASE
+
+# move old tar.gz, tar.bz2 or rpm in old folder #TODO: implement inside rpmeasy a new var for "OLD"
+mv $DEST/eclipse*.{tar.bz2,tar.gz,rpm} $DEST/old 2> /dev/null
 
 install_rpm

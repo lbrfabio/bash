@@ -3,10 +3,6 @@
 ################################################################################
 #                                   INIT                                       #
 ################################################################################
-if [[ "$1" = *blender*.@(tar.bz2|tar.gz) ]]; then
-    FILE=`realpath $1`
-fi
-
 RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
 if [ -f "$RPMEASY" ]; then
         . "$RPMEASY"
@@ -16,16 +12,15 @@ prepare_env "blender-trunk" \
             "$HOME/git/bash/rpm-scripts/blender/blender-trunk-skel" \
             "$HOME/git/localrepo"
 
-# move old tar.gz, tar.bz2 or rpm in old folder
-mv $DEST/blender*.{tar.bz2,tar.gz,rpm} $DEST/old 2> /dev/null
-
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
-URL="http://builder.blender.org/download/"
+if [[ "$1" = *blender*.@(tar.bz2|tar.gz) ]]; then
+    FILE=`realpath $1`
+fi
 
-# download only if custom FILE is not set
 if [ -z "$FILE" ]; then
+    URL="http://builder.blender.org/download/"
     wget -q $URL
     FILE=`egrep  ">blender.*glibc219-x86_64.tar.bz2" -o index.html  | cut -c 2-`
     wget $URL/$FILE -P $TEMP/src
@@ -71,5 +66,8 @@ VERSION=`echo $FILE | cut -d '-' -f 2`
 RELEASE=`echo $FILE | cut -d '-' -f 3`
 #ARCH=`echo $FILE | cut -d '-' -f 6 | cut -d '.' -f 1`
 build_rpm $VERSION $RELEASE
+
+# move old tar.gz, tar.bz2 or rpm in old folder #TODO: implement inside rpmeasy a new var for "OLD"
+mv $DEST/blender*.{tar.bz2,tar.gz,rpm} $DEST/old 2> /dev/null
 
 install_rpm
