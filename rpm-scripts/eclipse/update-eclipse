@@ -15,11 +15,9 @@ prepare_env "eclipse-trunk" \
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
-if [[ "$1" = *eclipse*.@(tar.bz2|tar.gz) ]]; then
-    FILE=`realpath $1`
-fi
-
-if [ -z "$FILE" ]; then
+if [[ ! -z "$FILE" ]] && [[ "$FILE" = *firefox*.@(tar.bz2|tar.gz) ]]; then
+    echo "A file was specified"
+else
     URL="http://www.eclipse.org/downloads/?osType=linux"
     #open the eclipse downloads page. You need to copy the tar.gg link. It will be used later
     notify-send -i eclipse "Copy link Eclipse IDE for Java Developers(or Java EE) 64bit then close epiphany"

@@ -8,37 +8,49 @@ if [ -f "$RPMEASY" ]; then
         . "$RPMEASY"
 fi
 
-prepare_env "firefox-dev" \
-            "$HOME/git/bash/rpm-scripts/firefox/firefox-dev-skel" \
-            "$HOME/git/localrepo"
+prepare_env "firefox-daily" \
+            "$HOME/git/bash/rpm-scripts/firefox/firefox-daily-skel" \
+            "$HOME/git/localrepo" \
+            "$1" #FILE
 
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
-if [[ "$1" = *firefox*.@(tar.bz2|tar.gz) ]]; then
-    FILE=`realpath $1`
+if [[ ! -z "$FILE" ]] && [[ "$FILE" = *firefox*.@(tar.bz2|tar.gz) ]]; then
+    echo "A file was specified"
 elif [[ "$1" = central || "$1" = trunk || "$1" = master ]]; then
+    TYPE="firefox-nightly"
     BRANCH="central"
 elif [[ "$1" = aurora || "$1" = dev || "$1" = developer ]]; then
+    TYPE="firefox-aurora"
     BRANCH="aurora"
+elif [[ "$1" = beta ]]; then
+    TYPE="firefox-beta"
+    BRANCH="beta"
+elif [[ "$1" = release || "$1" = firefox ]]; then
+    TYPE="firefox"
+    BRANCH="release"
 else
     echo -e "No branch or file is specified. Default settings will be used\n"
-    BRANCH="aurora"
+    TYPE="firefox-aurora" #"firefox-beta"
+    BRANCH="aurora" #"beta"
 fi
 
 if [ -z "$FILE" ]; then
+
     if [[ "$BRANCH" = central ]]; then
         VERSION=`curl https://hg.mozilla.org/mozilla-$BRANCH/raw-file/tip/browser/config/version.txt -s`
-    elif [[ "$BRANCH" = aurora ]]; then
+    else
         VERSION=`curl https://hg.mozilla.org/releases/mozilla-$BRANCH/raw-file/tip/browser/config/version.txt -s`
     fi
-    echo "Branch: $BRANCH"
-    echo "Version: $VERSION"
 
-    URL=https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-$BRANCH/firefox-$VERSION.en-US.linux-x86_64.tar.bz2
+    echo "TYPE: $TYPE"
+    echo "BRANCH: $BRANCH"
+    echo "VERSION: $VERSION"
+    URL="https://download.mozilla.org/?product=$TYPE-latest&os=linux64&lang=en-US"
 
     echo "Downloading: $URL"
-    curl $URL -O -#
+    curl -L $URL -o "$TYPE-$VERSION.tar.bz2" -#
     FILE=`ls $TEMP/*.tar.bz2`
 fi
 echo "File: $FILE"

@@ -15,11 +15,9 @@ prepare_env "blender-trunk" \
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
-if [[ "$1" = *blender*.@(tar.bz2|tar.gz) ]]; then
-    FILE=`realpath $1`
-fi
-
-if [ -z "$FILE" ]; then
+if [[ ! -z "$FILE" ]] && [[ "$FILE" = *blender*.@(tar.bz2|tar.gz) ]]; then
+    echo "A file was specified"
+else
     URL="http://builder.blender.org/download/"
     wget -q $URL
     FILE=`egrep  ">blender.*glibc219-x86_64.tar.bz2" -o index.html  | cut -c 2-`

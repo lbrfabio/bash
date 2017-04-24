@@ -1,0 +1,34 @@
+[Desktop Entry]
+Version=1.0
+Name=Firefox Daily
+GenericName=Web Browser
+Comment=Browse the Web
+Exec=firefox-daily --class="firefox-daily" -P dev-edition-default %u
+Icon=firefox-developer-icon
+Terminal=false
+Type=Application
+MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true
+Categories=Network;WebBrowser;
+Keywords=web;browser;internet;
+Actions=new-window;new-private-window;profile-manager;restart;
+X-Desktop-File-Install-Version=0.22
+StartupWMClass=firefox-daily
+
+Name[en_US]=Firefox Daily
+
+[Desktop Action new-window]
+Name=Open a New Window
+Exec=firefox-daily --class="firefox-daily" -P dev-edition-default %u
+
+[Desktop Action new-private-window]
+Name=Open a New Private Window
+Exec=firefox-daily --class="firefox-daily" --private-window -P dev-edition-default %u
+
+[Desktop Action profile-manager]
+Name=Open Profile Manager
+Exec=firefox-daily --class="firefox-daily" -P
+
+[Desktop Action restart]
+Name=Restart
+Exec=bash -c 'wmctrl -x -c firefox-daily; while [ `pidof firefox` ]; do sleep 0.5; done; firefox-daily --class="firefox-daily" -P dev-edition-default &'

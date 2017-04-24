@@ -10,31 +10,21 @@
 #alternative command where c39-40 stand for "from col 39 to 40"
 #nvidia-smi -q -d TEMPERATURE | grep Gpu | cut -c39-40
 
+function showTemp () {
+    notify-send -i $icon "GPU            Temperature: $temp °C            Fan Speed:  $fanspeed"
+}
+
 temp=`nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader`
 fanspeed=`nvidia-smi | grep % | cut -c2-5`
+warning=55
+normal=45
 
-icon="nvidia-settings"
-#da invalid number of options if I use $text because of spaces...why?
-#text="GPU             Temperature: $temp °C              Fan Speed:  $fanspeed"
-
-if [ "$1" == -'f' ]
-then
-    notify-send -i $icon "GPU             Temperature: $temp °C              Fan Speed:  $fanspeed"
-    exit
-fi
-
-
-if (( temp > 55 ))  #warning
-then
+if (( temp > warning )); then
     icon="dialog-warning"
-    notify-send -i $icon "GPU             Temperature: $temp °C              Fan Speed:  $fanspeed"
-    exit
+else
+    icon="nvidia-settings"
 fi
 
-if (( temp > 45))  #normal
-then
-    notify-send -i $icon "GPU             Temperature: $temp °C              Fan Speed:  $fanspeed"
-    exit
+if [ "$1" == "-f" ] || (( temp > normal)); then
+    showTemp
 fi
-
-

@@ -21,6 +21,11 @@ function prepare_env() {
     DEST=$3     #destination of rpm and tar.gz
     TEMP=/tmp/$PKG_NAME-rpm
 
+    FILE=`realpath $4 2>/dev/null`
+    if [ ! -f $FILE ]; then
+        unset FILE
+    fi
+
     mkdir -p $DEST && mkdir -p $TEMP && cd $TEMP
 }
 
