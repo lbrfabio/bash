@@ -10,7 +10,8 @@ fi
 
 prepare_env "blender-trunk" \
             "$HOME/git/bash/rpm-scripts/blender/blender-trunk-skel" \
-            "$HOME/git/localrepo"
+            "$HOME/git/localrepo" \
+            "$1" #FILE
 
 ################################################################################
 #                                   DOWNLOAD                                   #

@@ -10,12 +10,13 @@ fi
 
 prepare_env "eclipse-trunk" \
             "$HOME/git/bash/rpm-scripts/eclipse/eclipse-trunk-skel" \
-            "$HOME/git/localrepo"
+            "$HOME/git/localrepo" \
+            "$1" #FILE
 
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
-if [[ ! -z "$FILE" ]] && [[ "$FILE" = *firefox*.@(tar.bz2|tar.gz) ]]; then
+if [[ ! -z "$FILE" ]] && [[ "$FILE" = *eclipse*.@(tar.bz2|tar.gz) ]]; then
     echo "A file was specified"
 else
     URL="http://www.eclipse.org/downloads/?osType=linux"

@@ -15,10 +15,9 @@ prepare_env "typora" \
 ################################################################################
 #                                   DOWNLOAD                                   #
 ################################################################################
-URL=https://www.typora.io/linux/Packages
-
 # download only if custom FILE is not set
 if [ -z "$FILE" ]; then
+    URL=https://www.typora.io/linux/Packages
     wget -q $URL
     URL=https://typora.io/`tac $TEMP/Packages | grep -m1 amd64.deb | cut -d ' ' -f 2`
     wget $URL -P $TEMP
