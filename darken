@@ -2,8 +2,8 @@
 # take a binary app(must be gtk3) as parameter and it set the dark theme
 # "$@" take all the arguments passed to this script
 #
-# gtk-application-prefer-dark-theme=0     #normal theme
-# gtk-application-prefer-dark-theme=1	  #force dark theme
+# gtk-application-prefer-dark-theme=0	#normal theme
+# gtk-application-prefer-dark-theme=1	#force dark theme
 
 # modalità supportata di default. problema: metacity non viene temizzato
 # with gtk 3.16(o 3.18?) it won't be a problem anymore
@@ -13,8 +13,8 @@
 GTK="$HOME/.config/gtk-3.0/settings.ini"
 
 if [[ -z "$@" ]]; then
-    echo "Usage: darken <command> [<arguments>]"
-    exit
+	echo "Usage: darken <command> [<arguments>]"
+	exit
 fi
 
 #check presence for dark theme setting
@@ -22,9 +22,9 @@ SETTING=`cat $GTK | grep gtk-application-prefer-dark-theme`
 
 #force the dark theme
 if [ -z "$SETTING" ]; then
-    echo "gtk-application-prefer-dark-theme=1" >> $GTK
+	echo "gtk-application-prefer-dark-theme=1" >> $GTK
 else
-    sed -i 's/dark-theme=0/dark-theme=1/g' $GTK
+	sed -i 's/dark-theme=0/dark-theme=1/g' $GTK
 fi
 
 #open the app and all its arguments

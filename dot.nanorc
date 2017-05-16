@@ -6,7 +6,7 @@ set speller "aspell check"
 
 ## Set tab size to 4 and tab as spaces
 set tabsize 4
-set tabstospaces
+##set tabstospaces
 
 ## Set smooth scrolling
 set smooth

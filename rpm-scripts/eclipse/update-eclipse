@@ -1,34 +1,34 @@
 #!/bin/bash
 
 ################################################################################
-#                                   INIT                                       #
+#									INIT
 ################################################################################
 RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
 if [ -f "$RPMEASY" ]; then
-        . "$RPMEASY"
+		. "$RPMEASY"
 fi
 
 prepare_env "eclipse-trunk" \
-            "$HOME/git/bash/rpm-scripts/eclipse/eclipse-trunk-skel" \
-            "$HOME/git/localrepo" \
-            "$1" #FILE
+			"$HOME/git/bash/rpm-scripts/eclipse/eclipse-trunk-skel" \
+			"$HOME/git/localrepo" \
+			"$1" #FILE
 
 ################################################################################
-#                                   DOWNLOAD                                   #
+#									DOWNLOAD
 ################################################################################
 if [[ ! -z "$FILE" ]] && [[ "$FILE" = *eclipse*.@(tar.bz2|tar.gz) ]]; then
-    echo "A file was specified"
+	echo "A file was specified"
 else
-    URL="http://www.eclipse.org/downloads/?osType=linux"
-    #open the eclipse downloads page. You need to copy the tar.gg link. It will be used later
-    notify-send -i eclipse "Copy link Eclipse IDE for Java Developers(or Java EE) 64bit then close epiphany"
-    killall epiphany | sleep 2 && epiphany $URL
-    wget `xsel -b` -P $TEMP/src
-    FILE=`ls $TEMP/src/*eclipse*.tar.gz`
+	URL="http://www.eclipse.org/downloads/?osType=linux"
+	#open the eclipse downloads page. You need to copy the tar.gg link. It will be used later
+	notify-send -i eclipse "Copy link Eclipse IDE for Java Developers(or Java EE) 64bit then close epiphany"
+	killall epiphany | sleep 2 && epiphany $URL
+	wget `xsel -b` -P $TEMP/src
+	FILE=`ls $TEMP/src/*eclipse*.tar.gz`
 fi
 
 ################################################################################
-#                                   SKELETON                                   #
+#									SKELETON
 ################################################################################
 # copy rpm skeleton to $TEMP
 cp -rf $SKEL .
@@ -40,7 +40,7 @@ mv eclipse $PKG_NAME-skel/opt/
 cp $SKEL/../extra/splash.bmp $PKG_NAME-skel/opt/eclipse/plugins/org.eclipse.platform*/
 
 ################################################################################
-#                                   SPEC                                       #
+#									SPEC
 ################################################################################
 # generate package info
 echo "Summary: Eclipse Java Development Tools
@@ -58,7 +58,7 @@ prepare_build jar-repack_off
 sed '/^%dir \/usr\/bin$/d' -i *files.txt
 
 ################################################################################
-#                                BUILD + INSTALL                               #
+#								BUILD + INSTALL
 ################################################################################
 # build rpm
 VERSION=`cat $PKG_NAME-skel/opt/eclipse/configuration/config.ini | grep buildId | cut -d '=' -f 2 | cut -c -5`

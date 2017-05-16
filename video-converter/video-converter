@@ -18,115 +18,115 @@ INPUT="$1"
 
 EXEC=`which avconv 2> /dev/null`
 if [ -z "$EXEC" ]; then
-    EXEC=`which ffmpeg` 
+	EXEC=`which ffmpeg` 
 
-    if [ -z "$EXEC" ]; then
-       echo "avconv | ffmpeg not found"
-       exit 0
-    fi
+	if [ -z "$EXEC" ]; then
+	   echo "avconv | ffmpeg not found"
+	   exit 0
+	fi
 fi
 
 while [ $? == 0 ]; do
-    # open file
-    if [[ ! -z "$INPUT" ]]; then
-        if [[ ! -f "$INPUT" ]]; then
-            echo "File does not exsist"
-            exit
-        fi
-    else 
-        INPUT=`yad --file --title="Video Converter" --name="Video Converter" --center --on-top \
-            --width=640 --height=480 \
-            --window-icon=$ICON \
-            --file-filter='Videos | *.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mov *.ogg *.mpeg *.matroska *.asf *.wmv' \
-            --file-filter='*.avi | *.avi' \
-            --file-filter='*.asf | *.asf' \
-            --file-filter='*.flv | *.flv' \
-            --file-filter='*.m4v | *.m4v' \
-            --file-filter='*.matroska | *.matroska' \
-            --file-filter='*.mkv | *.mkv' \
-            --file-filter='*.mov | *.mov' \
-            --file-filter='*.mp4 | *.mp4' \
-            --file-filter='*.mpeg | *.mpeg' \
-            --file-filter='*.ogg | *.ogg' \
-            --file-filter='*.webm | *.webm' \
-            --file-filter='*.wmv | *.wmv' `
-    fi
+	# open file
+	if [[ ! -z "$INPUT" ]]; then
+		if [[ ! -f "$INPUT" ]]; then
+			echo "File does not exsist"
+			exit
+		fi
+	else 
+		INPUT=`yad --file --title="Video Converter" --name="Video Converter" --center --on-top \
+			--width=640 --height=480 \
+			--window-icon=$ICON \
+			--file-filter='Videos | *.mp4 *.mkv *.avi *.flv *.webm *.m4v *.mov *.ogg *.mpeg *.matroska *.asf *.wmv' \
+			--file-filter='*.avi | *.avi' \
+			--file-filter='*.asf | *.asf' \
+			--file-filter='*.flv | *.flv' \
+			--file-filter='*.m4v | *.m4v' \
+			--file-filter='*.matroska | *.matroska' \
+			--file-filter='*.mkv | *.mkv' \
+			--file-filter='*.mov | *.mov' \
+			--file-filter='*.mp4 | *.mp4' \
+			--file-filter='*.mpeg | *.mpeg' \
+			--file-filter='*.ogg | *.ogg' \
+			--file-filter='*.webm | *.webm' \
+			--file-filter='*.wmv | *.wmv' `
+	fi
 
-    # split input to {path/name,  extension}
-    FORMAT="mp4 mkv avi flv webm m4v mov ogg mpeg matroska asf wmv"
-    EXT=($FORMAT)
-    for EXT in "${EXT[@]}"
-    do
-        if [[ "$INPUT" =~ .$EXT ]]; then
-            PATHNAME=`echo "$INPUT" | sed s/.$EXT//g `
-            break;
-        fi
-    done
+	# split input to {path/name,  extension}
+	FORMAT="mp4 mkv avi flv webm m4v mov ogg mpeg matroska asf wmv"
+	EXT=($FORMAT)
+	for EXT in "${EXT[@]}"
+	do
+		if [[ "$INPUT" =~ .$EXT ]]; then
+			PATHNAME=`echo "$INPUT" | sed s/.$EXT//g `
+			break;
+		fi
+	done
 
-    if [[ -z "$PATHNAME" ]]; then
-        echo "Not a video file"
-        exit
-    fi
+	if [[ -z "$PATHNAME" ]]; then
+		echo "Not a video file"
+		exit
+	fi
 
-    # split path/name to {name, dir}
-    #num=`echo "$INPUT" | grep -o "/" | wc -l`
-    #NAME=`echo "$PATHNAME" | cut -d '/' -f $(($num+1))`
-    #DIR=`echo "$PATHNAME" | sed s/."$NAME"//g`
+	# split path/name to {name, dir}
+	#num=`echo "$INPUT" | grep -o "/" | wc -l`
+	#NAME=`echo "$PATHNAME" | cut -d '/' -f $(($num+1))`
+	#DIR=`echo "$PATHNAME" | sed s/."$NAME"//g`
 
-    # forms parameters
-    CODEC_VID="hevc libx264 libxvid libtheora mpeg4 flv"
-    CODEC_AUD="libmp3lame libvorbis vorbis aac ac3 flac"
-    BIT_VID="512 16..65536 32"
-    BIT_AUD="192 16..1536 32"
-    # TODO: remove this line. I should put a check for same directory\same extension output
-    # I should add a destination folder field in the form or add a question with a combobox
-    FORMAT=`echo "$FORMAT" | sed s/"$EXT"//g `; FORMAT=`echo ${FORMAT}`
+	# forms parameters
+	CODEC_VID="hevc libx264 libxvid libtheora mpeg4 flv"
+	CODEC_AUD="libmp3lame libvorbis vorbis aac ac3 flac"
+	BIT_VID="512 16..65536 32"
+	BIT_AUD="192 16..1536 32"
+	# TODO: remove this line. I should put a check for same directory\same extension output
+	# I should add a destination folder field in the form or add a question with a combobox
+	FORMAT=`echo "$FORMAT" | sed s/"$EXT"//g `; FORMAT=`echo ${FORMAT}`
 
-    PARAMS=`yad --form --title="Video Converter" --center --on-top --window-icon=$ICON \
-        --field="Codec Video":CBE "$CODEC_VID" \
-        --field="Codec Audio":CBE "$CODEC_AUD" \
-        --field="Skip Audio Transcoding":CHK TRUE \
-        --field="BitRate Video":NUM "$BIT_VID" \
-        --field="BitRate Audio":NUM "$BIT_AUD" \
-        --field="Format":CB "$FORMAT" \
-        --columns=2 \
-        --item-separator=' ' `
+	PARAMS=`yad --form --title="Video Converter" --center --on-top --window-icon=$ICON \
+		--field="Codec Video":CBE "$CODEC_VID" \
+		--field="Codec Audio":CBE "$CODEC_AUD" \
+		--field="Skip Audio Transcoding":CHK TRUE \
+		--field="BitRate Video":NUM "$BIT_VID" \
+		--field="BitRate Audio":NUM "$BIT_AUD" \
+		--field="Format":CB "$FORMAT" \
+		--columns=2 \
+		--item-separator=' ' `
 
-    if [ $? != 0 ] ; then
-        break
-    fi
+	if [ $? != 0 ] ; then
+		break
+	fi
 
-    CODEC_VID=`echo $PARAMS | cut -d '|' -f 1`
-    CODEC_AUD=`echo $PARAMS | cut -d '|' -f 2`
-    SKIP_AUD=`echo $PARAMS | cut -d '|' -f 3`
-    BIT_VID=`echo $PARAMS | cut -d '|' -f 4 | cut -d ',' -f 1`
-    BIT_AUD=`echo $PARAMS | cut -d '|' -f 5 | cut -d ',' -f 1`
-    FORMAT=`echo $PARAMS | cut -d '|' -f 6`
+	CODEC_VID=`echo $PARAMS | cut -d '|' -f 1`
+	CODEC_AUD=`echo $PARAMS | cut -d '|' -f 2`
+	SKIP_AUD=`echo $PARAMS | cut -d '|' -f 3`
+	BIT_VID=`echo $PARAMS | cut -d '|' -f 4 | cut -d ',' -f 1`
+	BIT_AUD=`echo $PARAMS | cut -d '|' -f 5 | cut -d ',' -f 1`
+	FORMAT=`echo $PARAMS | cut -d '|' -f 6`
 
-    # fix syntax for avconv
-    VIDEO="-c:v $CODEC_VID -b:v "$BIT_VID"k"
-    if [[ $SKIP_AUD == "TRUE" ]] ; then
-            AUDIO="-c:a copy"
-        else
-            AUDIO="-c:a $CODEC_AUD -b:a "$BIT_AUD"k"
-    fi
+	# fix syntax for avconv
+	VIDEO="-c:v $CODEC_VID -b:v "$BIT_VID"k"
+	if [[ $SKIP_AUD == "TRUE" ]] ; then
+			AUDIO="-c:a copy"
+		else
+			AUDIO="-c:a $CODEC_AUD -b:a "$BIT_AUD"k"
+	fi
 
-    # fix mkv format for avconv
-    EXT_OUT=$FORMAT
-    if [[ $FORMAT == "mkv" ]]; then
-        FORMAT="matroska"
-    fi
+	# fix mkv format for avconv
+	EXT_OUT=$FORMAT
+	if [[ $FORMAT == "mkv" ]]; then
+		FORMAT="matroska"
+	fi
 
-    # convert video
-    $EXEC -i "$INPUT" -f $FORMAT $VIDEO $AUDIO "$PATHNAME".$EXT_OUT
+	# convert video
+	$EXEC -i "$INPUT" -f $FORMAT $VIDEO $AUDIO "$PATHNAME".$EXT_OUT
 
-    # TODO: ask if I want to play the file(to check it) and then ask to remove the old one
-    notify-send -i $ICON "Converted: $PATHNAME.$EXT_OUT"
+	# TODO: ask if I want to play the file(to check it) and then ask to remove the old one
+	notify-send -i $ICON "Converted: $PATHNAME.$EXT_OUT"
 
-    #reset input
-    INPUT=""
+	#reset input
+	INPUT=""
 
-    yad   --image "dialog-question" --title "Alert" --center --on-top --window-icon=$ICON \
-                 --text "Convert another one?" \
-                 --button=yes --button=no
+	yad   --image "dialog-question" --title "Alert" --center --on-top --window-icon=$ICON \
+				 --text "Convert another one?" \
+				 --button=yes --button=no
 done

@@ -7,8 +7,8 @@ rm /tmp/helium-backup
 
 if [  "$status" == "error: device not found" ]
 then
-    notify-send -i "error" "Device not plugged in"
-    exit
+	notify-send -i "error" "Device not plugged in"
+	exit
 fi
 
 # apparently pm path appends a carriage return which screws
@@ -18,8 +18,8 @@ echo $pkg
 
 if [[ "$pkg" != */data/app/com.koushikdutta.* ]]
 then
-    notify-send "Helium not found. Install the app from the Play Store"
-    exit
+	notify-send "Helium not found. Install the app from the Play Store"
+	exit
 fi
 
 adb shell << EOF

@@ -14,9 +14,9 @@ pidBlender=`pidof blender | cut -d ' ' -f 1`
 
 if [ -z "$pidBlender" ]
 then
-    warningMb=750
+	warningMb=750
 else
-    warningMb=1000
+	warningMb=1000
 fi
 
 memory=`nvidia-smi | grep MiB`
@@ -25,7 +25,7 @@ totalRam=`echo $memory | cut -d ' ' -f 11 | cut -d 'M' -f 1`
 
 if (( usedRam >= warningMb ))
 then
-    notify-send "Nvidia ram used is $usedRam Mb of $totalRam Mb"
+	notify-send "Nvidia ram used is $usedRam Mb of $totalRam Mb"
 fi
 
 exit 0

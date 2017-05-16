@@ -38,7 +38,7 @@ all_cores() {
   NPROCS=`cat /proc/cpuinfo | grep "core id" | wc -l`
   NPROCS=$(($NPROCS - 1))
   for i in `seq 0 1 $NPROCS`; do
-    $1 $i
+	$1 $i
   done
 }
 

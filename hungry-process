@@ -16,16 +16,16 @@ maxmem=$2
 # check if parameter number is ok
 if (($# < 2))
 then
-    echo "Usage $0 processName maxmem "
-    exit 1
+	echo "Usage $0 processName maxmem "
+	exit 1
 fi
 
 # check if $process is running
 #pid=`ps -A | grep $process`
 pid=`pidof $process | cut -d ' ' -f 1`
 if [ -z "$pid" ]; then
-    echo $process is not running
-    exit 2
+	echo $process is not running
+	exit 2
 fi
 
 # check if $maxmem is a number
@@ -47,7 +47,7 @@ let mem=${kbmem/,}/1024
 
 #if memory more $2 then send notification
 if (( $mem > $maxmem )); then
-    notify-send "$process is using $mem Mb"
+	notify-send "$process is using $mem Mb"
 fi
 
 exit 0

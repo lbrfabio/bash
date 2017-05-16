@@ -17,16 +17,16 @@ blenderthumbnailer="$folder/blender-thumbnailer.py"
 
 #check if blender and blenderplayer are present in $folder
 if  [[ -e "$blender"  && -e "$blenderplayer" ]]; then
-     echo -e "\nFOUND: blender & blenderplayer \n"
+	 echo -e "\nFOUND: blender & blenderplayer \n"
 else
-     notify-send -i "error" "ERROR: blender & blenderplayer not found. Make sure you have the correct folder"
-     exit
+	 notify-send -i "error" "ERROR: blender & blenderplayer not found. Make sure you have the correct folder"
+	 exit
 fi
 
 if [[ $USER = "root" ]]; then
-    path="/usr"
+	path="/usr"
 else
-    path="$HOME/.local"
+	path="$HOME/.local"
 fi
 
 #cleanup symbolic links
@@ -40,9 +40,9 @@ ln -s $blenderplayer "$path/bin/blenderplayer"
 ln -s $blenderthumbnailer "$path/bin/blender-thumbnailer.py"
 
 if [[ $USER = "root" ]]; then
-    path="/usr/share"
+	path="/usr/share"
 else
-    path="$HOME/.local/share"
+	path="$HOME/.local/share"
 fi
 
 #check if blender.desktop exist
@@ -72,6 +72,6 @@ notify-send -i blender "Blender is now linked"
 zenity --question --text="Do you want to try blender?"
 answer=$?
 if [ "$answer" -eq "0" ]; then
-     blender
+	 blender
 fi
 exit

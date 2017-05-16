@@ -1,12 +1,12 @@
 #!/bin/bash
 
 if [[ -z $BACKUP || -z $SCRIPTS ]]; then
-    exit 1
+	exit 1
 fi
 
 # Source essential functions
 if [ -f "functions.sh" ]; then
-    . "functions.sh"
+	. "functions.sh"
 fi
 
 #mount windows hdd
@@ -16,7 +16,7 @@ mount $WINDOWS && sleep 5
 
 
 #######################################
-#               RSYNC
+#			   	RSYNC
 #######################################
 
 #go to rsync scripts

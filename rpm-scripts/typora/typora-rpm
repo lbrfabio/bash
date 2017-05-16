@@ -1,31 +1,31 @@
 #!/bin/bash
 
 ################################################################################
-#                                   INIT                                       #
+#									INIT
 ################################################################################
 RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
 if [ -f "$RPMEASY" ]; then
-        . "$RPMEASY"
+		. "$RPMEASY"
 fi
 
 prepare_env "typora" \
-            "$HOME/git/bash/rpm-scripts/typora/typora-skel" \
-            "$HOME/git/localrepo"
+			"$HOME/git/bash/rpm-scripts/typora/typora-skel" \
+			"$HOME/git/localrepo"
 
 ################################################################################
-#                                   DOWNLOAD                                   #
+#									DOWNLOAD
 ################################################################################
 # download only if custom FILE is not set
 if [ -z "$FILE" ]; then
-    URL=https://www.typora.io/linux/Packages
-    wget -q $URL
-    URL=https://typora.io/`tac $TEMP/Packages | grep -m1 amd64.deb | cut -d ' ' -f 2`
-    wget $URL -P $TEMP
-    FILE=`ls $TEMP/*.deb`
+	URL=https://www.typora.io/linux/Packages
+	wget -q $URL
+	URL=https://typora.io/`tac $TEMP/Packages | grep -m1 amd64.deb | cut -d ' ' -f 2`
+	wget $URL -P $TEMP
+	FILE=`ls $TEMP/*.deb`
 fi
 
 ################################################################################
-#                                   SKELETON                                   #
+#									SKELETON
 ################################################################################
 # copy rpm skeleton to $TEMP
 cp -rf $SKEL .
@@ -34,7 +34,7 @@ ar -x $FILE
 (cd $PKG_NAME-skel && tar -xJf $TEMP/data.tar.xz)
 
 ################################################################################
-#                                   SPEC                                       #
+#									SPEC
 ################################################################################
 # generate package info
 echo "Summary: Typora
@@ -50,12 +50,12 @@ prepare_build
 
 # fix symbolics links and other conflicts
 sed '/^%dir \/usr\/bin$/d' -i *files.txt
-sed '/%attr/s/.*/&"/' -i *files.txt                    #add " at the end of every line with attr
-sed 's/,-,-) /,-,-) "/g' -i *files.txt                 #add " before the file name for every attr line
-sed 's/%attr(,-,-)/%attr(755,-,-)/g' -i *files.txt     #fix permissions
+sed '/%attr/s/.*/&"/' -i *files.txt					#add " at the end of every line with attr
+sed 's/,-,-) /,-,-) "/g' -i *files.txt				 #add " before the file name for every attr line
+sed 's/%attr(,-,-)/%attr(755,-,-)/g' -i *files.txt	 #fix permissions
 
 ################################################################################
-#                                BUILD + INSTALL                               #
+#								BUILD + INSTALL
 ################################################################################
 # build rpm
 VERSION=`tac Packages | grep -m1 Version | cut -d ' ' -f 2 | tr '-' '_'`

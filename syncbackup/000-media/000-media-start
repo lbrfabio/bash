@@ -1,16 +1,16 @@
 #!/bin/bash
 
 if [[ -z $BACKUP || -z $SCRIPTS ]]; then
-    exit 1
+	exit 1
 fi
 
 # Source essential functions
 if [ -f "functions.sh" ]; then
-    . "functions.sh"
+	. "functions.sh"
 fi
 
 #######################################
-#                RSYNC
+#				RSYNC
 #######################################
 
 # go to rsync script
@@ -23,7 +23,7 @@ startScript "$MEDIA/tv-shows" "./004-media-tv-shows"
 startScript "$MEDIA/anime" "./005-media-anime"
 
 #######################################
-#    BACKUP FOLDERS  [tar.gz]
+#		BACKUP FOLDERS  [tar.gz]
 #######################################
 
 BKP_DST="$BACKUP/media"

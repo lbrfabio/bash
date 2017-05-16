@@ -1,18 +1,18 @@
 #!/bin/bash
 
 if [[ -z $BACKUP ]]; then
-    exit 1
+	exit 1
 fi
 
 # Source essential functions
 if [ -f "../functions.sh" ]; then
-    . "../functions.sh"
+	. "../functions.sh"
 fi
 
 
 #EXCLUDE="--exclude=.cache/rsync --exclude=.cache/mozilla
-#         \--exclude=.cache/epiphany-* --exclude=*.cache/google-chrome*
-#         \--exclude=.nv"
+#		 \--exclude=.cache/epiphany-* --exclude=*.cache/google-chrome*
+#		 \--exclude=.nv"
 
 EXCLUDE="--exclude=.cache/epiphany-* --exclude=.cache/thumbnails"
 
@@ -29,5 +29,5 @@ gvfs-trash  --empty
 DIRS=(.mozilla .android .gradle)
 for DIR in "${DIRS[@]}"
 do
-    backupFolder "`readlink -q $HOME/$DIR`" "$BKP_DST" "dot$DIR"
+	backupFolder "`readlink -q $HOME/$DIR`" "$BKP_DST" "dot$DIR"
 done

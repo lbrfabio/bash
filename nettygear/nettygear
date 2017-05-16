@@ -8,172 +8,172 @@
 #export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
 
 #TODO: move functions to another file
-########################################
-#             FUNCTIONS                #
-########################################
+#########################################
+#				 FUNCTIONS
+#########################################
 
 function showHelp () {
-    if [[ ! -z "$GUI" ]]; then
-        notify-send -i $IC_HELP "Usage:" "nettygear   [ -g ]  [ r, n, d, i, h, a, c ]   [ -l ]"
-        exit 0
-    fi
+	if [[ ! -z "$GUI" ]]; then
+		notify-send -i $IC_HELP "Usage:" "nettygear   [ -g ]  [ r, n, d, i, h, a, c ]   [ -l ]"
+		exit 0
+	fi
 
-    echo -e "Usage: nettygear [ -g ] {[OPTION] | [ -l ]}
-    -g   \tenable gui [requires libnotify\zenity]
+	echo -e "Usage: nettygear [ -g ] {[OPTION] | [ -l ]}
+	-g   \tenable gui [requires libnotify\zenity]
 
-    -r,  \treboot router
-    -n,  \tchange current IP
-    -d,  \tshow current downstream speed
-    -i,  \tshow current external IP address
-    -h,  \thelp info
-    -a,  \tset new authentication
-    -c,  \tclear configuration
+	-r,  \treboot router
+	-n,  \tchange current IP
+	-d,  \tshow current downstream speed
+	-i,  \tshow current external IP address
+	-h,  \thelp info
+	-a,  \tset new authentication
+	-c,  \tclear configuration
 
-    -l   \tstart with graphical list [requires libnotify\zenity]"
+	-l   \tstart with graphical list [requires libnotify\zenity]"
 }
 
 # $1 icon;  $2 bold;  $3 message;
 function notify () {
-    if [[ "$GUI" == "true" ]]; then
-        notify-send -i "$1" "$2" "$3"
-    else
-        echo -e "\033[1m$2 \e[0m$3\n"
-    fi
+	if [[ "$GUI" == "true" ]]; then
+		notify-send -i "$1" "$2" "$3"
+	else
+		echo -e "\033[1m$2 \e[0m$3\n"
+	fi
 }
 
 # $1 page\todo;  $2 print curl output;   2 seconds timeout
 function executeURL () {
-    #OUT="`curl -m 2 -s -u $U:$P $HOST/$1`"          #no auth
-    #OUT="`curl -m 2 -s -u $U:$P -digest $HOST/$1`"  #auth correct, params not used
-    OUT="`wget --http-user=$U --http-password=$P -q -O - "$HOST/$1"`"
-    if [[ "$2" == "print" ]]; then
-        echo "$OUT"
-    fi
+	#OUT="`curl -m 2 -s -u $U:$P $HOST/$1`"				#no auth
+	#OUT="`curl -m 2 -s -u $U:$P -digest $HOST/$1`"		#auth correct, params not used
+	OUT="`wget --http-user=$U --http-password=$P -q -O - "$HOST/$1"`"
+	if [[ "$2" == "print" ]]; then
+		echo "$OUT"
+	fi
 }
 
 function rebootRouter() {
-    notify $IC_NET "Rebooting!" "This will take a while... "
-    executeURL $REBOOT
-    while [ -z `getIP` ]; do
-        sleep 1
-        let TIME++
-        echo -ne "$TIME"'\r';
-    done
+	notify $IC_NET "Rebooting!" "This will take a while... "
+	executeURL $REBOOT
+	while [ -z `getIP` ]; do
+		sleep 1
+		let TIME++
+		echo -ne "$TIME"'\r';
+	done
 
-    notify $IC_NET "Online" "in $TIME seconds\n"
-    executeURL " " #needed for auth
-    showIP
-    showDLspeed
+	notify $IC_NET "Online" "in $TIME seconds\n"
+	executeURL " " #needed for auth
+	showIP
+	showDLspeed
 }
 
 # 10 seconds timeout
 function getIP() {
-    echo "`curl -m 10 -s "http://checkip.amazonaws.com"`"
+	echo "`curl -m 10 -s "http://checkip.amazonaws.com"`"
 }
 
 function showIP() {
-    IP=`getIP`
+	IP=`getIP`
 
-    if [[ -z "$IP" ]]; then
-        IP="0.0.0.0"
-    fi
+	if [[ -z "$IP" ]]; then
+		IP="0.0.0.0"
+	fi
 
-    notify $IC_CHECK "IP address:" $IP
+	notify $IC_CHECK "IP address:" $IP
 }
 
 function newIP() {
-    notify $IC_NET "Changing IP address!" "This will take a few seconds..."
-    echo "disconnecting..."
-    executeURL $DISCONNECT
-    echo "connecting..."
-    executeURL $CONNECT
-    showIP
+	notify $IC_NET "Changing IP address!" "This will take a few seconds..."
+	echo "disconnecting..."
+	executeURL $DISCONNECT
+	echo "connecting..."
+	executeURL $CONNECT
+	showIP
 }
 
 function showDLspeed() {
-    OUT=`executeURL $STATS "print"`
+	OUT=`executeURL $STATS "print"`
 
-    #get extract speed
-    LINE=`echo "$OUT" | grep kbps | head -n 1`
-    DLSPEED=`echo $LINE | cut -d '>' -f 3 | cut -d ' ' -f 1`
+	#get extract speed
+	LINE=`echo "$OUT" | grep kbps | head -n 1`
+	DLSPEED=`echo $LINE | cut -d '>' -f 3 | cut -d ' ' -f 1`
 
-    if [[ -z "$DLSPEED" ]]; then
-        DLSPEED="0"
-    fi
+	if [[ -z "$DLSPEED" ]]; then
+		DLSPEED="0"
+	fi
 
-    notify $IC_MONITOR "Downstream:" "$DLSPEED kbps"
+	notify $IC_MONITOR "Downstream:" "$DLSPEED kbps"
 }
 
 
 function showListGUI() {
-    if [[ -z `which zenity 2> /dev/null` ]]; then
-        notify $IC_NET "Dependency issue:" "zenity not found"
-        exit 2
-    fi
+	if [[ -z `which zenity 2> /dev/null` ]]; then
+		notify $IC_NET "Dependency issue:" "zenity not found"
+		exit 2
+	fi
 
-    GUI=true
+	GUI=true
 
-    opt1="Reboot"
-    opt2="Show Net IP"
-    opt3="Change IP"
-    opt4="Show DL Speed"
-    opt5="Set Autenticazione"
-    opt6="Clear Configuration"
+	opt1="Reboot"
+	opt2="Show Net IP"
+	opt3="Change IP"
+	opt4="Show DL Speed"
+	opt5="Set Autenticazione"
+	opt6="Clear Configuration"
 
-    op=`zenity --name="nettygear" --window-icon="$IC_NET" --height=245 --list --radiolist --title="Netty Gear" \
-    --text 'Select operation:' \
-    --column '' \
-    --column 'Operation' FALSE "$opt1" FALSE "$opt2" FALSE "$opt3" FALSE "$opt4" FALSE "$opt5" FALSE "$opt6"`
+	op=`zenity --name="nettygear" --window-icon="$IC_NET" --height=245 --list --radiolist --title="Netty Gear" \
+	--text 'Select operation:' \
+	--column '' \
+	--column 'Operation' FALSE "$opt1" FALSE "$opt2" FALSE "$opt3" FALSE "$opt4" FALSE "$opt5" FALSE "$opt6"`
 
-    case "$op" in
-        $opt1)
-            rebootRouter
-        ;;
-        $opt2)
-            showIP
-        ;;
-        $opt3)
-            newIP
-        ;;
-        $opt4)
-            showDLspeed
-        ;;
-        $opt5)
-            setAuthentication
-        ;;
-        $opt6)
-            clearConfiguration "force"
-        ;;
-    esac
+	case "$op" in
+		$opt1)
+			rebootRouter
+		;;
+		$opt2)
+			showIP
+		;;
+		$opt3)
+			newIP
+		;;
+		$opt4)
+			showDLspeed
+		;;
+		$opt5)
+			setAuthentication
+		;;
+		$opt6)
+			clearConfiguration "force"
+		;;
+	esac
 }
 
 function setAuthentication() {
-    if [[ -z "$U" || -z "$P" || "$1" == "force" ]];then
-        if [[ "$GUI" == "true" ]];then
-            SET=`zenity --name="nettygear" --window-icon="$IC_NET" --title="Netty Gear" --password --username`
-            U=`echo "$SET" |  cut -d '|' -f 1`
-            P=`echo "$SET" |  cut -d '|' -f 2`
-        else
-            echo -n "Enter Username: "
-            read U
-            echo -n "Enter Password: "
-            read P
-        fi
-        echo "USER=$U" > $CONF
-        echo "PASS=$P" >> $CONF
-        echo -e "Username & Password saved in $CONF\n"
-    fi
+	if [[ -z "$U" || -z "$P" || "$1" == "force" ]];then
+		if [[ "$GUI" == "true" ]];then
+			SET=`zenity --name="nettygear" --window-icon="$IC_NET" --title="Netty Gear" --password --username`
+			U=`echo "$SET" |  cut -d '|' -f 1`
+			P=`echo "$SET" |  cut -d '|' -f 2`
+		else
+			echo -n "Enter Username: "
+			read U
+			echo -n "Enter Password: "
+			read P
+		fi
+		echo "USER=$U" > $CONF
+		echo "PASS=$P" >> $CONF
+		echo -e "Username & Password saved in $CONF\n"
+	fi
 }
 
 
 function clearConfiguration() {
-    rm "$CONF" 2> /dev/null
-    notify $IC_REMOVE "Configuration cleared."
+	rm "$CONF" 2> /dev/null
+	notify $IC_REMOVE "Configuration cleared."
 }
 
-########################################
-#             PARAMETERS               #
-########################################
+#########################################
+#				PARAMETERS
+#########################################
 
 # parameters
 CONF=$HOME/.config/nettygear.conf
@@ -188,36 +188,36 @@ CONNECT="cgi-bin/RST_conn_status.asp?connect_status&Saveflag=1&DipConnFlag=1&Sav
 STATS="cgi-bin/RST_statistic.asp"
 
 # icons
-IC_HELP=gnome-help                 #for printHelp gui
-IC_NET=preferences-system-network  #for rebooting info
-IC_MONITOR=gnome-monitor           #downspeed success
-IC_NET_ERROR=network-error         #reboot\downspeed error
-IC_NET_TOOL=gnome-nettool          #myip
-IC_CHECK=checkbox                  #newip success
-IC_ERROR=error                     #wrong arguments, login error
-IC_REMOVE=gtk-remove               #remove configuration
+IC_HELP=gnome-help					#for printHelp gui
+IC_NET=preferences-system-network	#for rebooting info
+IC_MONITOR=gnome-monitor			#downspeed success
+IC_NET_ERROR=network-error			#reboot\downspeed error
+IC_NET_TOOL=gnome-nettool			#myip
+IC_CHECK=checkbox					#newip success
+IC_ERROR=error						#wrong arguments, login error
+IC_REMOVE=gtk-remove				#remove configuration
 
-########################################
-#            INITALIZATION             #
-########################################
+#########################################
+#			INITALIZATION
+#########################################
 # be sure to use the GUI mode if requested
 if [[ ! -z "`echo "$@" | grep "\-g"`"  ]]; then
-    GUI=true
+	GUI=true
 elif [[ ! -z `which figlet 2> /dev/null` ]]; then
-        echo "Netty Gear" | figlet
-        echo ""
+		echo "Netty Gear" | figlet
+		echo ""
 fi
 
 # 0 parameters?
 if [[ $# == 0 ]]; then
-    showHelp
-    exit 0
+	showHelp
+	exit 0
 fi
 
 # too many?
 if [[ "$GUI" == "true" && $# > 2  || ! "$GUI" == "true" && $# > 1 ]]; then
-    notify $IC_ERROR "Too many arguments"
-    exit 1
+	notify $IC_ERROR "Too many arguments"
+	exit 1
 fi
 
 
@@ -229,77 +229,77 @@ LOGIN=`curl -s -u $U:$P $HOST`
 LOGIN=`curl -s -u $U:$P $HOST`
 
 if [[ -z "$LOGIN" ]]; then
-    notify $IC_ERROR "Login:" "Network is Down"
-    exit 2
+	notify $IC_ERROR "Login:" "Network is Down"
+	exit 2
 else
-    CHECK="Another Administrator online"
-    ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
-    if (( $ANSWER == 1 )); then
-        notify $IC_ERROR "Login:" "$CHECK"
-        exit 3
-    fi
-    CHECK="Authorization warning"
-    ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
-    if (( $ANSWER == 1 )); then
-        notify $IC_ERROR "Login:" "$CHECK"
-        clearConfiguration
-        exit 4
-    fi
+	CHECK="Another Administrator online"
+	ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
+	if (( $ANSWER == 1 )); then
+		notify $IC_ERROR "Login:" "$CHECK"
+		exit 3
+	fi
+	CHECK="Authorization warning"
+	ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
+	if (( $ANSWER == 1 )); then
+		notify $IC_ERROR "Login:" "$CHECK"
+		clearConfiguration
+		exit 4
+	fi
 fi
 
 
-########################################
-#               COMMANDS               #
-########################################
+#########################################
+#				COMMANDS
+#########################################
 
 # letter surronded by : require an argument
 while getopts "ghlrindac" opt; do
-    case "$opt" in
-      g)
-        ;;
-      h)                    #help
-        showHelp
-        exit 0
-        ;;
-      l)                    #list [force GUI=true, selection mode with zenity]
-        showListGUI
-        exit 0
-        ;;
-      r)                    #reboot
-        rebootRouter
-        exit 0
-        ;;
-      i)                    #show net IP
-        showIP
-        exit 0
-        ;;
-      n)                    #new IP
-        newIP
-        exit 0
-        ;;
-      d)                    #show DL speed
-        showDLspeed
-        exit 0
-        ;;
-      a)                    #set username & password
-        setAuthentication  "force"
-        ;;
-      c)                    #clear configuration
-        clearConfiguration
-        ;;
-      \?)
-        echo "Invalid option: -$OPTARG" >&2
-        exit 1
-        ;;
-      :)
-        echo "Option -$OPTARG requires an argument." >&2
-        exit 1
-        ;;
-      *)
-         showHelp
-         break
-         ;;
-    esac
+	case "$opt" in
+	  g)
+		;;
+	  h)					#help
+		showHelp
+		exit 0
+		;;
+	  l)					#list [force GUI=true, selection mode with zenity]
+		showListGUI
+		exit 0
+		;;
+	  r)					#reboot
+		rebootRouter
+		exit 0
+		;;
+	  i)					#show net IP
+		showIP
+		exit 0
+		;;
+	  n)					#new IP
+		newIP
+		exit 0
+		;;
+	  d)					#show DL speed
+		showDLspeed
+		exit 0
+		;;
+	  a)					#set username & password
+		setAuthentication  "force"
+		;;
+	  c)					#clear configuration
+		clearConfiguration
+		;;
+	  \?)
+		echo "Invalid option: -$OPTARG" >&2
+		exit 1
+		;;
+	  :)
+		echo "Option -$OPTARG requires an argument." >&2
+		exit 1
+		;;
+	  *)
+		 showHelp
+		 break
+		 ;;
+	esac
 done
 
 exit 0

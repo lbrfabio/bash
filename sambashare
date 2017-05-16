@@ -1,47 +1,47 @@
 #!/bin/bash
 
 delete() {
-    # select one or multiple usershare
-    files=`zenity --title="Samba Share" --file-selection --separator=" " --multiple --filename=/var/lib/samba/usershares/`
-    if [ $? == 1 ]; then
-        echo "No files selected"
-        exit
-    fi
+	# select one or multiple usershare
+	files=`zenity --title="Samba Share" --file-selection --separator=" " --multiple --filename=/var/lib/samba/usershares/`
+	if [ $? == 1 ]; then
+		echo "No files selected"
+		exit
+	fi
 
-    # iterate through files
-    for i in ${files}; do
-        path=`cat ${i} | grep path`
-        zenity --question --title="Samba Share" --text="Unshare $path?"
-        if [ $? == 0 ]; then
-            rm ${i}
-            # net usershare delete $(extract_name) is fine but rm can delete multiple files at once
-        fi
-    done
+	# iterate through files
+	for i in ${files}; do
+		path=`cat ${i} | grep path`
+		zenity --question --title="Samba Share" --text="Unshare $path?"
+		if [ $? == 0 ]; then
+			rm ${i}
+			# net usershare delete $(extract_name) is fine but rm can delete multiple files at once
+		fi
+	done
 }
 
 add() {
-    # select directory to share
-    DIR=`zenity --title="Samba Share" --file-selection --directory --filename=$HOME/`
-    if [ $? == 1 ]; then
-        echo "Directory not selected"
-        exit
-    fi
+	# select directory to share
+	DIR=`zenity --title="Samba Share" --file-selection --directory --filename=$HOME/`
+	if [ $? == 1 ]; then
+		echo "Directory not selected"
+		exit
+	fi
 
-    # set share name. Default is directory
-    SHARENAME=`zenity --entry --title="Share name" --text="Enter the name" --entry-text=$(extract_name)`
-    if [ $? == 1 ]; then
-        echo "Share name not selected"
-        exit
-    fi
-    #net usershare add $SHARENAME $DIR
-    net usershare add $SHARENAME $DIR " " "S-1-1-0:F"
+	# set share name. Default is directory
+	SHARENAME=`zenity --entry --title="Share name" --text="Enter the name" --entry-text=$(extract_name)`
+	if [ $? == 1 ]; then
+		echo "Share name not selected"
+		exit
+	fi
+	#net usershare add $SHARENAME $DIR
+	net usershare add $SHARENAME $DIR " " "S-1-1-0:F"
 }
 
 function extract_name() {
-    # extract name from directory path
-    NUM=`echo "$DIR" | grep -o "/" | wc -l`
-    NAME=`echo "$DIR" | cut -d '/' -f $(($NUM+1))`
-    echo "$NAME"
+	# extract name from directory path
+	NUM=`echo "$DIR" | grep -o "/" | wc -l`
+	NAME=`echo "$DIR" | cut -d '/' -f $(($NUM+1))`
+	echo "$NAME"
 }
 
 #########################################################
@@ -49,14 +49,14 @@ function extract_name() {
 
 case "$1" in
 	-a | --add)
-        add
+		add
 	;;
 	-r | --remove)
 		delete
 	;;
 	*)
 	echo -e "\nUsage: $0 {-r|-a}
-    \t-a   --add \t\tadd one usershare
-    \t-d   --delete \t\tremove one or multiple usershares"
-    exit
+	\t-a   --add \t\tadd one usershare
+	\t-d   --delete \t\tremove one or multiple usershares"
+	exit
 esac

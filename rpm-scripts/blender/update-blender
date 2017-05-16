@@ -1,32 +1,32 @@
 #!/bin/bash
 
 ################################################################################
-#                                   INIT                                       #
+#									INIT
 ################################################################################
 RPMEASY=$HOME/git/bash/rpm-scripts/rpmeasy-functions.sh
 if [ -f "$RPMEASY" ]; then
-        . "$RPMEASY"
+		. "$RPMEASY"
 fi
 
 prepare_env "blender-trunk" \
-            "$HOME/git/bash/rpm-scripts/blender/blender-trunk-skel" \
-            "$HOME/git/localrepo" \
-            "$1" #FILE
+			"$HOME/git/bash/rpm-scripts/blender/blender-trunk-skel" \
+			"$HOME/git/localrepo" \
+			"$1" #FILE
 
 ################################################################################
-#                                   DOWNLOAD                                   #
+#									DOWNLOAD
 ################################################################################
 if [[ ! -z "$FILE" ]] && [[ "$FILE" = *blender*.@(tar.bz2|tar.gz) ]]; then
-    echo "A file was specified"
+	echo "A file was specified"
 else
-    URL="http://builder.blender.org/download/"
-    wget -q $URL
-    FILE=`egrep  ">blender.*glibc219-x86_64.tar.bz2" -o index.html  | cut -c 2-`
-    wget $URL/$FILE -P $TEMP/src
+	URL="http://builder.blender.org/download/"
+	wget -q $URL
+	FILE=`egrep  ">blender.*glibc219-x86_64.tar.bz2" -o index.html  | cut -c 2-`
+	wget $URL/$FILE -P $TEMP/src
 fi
 
 ################################################################################
-#                                   SKELETON                                   #
+#									SKELETON
 ################################################################################
 # copy rpm skeleton to $TEMP
 cp -rf $SKEL .
@@ -37,7 +37,7 @@ tar -xjf $FILE -C .
 mv `basename -s .tar.bz2 $FILE`  $PKG_NAME-skel/opt/blender
 
 ################################################################################
-#                                   SPEC                                       #
+#									SPEC
 ################################################################################
 # generate package info
 echo "Summary: 3D modeling, animation, rendering and post-production
@@ -53,12 +53,12 @@ prepare_build python_off
 
 # fix conflicts
 sed '/^%dir \/usr\/bin$/d' -i *files.txt
-sed '/%attr/s/.*/&"/' -i *files.txt                    #add " at the end of every line with attr
-sed 's/,-,-) /,-,-) "/g' -i *files.txt                 #add " before the file name for every attr line
-sed 's/%attr(,-,-)/%attr(644,-,-)/g' -i *files.txt     #fix permissions
+sed '/%attr/s/.*/&"/' -i *files.txt					#add " at the end of every line with attr
+sed 's/,-,-) /,-,-) "/g' -i *files.txt				 #add " before the file name for every attr line
+sed 's/%attr(,-,-)/%attr(644,-,-)/g' -i *files.txt	 #fix permissions
 
 ################################################################################
-#                                BUILD + INSTALL                               #
+#								BUILD + INSTALL
 ################################################################################
 # build rpm
 VERSION=`echo $FILE | cut -d '-' -f 2`
