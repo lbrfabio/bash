@@ -210,6 +210,10 @@ fi
 NSS_SSL_CBC_RANDOM_IV=${NSS_SSL_CBC_RANDOM_IV-1}
 export NSS_SSL_CBC_RANDOM_IV
 
+# Disable Poisoning
+JSGC_DISABLE_POISONING=1
+export JSGC_DISABLE_POISONING
+
 # Prepare command line arguments
 script_args=""
 pass_arg_count=0

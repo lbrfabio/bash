@@ -21,9 +21,9 @@ if [[ ! -z "$FILE" ]] && [[ "$FILE" = *firefox*.@(tar.bz2|tar.gz) ]]; then
 elif [[ "$1" = central || "$1" = trunk || "$1" = master ]]; then
     TYPE="firefox-nightly"
     BRANCH="central"
-elif [[ "$1" = aurora || "$1" = dev || "$1" = developer ]]; then
-    TYPE="firefox-aurora"
-    BRANCH="aurora"
+elif [[ "$1" = aurora || "$1" = dev || "$1" = developer || "$1" = devedition ]]; then
+    TYPE="firefox-devedition" #TYPE="firefox-aurora"
+    BRANCH="beta" #BRANCH="aurora"
 elif [[ "$1" = beta ]]; then
     TYPE="firefox-beta"
     BRANCH="beta"
@@ -32,8 +32,8 @@ elif [[ "$1" = release || "$1" = firefox ]]; then
     BRANCH="release"
 else
     echo -e "No branch or file is specified. Default settings will be used\n"
-    TYPE="firefox-aurora" #"firefox-beta"
-    BRANCH="aurora" #"beta"
+    TYPE="firefox-devedition"
+    BRANCH="beta"
 fi
 
 if [ -z "$FILE" ]; then
@@ -51,6 +51,7 @@ if [ -z "$FILE" ]; then
 
     echo "Downloading: $URL"
     curl -L $URL -o "$TYPE-$VERSION.tar.bz2" -#
+
     FILE=`ls $TEMP/*.tar.bz2`
 fi
 echo "File: $FILE"

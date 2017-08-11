@@ -14,7 +14,7 @@
 
 function showHelp () {
 	if [[ ! -z "$GUI" ]]; then
-		notify-send -i $IC_HELP "Usage:" "nettygear   [ -g ]  [ r, n, d, i, h, a, c ]   [ -l ]"
+		notify-send -i $IC_HELP "Usage" "nettygear   [ -g ]  [ r, n, d, i, h, a, c ]   [ -l ]"
 		exit 0
 	fi
 
@@ -78,7 +78,7 @@ function showIP() {
 		IP="0.0.0.0"
 	fi
 
-	notify $IC_CHECK "IP address:" $IP
+	notify $IC_CHECK "IP address" $IP
 }
 
 function newIP() {
@@ -101,13 +101,13 @@ function showDLspeed() {
 		DLSPEED="0"
 	fi
 
-	notify $IC_MONITOR "Downstream:" "$DLSPEED kbps"
+	notify $IC_MONITOR "Downstream" "$DLSPEED kbps"
 }
 
 
 function showListGUI() {
 	if [[ -z `which zenity 2> /dev/null` ]]; then
-		notify $IC_NET "Dependency issue:" "zenity not found"
+		notify $IC_NET "Dependency issue" "zenity not found"
 		exit 2
 	fi
 
@@ -229,19 +229,19 @@ LOGIN=`curl -s -u $U:$P $HOST`
 LOGIN=`curl -s -u $U:$P $HOST`
 
 if [[ -z "$LOGIN" ]]; then
-	notify $IC_ERROR "Login:" "Network is Down"
+	notify $IC_ERROR "Login" "Network is Down"
 	exit 2
 else
 	CHECK="Another Administrator online"
 	ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
 	if (( $ANSWER == 1 )); then
-		notify $IC_ERROR "Login:" "$CHECK"
+		notify $IC_ERROR "Login" "$CHECK"
 		exit 3
 	fi
 	CHECK="Authorization warning"
 	ANSWER=`echo "$LOGIN" | grep -c "$CHECK"`
 	if (( $ANSWER == 1 )); then
-		notify $IC_ERROR "Login:" "$CHECK"
+		notify $IC_ERROR "Login" "$CHECK"
 		clearConfiguration
 		exit 4
 	fi

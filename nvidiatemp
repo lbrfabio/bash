@@ -11,13 +11,13 @@
 #nvidia-smi -q -d TEMPERATURE | grep Gpu | cut -c39-40
 
 function showTemp () {
-	notify-send -i $icon "GPU		Temperature: $temp °C		Fan Speed:  $fanspeed"
+	notify-send -i $icon "GPU Temperature		Fan Speed" "$temp °C				      $fanspeed"
 }
 
 temp=`nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader`
 fanspeed=`nvidia-smi | grep % | cut -c2-5`
-warning=55
-normal=45
+warning=67
+normal=55
 
 if (( temp > warning )); then
 	icon="dialog-warning"
