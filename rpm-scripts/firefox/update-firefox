@@ -18,7 +18,7 @@ prepare_env "firefox-daily" \
 ################################################################################
 if [[ ! -z "$FILE" ]] && [[ "$FILE" = *firefox*.@(tar.bz2|tar.gz) ]]; then
     echo "A file was specified"
-elif [[ "$1" = central || "$1" = trunk || "$1" = master ]]; then
+elif [[ "$1" = central || "$1" = trunk || "$1" = master || "$1" = nightly ]]; then
     TYPE="firefox-nightly"
     BRANCH="central"
 elif [[ "$1" = aurora || "$1" = dev || "$1" = developer || "$1" = devedition ]]; then
