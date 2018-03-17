@@ -19,12 +19,14 @@ fi
 #ubuntu or fedora?
 which apt > /dev/null  2>&1
 if [ "$?" == "0" ]; then		# probably using ubuntu\debian\mint
-	MOUNT=/media
+	MOUNTEXT=/media
+	MOUNT=/mnt
 	PKGSYS=apt
 else
 	which dnf > /dev/null  2>&1
 	if [ "$?" == "0" ]; then	# probably using fedora\redhat
-		MOUNT=/run/media
+		MOUNTEXT=/run/media
+		MOUNT=/mnt/
 		PKGSYS=dnf
 	else
 		exit 1
@@ -36,7 +38,8 @@ if [ -z `which rsync 2> /dev/null` ]; then		# rsync not installed
 		sudo $PKGSYS install rsync
 fi
 
-BACKUP="$MOUNT/$USERNAME/Backup"
+BACKUP="$MOUNT/backup"
+BACKUP2="$MOUNTEXT/$USERNAME/BackupExt"
 MEDIA="/mnt/media"
 WINDOWS="/mnt/win8"
 
@@ -44,6 +47,7 @@ WINDOWS="/mnt/win8"
 export SCRIPTS
 export PKGSYS
 export BACKUP
+export BACKUP2
 export MEDIA
 export WINDOWS
 
@@ -54,11 +58,11 @@ export WINDOWS
 while [[ ! $continue = "n" ]]; do
 
 	echo -ne "\nSources to backup:
-	MEDIA	 1
-	HOME	  2
+	MEDIA	1
+	HOME	2
 	SYSTEM	3
-	WINDOWS   4
-	ALL	   5
+	WINDOWS	4
+	ALL     5
 
 	Choose: #"
 	read script
@@ -88,6 +92,13 @@ while [[ ! $continue = "n" ]]; do
 		;;
 		*)
 		# no selection
+
+		#umount backup hdd
+		umount $BACKUP 2> /dev/null
+
+		#unmount windows hdd
+		umount $WINDOWS 2> /dev/null
+
 		exit
 	esac
 

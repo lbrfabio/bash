@@ -5,6 +5,9 @@ fi
 
 BKP_DST="$BACKUP/system"
 
+#mount backup hdd
+mount $BACKUP 2> /dev/null && sleep 3
+
 #######################################
 #				 MISC
 #######################################

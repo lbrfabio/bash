@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ -z $BACKUP ]]; then
+if [[ -z $BACKUP2 ]]; then
 	exit 1
 fi
 
@@ -9,7 +9,7 @@ LOG_FILE="$HOME/.cache/rsync/005-media-anime.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
 SRC="$MEDIA/anime/"
-DST="$BACKUP/media/anime/"
+DST="$BACKUP2/media/anime/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 echo ""

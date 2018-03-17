@@ -1,6 +1,6 @@
 #!/bin/sh
 
-user=`who | grep " :0" | cut -d ' ' -f 1`
+user=`who | grep -m 1 ":1" | cut -d ' ' -f 1`
 dbus='export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)'
 cmd='notify-send -i eclipse "It has been a month. Time to update eclipse-trunk"'
 

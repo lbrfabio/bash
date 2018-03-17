@@ -10,10 +10,10 @@ if [ -f "functions.sh" ]; then
 fi
 
 #mount windows hdd
-#pkexec mount $WINDOWS && sleep 5
 mount $WINDOWS && sleep 5
 
-
+#mount backup hdd
+mount $BACKUP 2> /dev/null && sleep 3
 
 #######################################
 #			   	RSYNC
@@ -25,8 +25,3 @@ cd $SCRIPTS/300-win
 startScript "$WINDOWS/*/Documents" "./301-win-documents"
 startScript "$WINDOWS/*/sw-win" "./302-win-downloads-sw-win"
 startScript "$WINDOWS/*/pictures" "./303-win-pictures"
-
-#unmount windows hdd
-#pkexec umount $WINDOWS
-umount $WINDOWS
-

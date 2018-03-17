@@ -38,6 +38,7 @@ tar -xvzf $FILE -C .
 # fix all the things
 mv eclipse $PKG_NAME-skel/opt/
 cp $SKEL/../extra/splash.bmp $PKG_NAME-skel/opt/eclipse/plugins/org.eclipse.platform*/
+cp $SKEL/../extra/splash.bmp $PKG_NAME-skel/opt/eclipse/plugins/org.eclipse.epp.package.common*/
 
 ################################################################################
 #									SPEC

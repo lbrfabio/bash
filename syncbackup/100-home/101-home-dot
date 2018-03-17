@@ -21,7 +21,7 @@ BKP_DST=$BACKUP/home
 BKP_NAME=dot.home
 
 # clean trash
-gvfs-trash  --empty
+gio trash  --empty
 
 (cd $HOME && find . -maxdepth 1 -name ".?*" -exec tar pcvzf "$BKP_DST/$BKP_NAME".tar.gz $EXCLUDE {} +)
 
