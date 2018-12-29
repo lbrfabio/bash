@@ -65,7 +65,7 @@ cp -rf $SKEL .
 tar xf $FILE -C .
 
 # fix all the things
-rm -rf firefox/browser/searchplugins
+#rm -rf firefox/browser/searchplugins
 mv firefox $PKG_NAME-skel/usr/lib64/$PKG_NAME
 
 # create default prefs
@@ -92,6 +92,10 @@ pref(\"startup.homepage_override_url\",       \"\");
 pref(\"browser.startup.homepage\",            \"data:text/plain,browser.startup.homepage=about:newtab\");
 pref(\"browser.newtabpage.pinned\",           '[{\"url\":\"http://start.fedoraproject.org/\",\"title\":\"Fedora Project - Start Page\"}]');
 " > $PKG_NAME-skel/usr/lib64/$PKG_NAME/browser/defaults/preferences/firefox-redhat-default-prefs.js
+
+# create policies.json to disable updates
+mkdir -p $PKG_NAME-skel/usr/lib64/$PKG_NAME/distribution
+echo -e -n "{\"policies\":{\"DisableAppUpdate\":true}}" > $PKG_NAME-skel/usr/lib64/$PKG_NAME/distribution/policies.json
 
 ################################################################################
 #                                   SPEC                                       #
