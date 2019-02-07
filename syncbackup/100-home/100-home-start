@@ -16,13 +16,12 @@ fi
 # go to rsync scripts
 cd $SCRIPTS/100-home
 
-startScript "$HOME/.*" "./101-home-dot"
+startScript "$HOME/.*" "./101-home-dot" "y"
 startScript "$HOME/android" "./102-home-android"
 startScript "$HOME/cgi" "./103-home-cgi"
 startScript "$HOME/downloads/sw-linux" "./104-home-downloads-sw-linux"
 startScript "$HOME/downloads/os" "./105-home-downloads-os"
-startScript "$HOME/videos" "./106-home-videos"
-startScript "$HOME/guitar" "./107-home-guitar"
+startScript "$HOME/guitar" "./106-home-guitar"
 
 #######################################
 #		BACKUP FOLDERS  [tar.gz]
@@ -40,4 +39,4 @@ do
 	fi
 done
 
-backupFolder "`readlink -q $HOME/documents/school`" "$BKP_DST" "school"
+backupFolder "`readlink -q $HOME/documents/education`" "$BKP_DST" "education"

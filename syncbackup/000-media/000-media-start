@@ -24,6 +24,7 @@ startScript "$MEDIA/music" "./002-media-music"
 startScript "$MEDIA/pictures" "./003-media-pictures"
 startScript "$MEDIA/tv-shows" "./004-media-tv-shows"
 startScript "$MEDIA/anime" "./005-media-anime"
+startScript "$MEDIA/videos" "./006-media-videos"
 
 #######################################
 #		BACKUP FOLDERS  [tar.gz]
@@ -31,10 +32,8 @@ startScript "$MEDIA/anime" "./005-media-anime"
 
 BKP_DST="$BACKUP/media"
 
-#DIRS=(.kodi)
-#for DIR in "${DIRS[@]}"
-#do
-#   backupFolder "$MEDIA/$DIR" "$BKP_DST" "$DIR"
-#done
-
-backupFolder "$MEDIA/.kodi"  "$BKP_DST"  "kodi"
+DIRS=(.kodi)
+for DIR in "${DIRS[@]}"
+do
+   backupFolder "$MEDIA/$DIR" "$BKP_DST" "$DIR"
+done

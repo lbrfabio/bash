@@ -9,25 +9,34 @@ if [ -f "../functions.sh" ]; then
 	. "../functions.sh"
 fi
 
-
-#EXCLUDE="--exclude=.cache/rsync --exclude=.cache/mozilla
-#		 \--exclude=.cache/epiphany-* --exclude=*.cache/google-chrome*
-#		 \--exclude=.nv"
-
-EXCLUDE="--exclude=.cache/epiphany-* --exclude=.cache/thumbnails"
-
-DIR_SRC=$HOME
 BKP_DST=$BACKUP/home
-BKP_NAME=dot.home
 
-# clean trash
-gio trash  --empty
+# hidden files
+echo -ne "\n$HOME/.* ? [y/n]: "
+read answer
 
-(cd $HOME && find . -maxdepth 1 -name ".?*" -exec tar pcvzf "$BKP_DST/$BKP_NAME".tar.gz $EXCLUDE {} +)
+if [[ $answer == "y" ]]; then
+	#EXCLUDE="--exclude=.cache/rsync --exclude=.cache/mozilla
+	#		 \--exclude=.cache/epiphany-* --exclude=*.cache/google-chrome*"
 
-# symbolic links
+	EXCLUDE="--exclude=.cache/epiphany-* --exclude=.cache/thumbnails --exclude=.mozilla"
+	BKP_NAME=dot.home
+
+	# clean trash
+	gio trash  --empty
+
+	# backup
+	(cd $HOME && find . -maxdepth 1 -name ".?*" -exec tar pcvzf "$BKP_DST/$BKP_NAME".tar.gz $EXCLUDE {} +)
+fi
+
+# symbolic links and single folders
 DIRS=(.mozilla .android .gradle)
 for DIR in "${DIRS[@]}"
 do
-	backupFolder "`readlink -q $HOME/$DIR`" "$BKP_DST" "dot$DIR"
+	if [ ! -h "$HOME/$DIR" ]; then
+		backupFolder "$HOME/$DIR" "$BKP_DST" "dot$DIR"
+	else
+		backupFolder "`readlink -q $HOME/$DIR`" "$BKP_DST" "dot$DIR"
+	fi
 done
+

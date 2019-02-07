@@ -5,11 +5,11 @@ if [[ -z $BACKUP ]]; then
 fi
 
 #rsync parameters
-LOG_FILE="$HOME/.cache/rsync/106-home-videos.log"
+LOG_FILE="$HOME/.cache/rsync/006-home-videos.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
-EXCLUDE="--exclude=/movies --exclude=/tv-shows"
-SRC="$HOME/videos/"
-DST="$BACKUP/home/videos/"
+EXCLUDE="--exclude=/movies --exclude=/tv-shows --exclude=/anime"
+SRC="$MEDIA/videos/"
+DST="$BACKUP/media/videos/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 #rsynch backup
