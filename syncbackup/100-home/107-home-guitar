@@ -5,11 +5,11 @@ if [[ -z $BACKUP ]]; then
 fi
 
 #rsync parameters
-LOG_FILE="$HOME/.cache/rsync/104-home-downloads-sw-linux.log"
+LOG_FILE="$HOME/.cache/rsync/107-home-guitar.log"
 PARAMS=" -r -t -p -o -g -v --progress --delete -l -s -h --stats --log-file=$LOG_FILE"
 EXCLUDE=""
-SRC="$HOME/downloads/sw-linux/"
-DST="$BACKUP/home/downloads/sw-linux/"
+SRC="$HOME/guitar/"
+DST="$BACKUP/home/guitar/"
 #NOTE:  the last exclude is basically the name of the dst folder. It's necessary only if dst folder is inside the src folder
 
 #rsynch backup

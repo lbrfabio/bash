@@ -18,10 +18,12 @@ cd $SCRIPTS/100-home
 
 startScript "$HOME/.*" "./101-home-dot" "y"
 startScript "$HOME/android" "./102-home-android"
-startScript "$HOME/cgi" "./103-home-cgi"
-startScript "$HOME/downloads/sw-linux" "./104-home-downloads-sw-linux"
-startScript "$HOME/downloads/os" "./105-home-downloads-os"
-startScript "$HOME/guitar" "./106-home-guitar"
+startScript "$HOME/coding" "./103-home-coding"
+startScript "$HOME/cgi" "./104-home-cgi"
+startScript "$HOME/downloads/sw-linux" "./105-home-downloads-sw-linux"
+startScript "$HOME/downloads/os" "./106-home-downloads-os"
+startScript "$HOME/guitar" "./107-home-guitar"
+startScript "$HOME/documents/education" "./108-home-documents-education"
 
 #######################################
 #		BACKUP FOLDERS  [tar.gz]
@@ -29,7 +31,7 @@ startScript "$HOME/guitar" "./106-home-guitar"
 
 BKP_DST="$BACKUP/home"
 
-DIRS=(coding documents git workspace)
+DIRS=(documents git workspace)
 for DIR in "${DIRS[@]}"
 do
 	if [ ! -h "$HOME/$DIR" ]; then
@@ -38,5 +40,3 @@ do
 		backupFolder "`readlink -q $HOME/$DIR`" "$BKP_DST" "$DIR"
 	fi
 done
-
-backupFolder "`readlink -q $HOME/documents/education`" "$BKP_DST" "education"
