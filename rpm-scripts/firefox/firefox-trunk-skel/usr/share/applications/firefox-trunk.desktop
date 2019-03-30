@@ -61,11 +61,3 @@ Exec=firefox-trunk --class="firefox-trunk" %u
 [Desktop Action new-private-window]
 Name=Open a New Private Window
 Exec=firefox-trunk --class="firefox-trunk" --private-window %u
-
-[Desktop Action profile-manager]
-Name=Open Profile Manager
-Exec=firefox-trunk --class="firefox-trunk" -P
-
-[Desktop Action restart]
-Name=Restart
-Exec=bash -c 'wmctrl -x -c firefox-dev; while [ `pidof firefox` ]; do sleep 0.5; done; firefox-trunk --class="firefox-trunk" &'

@@ -24,11 +24,3 @@ Exec=firefox-daily --class="firefox-daily" -P dev-edition-default %u
 [Desktop Action new-private-window]
 Name=Open a New Private Window
 Exec=firefox-daily --class="firefox-daily" --private-window -P dev-edition-default %u
-
-[Desktop Action profile-manager]
-Name=Open Profile Manager
-Exec=firefox-daily --class="firefox-daily" -P
-
-[Desktop Action restart]
-Name=Restart
-Exec=bash -c 'wmctrl -x -c firefox-daily; while [ `pidof firefox` ]; do sleep 0.5; done; firefox-daily --class="firefox-daily" -P dev-edition-default &'
