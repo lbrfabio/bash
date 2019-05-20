@@ -36,9 +36,10 @@ cp -rf $SKEL .
 tar -xvzf $FILE -C .
 
 # fix all the things
+mkdir -p $PKG_NAME-skel/opt
 mv eclipse $PKG_NAME-skel/opt/
-cp $SKEL/../extra/splash.bmp $PKG_NAME-skel/opt/eclipse/plugins/org.eclipse.platform*/
-cp $SKEL/../extra/splash.bmp $PKG_NAME-skel/opt/eclipse/plugins/org.eclipse.epp.package.common*/
+#cp $SKEL/../extra/splash.bmp $PKG_NAME-skel/opt/eclipse/plugins/org.eclipse.platform*/
+#cp $SKEL/../extra/splash.bmp $PKG_NAME-skel/opt/eclipse/plugins/org.eclipse.epp.package.common*/
 
 ################################################################################
 #									SPEC
