@@ -9,6 +9,9 @@ if [ -f "functions.sh" ]; then
 	. "functions.sh"
 fi
 
+#mount backup hdd
+mount $BACKUP 2> /dev/null && sleep 3
+
 #######################################
 #				 RSYNC
 #######################################
