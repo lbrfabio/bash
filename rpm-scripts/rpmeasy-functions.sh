@@ -102,7 +102,7 @@ function build_rpm() {
 	fi
 
 	HOME=$TEMP #this force to build inside $TEMP and not $HOME
-	rpmwand build $PKG_NAME $VERSION $RELEASE $ARCH
+	sudo rpmwand build $PKG_NAME $VERSION $RELEASE $ARCH
 }
 
 function install_rpm() {
@@ -121,5 +121,5 @@ function install_rpm() {
 	#cp $FILE $DEST/
 
 	# cleanup
-	rm -rf $TEMP
+	sudo rm -rf $TEMP
 }

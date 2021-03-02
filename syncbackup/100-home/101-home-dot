@@ -19,7 +19,7 @@ if [[ $answer == "y" ]]; then
 	#EXCLUDE="--exclude=.cache/rsync --exclude=.cache/mozilla
 	#		 \--exclude=.cache/epiphany-* --exclude=*.cache/google-chrome*"
 
-	EXCLUDE="--exclude=.cache/epiphany-* --exclude=.cache/thumbnails --exclude=.mozilla"
+	EXCLUDE="--exclude=.cache/epiphany-* --exclude=.cache/thumbnails --exclude=.mozilla --exclude=.local/share/flatpak"
 	BKP_NAME=dot.home
 
 	# clean trash
